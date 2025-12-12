@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【RD 優化需求】約工流程複雜度導致的同仁耗時問題</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        .card { transition: all 0.3s ease; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); }
+        .highlight-text { color: #dc2626; font-weight: 700; }
+        .problem-list li { list-style: disc; margin-left: 1.5rem; padding-left: 0.5rem; }
+    </style>
+</head>
+<body>
+
+    <div class="max-w-6xl mx-auto p-6 lg:p-12">
+
+        <!-- Header and Goal -->
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">跨部門協作效率報告：約工系統急需優化</h1>
+            <p class="text-xl text-red-600 font-semibold">目標：消除複雜人工判斷，實現「三步驟快速約工」</p>
+            <p class="text-gray-500 mt-2">基於電銷、客服等部門實際問題彙整，強調時間成本及生產力耗損。</p>
+        </header>
+
+        <!-- Section 1: 核心問題與成本衝擊 -->
+        <div class="bg-white rounded-xl shadow-2xl p-8 mb-10 border-t-4 border-red-500">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                核心痛點：人工判斷導致的「時間黑洞」
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Stat Card 1 (UPDATED) -->
+                <div class="card bg-gray-50 p-6 rounded-lg border-l-4 border-red-400">
+                    <p class="text-sm font-medium text-gray-500">單次約工額外耗時</p>
+                    <p class="text-3xl font-extrabold text-gray-900 mt-1">
+                        <span class="highlight-text">大於五分鐘</span>
+                    </p>
+                    <p class="text-xs text-gray-400 mt-1">用於填寫約工單欄位與key字、需多重判斷、查閱規則、二次確認。</p>
+                </div>
+                <!-- Stat Card 2 -->
+                <div class="card bg-gray-50 p-6 rounded-lg border-l-4 border-red-400">
+                    <p class="text-sm font-medium text-gray-500">組織每月總耗損</p>
+                    <p class="text-3xl font-extrabold text-gray-900 mt-1">
+                        <span class="highlight-text">數百小時</span>
+                    </p>
+                    <p class="text-xs text-gray-400 mt-1">大量人力的累加效應，嚴重侵蝕營運效率。</p>
+                </div>
+                <!-- Stat Card 3 (UPDATED) -->
+                <div class="card bg-gray-50 p-6 rounded-lg border-l-4 border-red-400">
+                    <p class="text-sm font-medium text-gray-500">流程錯誤率</p>
+                    <p class="text-3xl font-extrabold text-gray-900 mt-1">
+                        <span class="highlight-text">高</span>
+                    </p>
+                    <p class="text-xs text-gray-400 mt-1">因外派區域限制、社區地址比對錯誤及排程未計入車距，導致高比例工單需二派或退回，浪費工程師資源。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: 實際案例與複雜判斷清單 (Data from CSVs) -->
+        <div class="bg-white rounded-xl shadow-2xl p-8 mb-10">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                具體耗時案例分析：人腦變系統
+            </h2>
+            <p class="text-lg text-gray-700 mb-4 font-semibold">同仁被迫進行的複雜業務判斷，應由系統承擔：</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Case 1: 雙人施工與產能浪費 -->
+                <div class="card p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
+                    <h3 class="font-bold text-xl text-blue-800 mb-2">案例 A：雙人施工判斷與產能虛耗</h3>
+                    <ul class="problem-list text-gray-700 space-y-2">
+                        <li>**問題核心**：系統未自動判斷，同仁需人工判斷「一樓、樓中樓、挑高、夾層」等複雜狀況，決定是否雙人裝機。</li>
+                        <li>**流程痛點**：雙人約工需人工媒合兩位工程師的產能（一位看職能，另一位僅看同區無超距），流程繁瑣耗時。</li>
+                        <li>**結果**：高估雙人需求 → 浪費工程師產能；低估雙人需求 → 現場二派，延誤客戶服務。</li>
+                    </ul>
+                </div>
+
+                <!-- Case 2: 超距判斷與車程補時 -->
+                <div class="card p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
+                    <h3 class="font-bold text-xl text-blue-800 mb-2">案例 B：超距/空檔/跨區判斷與車程補時</h3>
+                    <ul class="problem-list text-gray-700 space-y-2">
+                        <li>**問題核心**：工單間有空檔或超距時，同仁需猜測是否應「補 0.5 小時」車程，擔心佔用產能或被工程師反映跨區不順。</li>
+                        <li>**流程痛點**：約工推薦未提供紀錄給工程師，導致前端判斷與後端執行認知不一致，需額外溝通。</li>
+                        <li>**結果**：同仁需耗時與工程師/值班人員往返確認，延遲約工決策。</li>
+                    </ul>
+                </div>
+
+                <!-- Case 3: 排程邏輯衝突與人工順工負擔 (Updated Content) -->
+                <div class="card p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
+                    <h3 class="font-bold text-xl text-blue-800 mb-2">案例 C：排程邏輯衝突 (距離 vs. 地區順工)</h3>
+                    <ul class="problem-list text-gray-700 space-y-2">
+                        <li>**問題核心**：<span class="font-semibold text-red-600">約工推薦邏輯</span>僅基於「上下件距離」，與工程師習慣的「地區方向順工」（看能量表）邏輯不一致。</li>
+                        <li>**流程痛點**：電銷/客服同仁照推薦安排，常受到工程師抱怨同一天多位工程師分別去同一區，造成跨部門矛盾。</li>
+                        <li>**結果**：值班工程師需耗費額外時間手動「順工」或調整，效率低下，並可能導致不順路的繞區裝機。</li>
+                    </ul>
+                </div>
+
+                <!-- Case 4: 產能資訊不透明 -->
+                <div class="card p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
+                    <h3 class="font-bold text-xl text-blue-800 mb-2">案例 D：產能、地址與工程師技能判斷</h3>
+                    <ul class="problem-list text-gray-700 space-y-2">
+                        <li>**問題核心**：地址資訊（如新辦公室、新社區）未即時更新或有誤，工程師技能與服務區域未標準化。</li>
+                        <li>**流程痛點**：同仁約工前需先確認地址有效性，或查詢特定區域（如淡水）在主要工程師請假時的替代處理方式。</li>
+                        <li>**結果**：人工確認邊緣狀況，增加大量不必要的溝通成本。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: 對 RD 部門的明確優化訴求 -->
+        <div class="bg-gray-800 text-white rounded-xl shadow-2xl p-8">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.276a11.95 11.95 0 010 11.838a1.5 1.5 0 01-2.122 0l-1.06-1.06"></path></svg>
+                RD 行動目標：從人工判斷到智慧引導
+            </h2>
+
+            <ol class="space-y-4 text-lg">
+                <li class="p-4 bg-gray-700 rounded-lg flex items-start">
+                    <span class="font-extrabold text-2xl text-green-400 mr-4">1.</span>
+                    <div>
+                        <p class="font-bold text-yellow-300">智慧化雙人施工判斷 (核心優化)</p>
+                        <p class="text-sm mt-1">系統應基於地址、用戶產品組合、或預設樓層資訊，**自動判定**是否為雙人需求，並**自動媒合**兩位工程師產能，無須人工配對。</p>
+                    </div>
+                </li>
+                <li class="p-4 bg-gray-700 rounded-lg flex items-start">
+                    <span class="font-extrabold text-2xl text-green-400 mr-4">2.</span>
+                    <div>
+                        <p class="font-bold text-yellow-300">智慧排程邏輯統一 (解決部門矛盾)</p>
+                        <p class="text-sm mt-1">系統需優化排程演算法，將工程部實際的「**地區方向順工邏輯**」整合進約工推薦中，確保前端推薦與後端執行的一致性，消除因排程不順導致的跨部門爭議。</p>
+                    </div>
+                </li>
+                <li class="p-4 bg-gray-700 rounded-lg flex items-start">
+                    <span class="font-extrabold text-2xl text-green-400 mr-4">3.</span>
+                    <div>
+                        <p class="font-bold text-yellow-300">一站式約工資訊自動帶入與同步</p>
+                        <p class="text-sm mt-1">確保地址、工程師技能與區域、特殊備註等**所有必要資訊**在系統內同步且自動帶入，消除重複確認與手動彌補的時間。</p>
+                    </div>
+                </li>
+            </ol>
+            <div class="mt-8 pt-4 border-t border-gray-600 text-center">
+                <p class="text-red-400 font-bold text-xl">請 RD 團隊將「流程極簡化」作為本次優化的最高目標，以解放同仁的寶貴時間，專注於服務客戶。</p>
+            </div>
+        </div>
+
+        <footer class="text-center mt-10 text-sm text-gray-500">
+            報告整理：跨部門協作小組 - 2025 年 12 月
+        </footer>
+    </div>
+
+</body>
+</html>
