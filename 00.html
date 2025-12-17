@@ -1,154 +1,782 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【RD 優化需求】約工流程複雜度導致的同仁耗時問題</title>
+    <title>客戶貼標作業中心 V3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
-        .card { transition: all 0.3s ease; }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); }
-        .highlight-text { color: #dc2626; font-weight: 700; }
-        .problem-list li { list-style: disc; margin-left: 1.5rem; padding-left: 0.5rem; }
+        /* 確保內容區域不會溢出 */
+        .h-main { height: calc(100vh - 64px); }
+        /* 自訂滾動條 */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+
+        /* 標籤按鈕樣式 */
+        .tag-btn {
+            transition: all 0.15s;
+            cursor: pointer;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        /* 標籤選取後的狀態 */
+        .tag-btn-active {
+            background-color: #3b82f6 !important; /* Blue 500 */
+            color: white !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2), 0 2px 4px -2px rgba(59, 130, 246, 0.2) !important;
+        }
+        .accordion-header {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        /* 讓右側欄的關鍵模組固定高度，避免滾動混亂 */
+        .context-panel {
+            min-height: 100%;
+        }
     </style>
+    <!-- Chosen Palette: Indigo & Blue (Professional, Clean, Trustworthy) -->
+    <!-- Application Structure Plan: Dual-Column Layout (75%/25%). Left (A-Zone) is the main tagging form (Hard Tags, Hierarchical Flexible Tags). Right (B-Zone) combines Searchable List (Top), Manual Notes (Middle), and Cross-Product Status Modules (Bottom). This maximizes visibility of tagging context (B-Zone) while maintaining a focused, high-speed input area (A-Zone). -->
+    <!-- Visualization & Content Choices: Heavy reliance on interactive forms (Dropdowns, Checkbox Buttons) and dynamic list rendering. Cross-product status uses dynamic module rendering for scalability. NO SVG/Mermaid used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 antialiased">
 
-    <div class="max-w-6xl mx-auto p-6 lg:p-12">
 
-        <!-- Header and Goal -->
-        <header class="mb-10 text-center">
-            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">跨部門協作效率報告：約工系統急需優化</h1>
-            <p class="text-xl text-red-600 font-semibold">目標：消除複雜人工判斷，實現「三步驟快速約工」</p>
-            <p class="text-gray-500 mt-2">基於電銷、客服等部門實際問題彙整，強調時間成本及生產力耗損。</p>
-        </header>
+    <!-- Header -->
+    <header class="bg-white shadow-md h-16 flex items-center px-6 z-10 sticky top-0">
+        <h1 class="text-2xl font-bold text-indigo-600">客戶貼標作業中心</h1>
+        <div class="ml-auto text-sm">
+            全量客戶貼標作業：<span id="progress-text" class="font-bold text-orange-500">0/200</span>
+        </div>
+    </header>
 
-        <!-- Section 1: 核心問題與成本衝擊 -->
-        <div class="bg-white rounded-xl shadow-2xl p-8 mb-10 border-t-4 border-red-500">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                <svg class="w-6 h-6 mr-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                核心痛點：人工判斷導致的「時間黑洞」
-            </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Stat Card 1 (UPDATED) -->
-                <div class="card bg-gray-50 p-6 rounded-lg border-l-4 border-red-400">
-                    <p class="text-sm font-medium text-gray-500">單次約工額外耗時</p>
-                    <p class="text-3xl font-extrabold text-gray-900 mt-1">
-                        <span class="highlight-text">大於五分鐘</span>
-                    </p>
-                    <p class="text-xs text-gray-400 mt-1">用於填寫約工單欄位與key字、需多重判斷、查閱規則、二次確認。</p>
-                </div>
-                <!-- Stat Card 2 -->
-                <div class="card bg-gray-50 p-6 rounded-lg border-l-4 border-red-400">
-                    <p class="text-sm font-medium text-gray-500">組織每月總耗損</p>
-                    <p class="text-3xl font-extrabold text-gray-900 mt-1">
-                        <span class="highlight-text">數百小時</span>
-                    </p>
-                    <p class="text-xs text-gray-400 mt-1">大量人力的累加效應，嚴重侵蝕營運效率。</p>
-                </div>
-                <!-- Stat Card 3 (UPDATED) -->
-                <div class="card bg-gray-50 p-6 rounded-lg border-l-4 border-red-400">
-                    <p class="text-sm font-medium text-gray-500">流程錯誤率</p>
-                    <p class="text-3xl font-extrabold text-gray-900 mt-1">
-                        <span class="highlight-text">高</span>
-                    </p>
-                    <p class="text-xs text-gray-400 mt-1">因外派區域限制、社區地址比對錯誤及排程未計入車距，導致高比例工單需二派或退回，浪費工程師資源。</p>
+    <!-- Main Content Area: Two Columns -->
+    <div class="flex h-main overflow-hidden">
+
+
+        <!-- Column A (75%): Main Tagging Focus Area -->
+        <main class="w-3/4 p-6 overflow-y-auto custom-scroll">
+            <div id="tagging-detail-panel" class="max-w-5xl mx-auto bg-white p-8 rounded-xl shadow-lg border border-gray-100 min-h-[500px]">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">
+                    <span id="client-name-display">請從右側列表選擇一位客戶開始貼標</span>
+                </h2>
+               
+                <div id="detail-form-container" class="hidden">
+                   
+                    <!-- Basic Info Input/Editing -->
+                    <h3 class="text-xl font-semibold text-indigo-600 mb-4">📝 客戶基本資料 (可編輯)</h3>
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">客戶姓名</label>
+                            <input type="text" id="input-name" class="w-full border border-gray-300 p-2 rounded-lg text-gray-700" placeholder="王大明">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">聯絡電話</label>
+                            <input type="text" id="input-phone" class="w-full border border-gray-300 p-2 rounded-lg text-gray-700" placeholder="09xxxxxxxx">
+                        </div>
+                        <div>
+                             <label class="block text-sm font-medium mb-1">客戶編號</label>
+                            <input type="text" id="input-id" class="w-full border border-gray-300 p-2 rounded-lg text-gray-500 bg-gray-100 cursor-not-allowed" readonly>
+                        </div>
+                    </div>
+
+
+                    <!-- Section 1: Hard Tags (Mandatory, Single Select) -->
+                    <h3 class="text-xl font-semibold text-indigo-600 mt-6 mb-4 border-t pt-4">🎯 一、基礎屬性 (Hard Tags) - 必填</h3>
+                    <p class="text-sm text-gray-500 mb-4">用途：分眾、派工、定價。請務必透過下拉選單填寫以確保資料標準化。</p>
+
+
+                    <div id="hard-tag-dropdowns" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Dropdowns injected by JS -->
+                    </div>
+
+
+                    <!-- Section 2: Flexible Tags (Multi Select, Hierarchical Accordion) -->
+                    <h3 class="text-xl font-semibold text-indigo-600 mt-8 mb-4 border-t pt-4">✅ 彈性標籤 (Soft/Other Tags) - 勾選制</h3>
+                    <p class="text-sm text-gray-500 mb-4">每次服務後只補 1–2 個新標籤，不追求一次貼滿。點擊標題展開選項。</p>
+                   
+                    <div id="flexible-tag-accordions" class="space-y-3">
+                        <!-- Accordion sections injected by JS -->
+                    </div>
+
+
+                    <!-- Action Button -->
+                    <div class="mt-8 pt-4 border-t">
+                        <button onclick="saveAndNext()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg text-lg shadow-xl transition-all">
+                            💾 儲存標籤並前往下一位客戶 (Save & Next)
+                        </button>
+                    </div>
+
+
                 </div>
             </div>
-        </div>
+        </main>
 
-        <!-- Section 2: 實際案例與複雜判斷清單 (Data from CSVs) -->
-        <div class="bg-white rounded-xl shadow-2xl p-8 mb-10">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                <svg class="w-6 h-6 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                具體耗時案例分析：人腦變系統
-            </h2>
-            <p class="text-lg text-gray-700 mb-4 font-semibold">同仁被迫進行的複雜業務判斷，應由系統承擔：</p>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <!-- Case 1: 雙人施工與產能浪費 -->
-                <div class="card p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
-                    <h3 class="font-bold text-xl text-blue-800 mb-2">案例 A：雙人施工判斷與產能虛耗</h3>
-                    <ul class="problem-list text-gray-700 space-y-2">
-                        <li>**問題核心**：系統未自動判斷，同仁需人工判斷「一樓、樓中樓、挑高、夾層」等複雜狀況，決定是否雙人裝機。</li>
-                        <li>**流程痛點**：雙人約工需人工媒合兩位工程師的產能（一位看職能，另一位僅看同區無超距），流程繁瑣耗時。</li>
-                        <li>**結果**：高估雙人需求 → 浪費工程師產能；低估雙人需求 → 現場二派，延誤客戶服務。</li>
-                    </ul>
+        <!-- Column B (25%): Context Panel & List (Right Sidebar) -->
+        <aside class="w-1/4 bg-gray-100 border-l border-gray-200 overflow-y-auto custom-scroll p-4 context-panel">
+           
+            <!-- B1: Client List & Search -->
+            <div class="sticky top-0 bg-gray-100 pt-0 pb-3 z-10">
+                <h3 class="text-lg font-semibold mb-3 border-b pb-2">客戶列表與搜尋</h3>
+                <div class="flex space-x-2 mb-3">
+                     <input type="text" id="client-search" oninput="searchClientList()" placeholder="🔍 搜尋姓名/電話/編號" class="w-full p-2 border border-gray-300 rounded-lg text-sm">
                 </div>
+                <div id="filter-status-info" class="text-xs text-gray-500 mb-2">顯示所有客戶</div>
+            </div>
 
-                <!-- Case 2: 超距判斷與車程補時 -->
-                <div class="card p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
-                    <h3 class="font-bold text-xl text-blue-800 mb-2">案例 B：超距/空檔/跨區判斷與車程補時</h3>
-                    <ul class="problem-list text-gray-700 space-y-2">
-                        <li>**問題核心**：工單間有空檔或超距時，同仁需猜測是否應「補 0.5 小時」車程，擔心佔用產能或被工程師反映跨區不順。</li>
-                        <li>**流程痛點**：約工推薦未提供紀錄給工程師，導致前端判斷與後端執行認知不一致，需額外溝通。</li>
-                        <li>**結果**：同仁需耗時與工程師/值班人員往返確認，延遲約工決策。</li>
-                    </ul>
-                </div>
 
-                <!-- Case 3: 排程邏輯衝突與人工順工負擔 (Updated Content) -->
-                <div class="card p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
-                    <h3 class="font-bold text-xl text-blue-800 mb-2">案例 C：排程邏輯衝突 (距離 vs. 地區順工)</h3>
-                    <ul class="problem-list text-gray-700 space-y-2">
-                        <li>**問題核心**：<span class="font-semibold text-red-600">約工推薦邏輯</span>僅基於「上下件距離」，與工程師習慣的「地區方向順工」（看能量表）邏輯不一致。</li>
-                        <li>**流程痛點**：電銷/客服同仁照推薦安排，常受到工程師抱怨同一天多位工程師分別去同一區，造成跨部門矛盾。</li>
-                        <li>**結果**：值班工程師需耗費額外時間手動「順工」或調整，效率低下，並可能導致不順路的繞區裝機。</li>
-                    </ul>
-                </div>
+            <div id="client-list" class="space-y-1 pb-4 border-b border-gray-300">
+                <!-- Client items injected by JS -->
+            </div>
 
-                <!-- Case 4: 產能資訊不透明 -->
-                <div class="card p-6 bg-blue-50 border-l-4 border-blue-500 rounded-lg">
-                    <h3 class="font-bold text-xl text-blue-800 mb-2">案例 D：產能、地址與工程師技能判斷</h3>
-                    <ul class="problem-list text-gray-700 space-y-2">
-                        <li>**問題核心**：地址資訊（如新辦公室、新社區）未即時更新或有誤，工程師技能與服務區域未標準化。</li>
-                        <li>**流程痛點**：同仁約工前需先確認地址有效性，或查詢特定區域（如淡水）在主要工程師請假時的替代處理方式。</li>
-                        <li>**結果**：人工確認邊緣狀況，增加大量不必要的溝通成本。</li>
-                    </ul>
+
+            <!-- B2: Cross-Product Status Modules -->
+            <div class="mt-4">
+                <h3 class="text-lg font-semibold mb-3 text-blue-600 border-b pb-2">跨產品線狀態 (輔助決策)</h3>
+                <div id="cross-product-modules" class="space-y-3 text-sm">
+                    <!-- Modules injected by JS -->
+                    <p id="no-client-context" class="text-gray-500 italic">請選擇客戶以載入上下文資訊。</p>
                 </div>
             </div>
-        </div>
-
-        <!-- Section 3: 對 RD 部門的明確優化訴求 -->
-        <div class="bg-gray-800 text-white rounded-xl shadow-2xl p-8">
-            <h2 class="text-2xl font-bold mb-6 flex items-center">
-                <svg class="w-6 h-6 mr-3 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.276a11.95 11.95 0 010 11.838a1.5 1.5 0 01-2.122 0l-1.06-1.06"></path></svg>
-                RD 行動目標：從人工判斷到智慧引導
-            </h2>
-
-            <ol class="space-y-4 text-lg">
-                <li class="p-4 bg-gray-700 rounded-lg flex items-start">
-                    <span class="font-extrabold text-2xl text-green-400 mr-4">1.</span>
-                    <div>
-                        <p class="font-bold text-yellow-300">智慧化雙人施工判斷 (核心優化)</p>
-                        <p class="text-sm mt-1">系統應基於地址、用戶產品組合、或預設樓層資訊，**自動判定**是否為雙人需求，並**自動媒合**兩位工程師產能，無須人工配對。</p>
-                    </div>
-                </li>
-                <li class="p-4 bg-gray-700 rounded-lg flex items-start">
-                    <span class="font-extrabold text-2xl text-green-400 mr-4">2.</span>
-                    <div>
-                        <p class="font-bold text-yellow-300">智慧排程邏輯統一 (解決部門矛盾)</p>
-                        <p class="text-sm mt-1">系統需優化排程演算法，將工程部實際的「**地區方向順工邏輯**」整合進約工推薦中，確保前端推薦與後端執行的一致性，消除因排程不順導致的跨部門爭議。</p>
-                    </div>
-                </li>
-                <li class="p-4 bg-gray-700 rounded-lg flex items-start">
-                    <span class="font-extrabold text-2xl text-green-400 mr-4">3.</span>
-                    <div>
-                        <p class="font-bold text-yellow-300">一站式約工資訊自動帶入與同步</p>
-                        <p class="text-sm mt-1">確保地址、工程師技能與區域、特殊備註等**所有必要資訊**在系統內同步且自動帶入，消除重複確認與手動彌補的時間。</p>
-                    </div>
-                </li>
-            </ol>
-            <div class="mt-8 pt-4 border-t border-gray-600 text-center">
-                <p class="text-red-400 font-bold text-xl">請 RD 團隊將「流程極簡化」作為本次優化的最高目標，以解放同仁的寶貴時間，專注於服務客戶。</p>
+           
+            <!-- B3: Manual Notes -->
+            <div class="mt-6 pt-4 border-t border-gray-300">
+                <h3 class="text-lg font-semibold mb-3 text-orange-600">📝 人工備註 (500 字上限)</h3>
+                <textarea id="manual-notes" maxlength="500" rows="4" placeholder="請輸入溝通細節、特殊狀況、或重要觀察..." class="w-full p-2 border border-gray-300 rounded-lg text-sm resize-none" disabled></textarea>
+                <div class="text-xs text-right text-gray-500">
+                    已輸入: <span id="notes-char-count">0</span> / 500
+                </div>
             </div>
-        </div>
 
-        <footer class="text-center mt-10 text-sm text-gray-500">
-            報告整理：跨部門協作小組 - 2025 年 12 月
-        </footer>
+
+        </aside>
     </div>
 
+
+    <!-- Notification Box -->
+    <div id="notification-box" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-lg shadow-2xl transition-opacity duration-300 opacity-0 z-50">
+        儲存成功！
+    </div>
+   
+    <!-- Export Modal (Simplified for SPA) -->
+    <div id="export-modal" class="fixed inset-0 bg-gray-800 bg-opacity-75 hidden flex items-center justify-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full">
+            <h3 class="text-xl font-bold mb-4">匯出客戶資料</h3>
+            <p class="mb-4">將匯出目前篩選結果 (<span id="export-count-display">0</span> 位客戶) 的完整標籤資料。</p>
+            <div id="filter-conditions-display" class="bg-gray-100 p-3 rounded text-sm mb-4"></div>
+            <p class="text-red-500 text-xs mb-4">注意：此為前端模擬匯出，將下載 CSV 檔案。</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="closeModal('export-modal')" class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded-lg">取消</button>
+                <button onclick="confirmExport()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">確認匯出 CSV</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script>
+        // --- 1. Master Data Storage & Definitions ---
+        let clients = [];
+        let currentClientIndex = -1;
+        let isSearchActive = false; // Flag to track if search/filter is active
+
+
+        const TAG_CATEGORIES = {
+            // A. 基礎屬性 (Hard Tags) - Mandatory, Single Select
+            hardTags: {
+                title: '一、基礎屬性',
+                type: 'single',
+                fields: {
+                    residenceCondition: {
+                        label: '居住條件',
+                        options: ['社區大樓(有管理室)', '社區大樓(無管理室)', '透天', '老公寓(無電梯)', '新成屋(5年內)', '中古屋(10年以上)', '頂樓戶', '低樓層(1–2樓)']
+                    },
+                    familyStructure: {
+                        label: '家庭結構',
+                        options: ['單身', '雙薪夫妻', '小家庭(1–2位小孩)', '多孩家庭(3人以上)', '三代同堂', '長輩同住']
+                    },
+                    ageGroup: {
+                        label: '年齡區間(決策者)',
+                        options: ['25–34', '35–44', '45–54', '55+']
+                    },
+                    spaceType: {
+                        label: '空間型態',
+                        options: ['套房/1房', '2房', '3房', '4房以上', '公設多(大社區)']
+                    }
+                }
+            },
+            // B. 彈性標籤 (Soft/Other Tags) - Multi Select
+            softTags: {
+                title: '二、生活型態 (Soft Tags)',
+                type: 'multi',
+                subgroups: [
+                    { label: '生活節奏', tags: ['工作忙碌/加班型', '固定居家作息', '假日才有空', '常出差', '長時間不在家'] },
+                    { label: '家庭照顧需求', tags: ['有幼兒(0–6歲)', '有學齡孩童', '有長輩需要照顧', '孕期/產後', '行動不便家人'] },
+                    { label: '健康與潔淨意識', tags: ['對灰塵敏感', '有過敏體質', '在意黴菌/氣味', '高潔癖', '一般即可'] },
+                    { label: '工作型態', tags: ['在家工作(WFH)', '混合辦公', '全外勤', '退休在家'] }
+                ]
+            },
+            transactionTags: {
+                title: '三、消費行為 (Transaction Tags)',
+                type: 'multi',
+                subgroups: [
+                    { label: '清潔使用習慣', tags: ['第一次找清潔', '曾用過平台型清潔', '固定清潔習慣', '不固定/有空才找', '只在節日前清潔'] },
+                    { label: '頻率偏好', tags: ['頻率:每週', '頻率:雙週', '頻率:每月', '頻率:不固定'] },
+                    { label: '價格敏感度', tags: ['價格導向', '品質導向', '品牌信任導向', '可接受加價換安心'] },
+                    { label: '指定偏好', tags: ['指定家政師', '希望同一位', '不指定', '女性家政師', '熟手優先'] }
+                ]
+            },
+            riskTags: {
+                title: '四、服務風險 (Risk Tags)',
+                type: 'multi',
+                subgroups: [
+                    { label: '溝通風險', tags: ['對細節非常要求', '容易反覆確認', '說明後仍不放心', '表達情緒強烈'] },
+                    { label: '期待落差風險', tags: ['對「很乾淨」定義高', '曾對其他業者不滿', '曾客訴經驗', '比較型客戶'] },
+                    { label: '現場限制', tags: ['空間雜物多', '收納不足', '清潔死角多', '裝潢怕刮傷'] }
+                ]
+            },
+            preferenceTags: {
+                title: '五、關鍵偏好標籤',
+                type: 'multi',
+                subgroups: [
+                    { label: '客戶最喜歡', tags: ['最喜歡:準時', '最喜歡:細心', '最喜歡:安靜不打擾', '最喜歡:主動提醒', '最喜歡:固定人員', '最喜歡:有制度有回報'] },
+                    { label: '客戶最討厭', tags: ['最討厭:遲到', '最討厭:換人', '最討厭:清不乾淨', '最討厭:不照說明做', '最討厭:一直推銷', '最討厭:語氣不佳'] },
+                    { label: '客戶最在意', tags: ['最在意:家人健康', '最在意:孩子安全', '最在意:清潔效果', '最在意:是否傷家具', '最在意:是否穩定長期', '最在意:售後是否有人管'] }
+                ]
+            }
+        };
+
+
+        // --- 2. Initialization and Dummy Data Generation ---
+
+
+        function generateDummyClients() {
+            const statusOptions = ['期中客戶', '已到期客戶', '已退租客戶'];
+            for (let i = 1; i <= 200; i++) {
+                const isBBUser = Math.random() > 0.4;
+                const isCleaned = Math.random() > 0.3;
+               
+                let bbStatus = [];
+                if(isBBUser) {
+                    // Simulate multi-select status
+                    if(Math.random() > 0.8) bbStatus.push('可推銷升級');
+                    bbStatus.push(statusOptions[Math.floor(Math.random() * statusOptions.length)]);
+                }
+
+
+                clients.push({
+                    clientId: 'C' + i.toString().padStart(4, '0'),
+                    name: '客戶 ' + String.fromCharCode(65 + Math.floor(Math.random() * 26)) + i,
+                    phone: '09' + (10000000 + i),
+                    manualNotes: '',
+                    // Hard Tags - initialize empty strings
+                    residenceCondition: '',
+                    familyStructure: '',
+                    ageGroup: '',
+                    spaceType: '',
+                    flexibleTags: [],
+                    isTagged: false,
+                    // Cross-Product Status
+                    crossProductStatus: {
+                        broadband: {
+                            isUser: isBBUser,
+                            status: bbStatus
+                        },
+                        applianceCleaning: {
+                            lastCleanDate: isCleaned ? `2024-${Math.floor(Math.random() * 12) + 1}-${Math.floor(Math.random() * 28) + 1}` : 'N/A',
+                            unitsCleaned: isCleaned ? Math.floor(Math.random() * 4) + 1 : 0
+                        },
+                        moduleA: {
+                            productName: '智能鎖服務',
+                            status: Math.random() > 0.7 ? '已安裝' : '潛在客戶',
+                            data: Math.random() > 0.7 ? '鎖型: P50' : null
+                        },
+                        moduleB: {
+                            productName: '家電租賃服務',
+                            status: Math.random() > 0.9 ? '已簽約' : '非用戶',
+                            data: null
+                        }
+                    }
+                });
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            generateDummyClients();
+            renderHardTagDropdowns();
+            renderFlexibleTagAccordions();
+            // Initial render uses all clients
+            renderClientList();
+            updateProgress();
+           
+            // Set up character counter for manual notes
+            const notesInput = document.getElementById('manual-notes');
+            notesInput.addEventListener('input', updateCharCount);
+           
+            // Auto select the first client to start tagging
+            selectNextClientToTag();
+        });
+
+
+
+
+        // --- 3. Rendering Functions (Hard Tags, Flexible Tags, List) ---
+       
+        function updateCharCount() {
+            const input = document.getElementById('manual-notes');
+            const countSpan = document.getElementById('notes-char-count');
+            countSpan.innerText = input.value.length;
+        }
+
+
+        function renderClientList(filteredClients = clients) {
+            const listContainer = document.getElementById('client-list');
+            listContainer.innerHTML = '';
+           
+            // Sort by isTagged status (untagged first)
+            filteredClients.sort((a, b) => a.isTagged - b.isTagged);
+
+
+            filteredClients.forEach(client => {
+                const item = document.createElement('div');
+                const isCurrent = client.clientId === clients[currentClientIndex]?.clientId;
+                const statusColor = client.isTagged ? 'text-green-600' : 'text-orange-500';
+                const statusText = client.isTagged ? '✅' : '⏳';
+                const bgColor = isCurrent ? 'bg-indigo-100 border-indigo-500' : 'hover:bg-gray-100 border-transparent';
+                const textColor = isCurrent ? 'font-bold' : 'font-medium';
+
+
+                item.className = `p-2 rounded-lg cursor-pointer text-sm border ${bgColor} transition`;
+                item.innerHTML = `
+                    <div class="${textColor} flex justify-between items-center">
+                        <span>${client.name}</span>
+                        <span class="text-xs font-normal text-gray-500">${client.clientId}</span>
+                    </div>
+                    <div class="text-xs flex justify-between">
+                        <span class="${statusColor} flex items-center">${statusText} ${client.isTagged ? '已貼標' : '待處理'}</span>
+                        <span class="text-gray-500">${client.phone}</span>
+                    </div>
+                `;
+                item.onclick = () => selectClient(client.clientId);
+                listContainer.appendChild(item);
+            });
+           
+            const totalClients = clients.length;
+            const currentDisplayCount = filteredClients.length;
+            const filterInfo = document.getElementById('filter-status-info');
+            if (currentDisplayCount < totalClients) {
+                filterInfo.innerText = `篩選中：共 ${currentDisplayCount} 位客戶符合條件`;
+                isSearchActive = true;
+            } else {
+                filterInfo.innerText = `顯示所有客戶 (200)`;
+                isSearchActive = false;
+            }
+        }
+
+
+        function updateProgress() {
+            const taggedCount = clients.filter(c => c.isTagged).length;
+            document.getElementById('progress-text').innerText = `${taggedCount}/200`;
+        }
+
+
+        // Render Hard Tag Dropdowns (Same as V2)
+        function renderHardTagDropdowns() {
+            const container = document.getElementById('hard-tag-dropdowns');
+            container.innerHTML = '';
+            for (const key in TAG_CATEGORIES.hardTags.fields) {
+                const field = TAG_CATEGORIES.hardTags.fields[key];
+                const div = document.createElement('div');
+                const id = `tag-${key}`;
+                const label = document.createElement('label');
+                label.className = 'block text-sm font-medium mb-1 text-gray-700';
+                label.innerText = field.label;
+                const select = document.createElement('select');
+                select.id = id;
+                select.className = 'w-full border border-gray-300 p-2 rounded-lg bg-white text-gray-700 text-sm';
+                select.innerHTML = '<option value="">-- 請選擇 --</option>';
+                field.options.forEach(optionText => {
+                    const option = document.createElement('option');
+                    option.value = optionText;
+                    option.innerText = optionText;
+                    select.appendChild(option);
+                });
+                div.appendChild(label);
+                div.appendChild(select);
+                container.appendChild(div);
+            }
+        }
+
+
+        // Render Flexible Tag Accordions (Same as V2)
+        function renderFlexibleTagAccordions() {
+            const container = document.getElementById('flexible-tag-accordions');
+            container.innerHTML = '';
+            for (const categoryKey in TAG_CATEGORIES) {
+                if (TAG_CATEGORIES[categoryKey].type === 'single') continue;
+                const category = TAG_CATEGORIES[categoryKey];
+                const accordionId = `acc-${categoryKey}`;
+                const panel = document.createElement('div');
+                panel.className = 'border border-gray-200 rounded-lg overflow-hidden shadow-sm';
+                const header = document.createElement('div');
+                header.className = 'accordion-header bg-gray-100 hover:bg-gray-200 p-4 font-semibold text-gray-700 flex justify-between items-center';
+                header.innerHTML = `<span>${category.title}</span><span class="text-sm text-gray-500">點擊展開</span>`;
+                header.onclick = () => toggleAccordion(accordionId);
+                const content = document.createElement('div');
+                content.id = accordionId;
+                content.className = 'p-4 bg-white hidden';
+                category.subgroups.forEach(group => {
+                    const groupTitle = document.createElement('div');
+                    groupTitle.className = 'font-medium text-indigo-700 border-b border-indigo-100 pb-1 mb-2 mt-4 first:mt-0';
+                    groupTitle.innerText = group.label;
+                    content.appendChild(groupTitle);
+                    const tagContainer = document.createElement('div');
+                    tagContainer.className = 'flex flex-wrap gap-2';
+                    group.tags.forEach(tag => {
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'tag-btn text-sm px-3 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100';
+                        button.innerText = tag;
+                        button.dataset.tag = tag;
+                        button.onclick = toggleFlexibleTag;
+                        tagContainer.appendChild(button);
+                    });
+                    content.appendChild(tagContainer);
+                });
+                panel.appendChild(header);
+                panel.appendChild(content);
+                container.appendChild(panel);
+            }
+        }
+
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const isHidden = content.classList.contains('hidden');
+           
+            document.querySelectorAll('#flexible-tag-accordions > div > div:nth-child(2)').forEach(c => {
+                if (c.id !== id) c.classList.add('hidden');
+            });
+
+
+            if (isHidden) {
+                content.classList.remove('hidden');
+            } else {
+                content.classList.add('hidden');
+            }
+        }
+
+
+        // --- 4. Client Selection and Form Population ---
+
+
+        function selectClient(clientId) {
+            const index = clients.findIndex(c => c.clientId === clientId);
+            if (index === -1) return;
+
+
+            currentClientIndex = index;
+            const client = clients[currentClientIndex];
+
+
+            // 1. Update Left List UI
+            renderClientList();
+
+
+            // 2. Update Detail Panel (A-Zone)
+            document.getElementById('client-name-display').innerText = `正在貼標：${client.name} (${client.clientId})`;
+            document.getElementById('detail-form-container').classList.remove('hidden');
+           
+            // Basic Info Input
+            document.getElementById('input-name').value = client.name;
+            document.getElementById('input-phone').value = client.phone;
+            document.getElementById('input-id').value = client.clientId;
+
+
+            // Hard Tags (Dropdowns)
+            for (const key in TAG_CATEGORIES.hardTags.fields) {
+                document.getElementById(`tag-${key}`).value = client[key] || '';
+            }
+
+
+            // Flexible Tags (Buttons)
+            const allTagButtons = document.querySelectorAll('.tag-btn');
+            allTagButtons.forEach(btn => {
+                const tag = btn.dataset.tag;
+                if (client.flexibleTags.includes(tag)) {
+                    btn.classList.add('tag-btn-active');
+                } else {
+                    btn.classList.remove('tag-btn-active');
+                }
+            });
+           
+            // 3. Update Context Panel (B-Zone)
+            const notesInput = document.getElementById('manual-notes');
+            notesInput.value = client.manualNotes;
+            notesInput.disabled = false;
+            updateCharCount();
+            renderCrossProductStatus(client.crossProductStatus);
+           
+            // Scroll to top of the main tagging content area for better UX
+            document.querySelector('main').scrollTo(0, 0);
+        }
+
+
+        function selectNextClientToTag() {
+            // Find the next untagged client in the current client array (not filtered list)
+            const nextIndex = clients.findIndex(c => !c.isTagged);
+            if (nextIndex !== -1) {
+                selectClient(clients[nextIndex].clientId);
+            } else {
+                 document.getElementById('client-name-display').innerText = '🎉 恭喜！所有客戶已完成貼標！';
+                 document.getElementById('detail-form-container').classList.add('hidden');
+                 document.getElementById('manual-notes').disabled = true;
+            }
+        }
+
+
+        function renderCrossProductStatus(statusData) {
+            const container = document.getElementById('cross-product-modules');
+            container.innerHTML = '';
+            document.getElementById('no-client-context').classList.add('hidden');
+           
+            for (const key in statusData) {
+                const module = statusData[key];
+                const card = document.createElement('div');
+                card.className = 'p-3 rounded-lg border shadow-sm';
+               
+                let content = '';
+
+
+                if (key === 'broadband') {
+                    const isUserText = module.isUser ? '✅ 用戶' : '❌ 非用戶';
+                    const statusText = module.status.length > 0 ? module.status.join(', ') : '無特殊狀態';
+                    const color = module.isUser ? 'border-blue-300 bg-blue-50' : 'border-gray-300 bg-gray-50';
+                    card.className += ' ' + color;
+
+
+                    content = `
+                        <p class="font-bold text-blue-800">今網寬頻狀態</p>
+                        <p class="text-xs mt-1">用戶身份: <span class="font-semibold">${isUserText}</span></p>
+                        <p class="text-xs">狀態標籤: <span class="text-orange-600 font-semibold">${statusText}</span></p>
+                    `;
+                } else if (key === 'applianceCleaning') {
+                    const statusText = module.unitsCleaned > 0 ? `${module.unitsCleaned} 台` : '無清洗紀錄';
+                    const dateText = module.lastCleanDate === 'N/A' ? 'N/A' : module.lastCleanDate;
+                    const color = module.unitsCleaned > 0 ? 'border-emerald-300 bg-emerald-50' : 'border-gray-300 bg-gray-50';
+                    card.className += ' ' + color;
+
+
+                    content = `
+                        <p class="font-bold text-emerald-800">智樂家－家電清洗紀錄</p>
+                        <p class="text-xs mt-1">上一次清洗: <span class="font-semibold">${dateText}</span></p>
+                        <p class="text-xs">總清洗台數: <span class="font-semibold">${statusText}</span></p>
+                    `;
+                } else if (key.startsWith('module')) { // Future Expansion Modules
+                    const statusColor = module.status === '潛在客戶' ? 'text-yellow-600' : module.status.includes('已') ? 'text-green-600' : 'text-gray-600';
+                    const productName = module.productName || '預留產品模組';
+                    card.className += ' border-purple-300 bg-purple-50';
+                   
+                    content = `
+                        <p class="font-bold text-purple-800">${productName} (擴充)</p>
+                        <p class="text-xs mt-1">當前狀態: <span class="${statusColor} font-semibold">${module.status}</span></p>
+                        ${module.data ? `<p class="text-xs text-purple-700 italic">備註: ${module.data}</p>` : ''}
+                    `;
+                }
+               
+                card.innerHTML = content;
+                container.appendChild(card);
+            }
+        }
+
+
+        // --- 5. Tagging & Saving Logic ---
+
+
+        function toggleFlexibleTag() {
+            this.classList.toggle('tag-btn-active');
+        }
+
+
+        function saveAndNext() {
+            if (currentClientIndex === -1) return;
+
+
+            const client = clients[currentClientIndex];
+           
+            // 1. Get Editable Basic Info
+            client.name = document.getElementById('input-name').value.trim();
+            client.phone = document.getElementById('input-phone').value.trim();
+           
+            // 2. Get Hard Tag Values (A Categories)
+            let allHardTagsSelected = true;
+            for (const key in TAG_CATEGORIES.hardTags.fields) {
+                const value = document.getElementById(`tag-${key}`).value;
+                client[key] = value;
+                if (!value) allHardTagsSelected = false;
+            }
+
+
+            // 3. Check for mandatory fields (Hard Tags + Name/Phone)
+            if (!client.name || !client.phone || !allHardTagsSelected) {
+                showNotification('🚨 錯誤：請確保客戶姓名/電話及所有基礎屬性 (Hard Tags) 皆已填寫！', 'bg-red-600');
+                return;
+            }
+
+
+            // 4. Get Flexible Tag Values
+            client.flexibleTags = [];
+            document.querySelectorAll('.tag-btn-active').forEach(btn => {
+                client.flexibleTags.push(btn.dataset.tag);
+            });
+           
+            // 5. Get Manual Notes
+            client.manualNotes = document.getElementById('manual-notes').value.trim();
+
+
+            // 6. Update Status and Save
+            client.isTagged = true;
+           
+            // 7. Success Feedback and Next
+            showNotification(`✅ 客戶 ${client.clientId} 儲存成功！已自動跳轉。`, 'bg-green-600');
+            updateProgress();
+           
+            // If currently filtering/searching, we re-render the list to keep the filtered view
+            if (isSearchActive) {
+                searchClientList(); // Re-render filtered list (current client will be unhighlighted)
+            } else {
+                selectNextClientToTag();
+            }
+        }
+
+
+        function showNotification(message, bgColor) {
+            const box = document.getElementById('notification-box');
+            box.innerText = message;
+            box.className = `fixed bottom-4 left-1/2 -translate-x-1/2 ${bgColor} text-white px-6 py-3 rounded-lg shadow-2xl transition-opacity duration-300 opacity-100 z-50`;
+            setTimeout(() => {
+                box.classList.remove('opacity-100');
+                box.classList.add('opacity-0');
+            }, 3000);
+        }
+
+
+        // --- 6. Search and Export Logic ---
+
+
+        function searchClientList() {
+            const searchTerm = document.getElementById('client-search').value.toLowerCase().trim();
+            const filtered = clients.filter(c =>
+                c.name.toLowerCase().includes(searchTerm) ||
+                c.phone.includes(searchTerm) ||
+                c.clientId.toLowerCase().includes(searchTerm)
+            );
+            renderClientList(filtered);
+        }
+
+
+        function openExportModal() {
+            // Get the currently displayed list
+            const clientItems = document.getElementById('client-list').children;
+            const currentDisplayCount = clientItems.length;
+           
+            // If search/filter is active, update conditions display
+            let conditionText = '無篩選條件 (匯出所有客戶)';
+            if (isSearchActive) {
+                const searchTerm = document.getElementById('client-search').value.trim();
+                conditionText = `篩選條件: 關鍵字包含 "${searchTerm}"`;
+            }
+
+
+            document.getElementById('export-count-display').innerText = currentDisplayCount;
+            document.getElementById('filter-conditions-display').innerText = conditionText;
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+
+        function confirmExport() {
+            // Get the list of clients currently displayed in the UI
+            const clientIdsOnScreen = Array.from(document.getElementById('client-list').children).map(el => el.querySelector('.text-xs.font-normal.text-gray-500').innerText);
+            const currentList = clients.filter(c => clientIdsOnScreen.includes(c.clientId));
+           
+            if (currentList.length === 0) {
+                 showNotification('⚠️ 無客戶可匯出。', 'bg-red-500');
+                 closeModal('export-modal');
+                 return;
+            }
+
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+           
+            // 1. Headers
+            let headers = ["ID", "姓名", "電話", "備註"];
+            // Add all Hard Tag keys as headers
+            for (const key in TAG_CATEGORIES.hardTags.fields) {
+                headers.push(TAG_CATEGORIES.hardTags.fields[key].label);
+            }
+            headers.push("所有彈性標籤");
+            headers.push("今網寬頻狀態", "家電清洗-上次日期", "家電清洗-台數", "擴充模組A-產品名", "擴充模組A-狀態", "擴充模組B-產品名", "擴充模組B-狀態");
+
+
+            csvContent += headers.join(",") + "\n";
+
+
+            // 2. Data rows
+            currentList.forEach(client => {
+                let row = [];
+                row.push(client.clientId, client.name, client.phone, client.manualNotes);
+               
+                // Hard Tag values
+                for (const key in TAG_CATEGORIES.hardTags.fields) {
+                    row.push(client[key]);
+                }
+               
+                // Flexible Tags
+                row.push(client.flexibleTags.join(';'));
+               
+                // Cross-Product Status
+                const cps = client.crossProductStatus;
+                row.push(
+                    (cps.broadband.isUser ? '用戶:' : '非用戶:') + cps.broadband.status.join('|'),
+                    cps.applianceCleaning.lastCleanDate,
+                    cps.applianceCleaning.unitsCleaned,
+                    cps.moduleA.productName, cps.moduleA.status,
+                    cps.moduleB.productName, cps.moduleB.status
+                );
+
+
+                csvContent += row.map(e => `"${String(e).replace(/"/g, '""')}"`).join(",") + "\n";
+
+
+            });
+
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "customer_tagging_export.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+
+            showNotification(`✅ ${currentList.length} 筆客戶資料已匯出為 CSV 檔案。`, 'bg-green-700');
+            closeModal('export-modal');
+        }
+
+
+    </script>
 </body>
 </html>
+
