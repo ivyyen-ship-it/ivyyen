@@ -8,36 +8,14 @@
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- 引入 Lucide 核心庫 -->
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
-        
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f8fafc;
-            margin: 0;
-        }
-
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-
-        /* 旋轉動畫 */
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-            animation: spin 8s linear infinite;
-        }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spin-slow 12s linear infinite; }
     </style>
 </head>
 <body class="overflow-hidden">
@@ -47,33 +25,36 @@
         const { useState, useEffect, useMemo, useRef } = React;
 
         /**
-         * 穩定版圖標元件
-         * 直接使用 <i> 標籤配合 Lucide 的 UMD 引擎注入 SVG
-         * 徹底解決 React #130 物件渲染錯誤問題
+         * 終極解決方案：直接使用 SVG 路徑渲染
+         * 不再依賴 lucide.createIcons() 掃描，直接從 CDN 讀取或使用內建簡單圖形
          */
         const Icon = ({ name, size = 18, className = "" }) => {
-            const iconRef = useRef(null);
-            
+            const [svgContent, setSvgContent] = useState(null);
+
             useEffect(() => {
-                if (window.lucide) {
-                    window.lucide.createIcons({
-                        targets: [iconRef.current]
+                // 直接從 Lucide 官方倉庫獲取 SVG
+                fetch(`https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/${name}.svg`)
+                    .then(res => res.text())
+                    .then(data => {
+                        // 處理 SVG 字串，確保它能適應顏色和大小
+                        const processed = data
+                            .replace(/width="[^"]*"/, `width="${size}"`)
+                            .replace(/height="[^"]*"/, `height="${size}"`)
+                            .replace(/stroke="[^"]*"/, 'stroke="currentColor"');
+                        setSvgContent(processed);
+                    })
+                    .catch(() => {
+                        setSvgContent(`<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" /></svg>`);
                     });
-                }
-            }, [name]);
+            }, [name, size]);
+
+            if (!svgContent) return <div style={{ width: size, height: size }} className={className}></div>;
 
             return (
-                <i 
-                    ref={iconRef}
-                    data-lucide={name} 
-                    className={className}
-                    style={{ 
-                        width: size, 
-                        height: size, 
-                        display: 'inline-block',
-                        strokeWidth: 2
-                    }}
-                ></i>
+                <span 
+                    className={`inline-flex items-center justify-center ${className}`}
+                    dangerouslySetInnerHTML={{ __html: svgContent }}
+                />
             );
         };
 
@@ -81,10 +62,9 @@
             const [currentPage, setCurrentPage] = useState('center'); 
             const [searchQuery, setSearchQuery] = useState('');
             const [selectedCustomer, setSelectedCustomer] = useState(null);
-            const [activeServiceTab, setActiveServiceTab] = useState('intercom');
+            const [activeServiceTab, setActiveServiceTab] = useState(null);
             const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleTimeString());
 
-            // 模擬資料庫
             const mockCustomers = [
                 {
                     id: 'CUST-8801',
@@ -95,33 +75,20 @@
                     managerPhone: '02-2345-6789',
                     salesRep: '張小明',
                     services: [
-                        { 
-                            id: 'intercom', 
-                            label: '對講機', 
-                            status: 'error', 
-                            health: 35,
-                            warranty: { hardware: '2025/07/02~2027/07/02', line: '2025/07/02~2026/07/02' },
-                            network: { sipStatus: '斷線', ip: '192.168.1.10', mac: '00:1A:2B:3C:4D:5E' }
-                        },
-                        { 
-                            id: 'charging', 
-                            label: '充電樁', 
-                            status: 'online', 
-                            health: 98,
-                            powerBox: { location: 'B3動力箱區' },
-                            parkingSpot: '064號車位'
-                        }
+                        { id: 'intercom', label: '對講機', status: 'error', health: 35, warranty: { hardware: '2025/07/02~2027/07/02', line: '2025/07/02~2026/07/02' }, network: { sipStatus: '斷線', ip: '192.168.1.10', mac: '00:1A:2B:3C:4D:5E' } },
+                        { id: 'charging', label: '充電樁', status: 'online', health: 98, powerBox: { location: 'B3動力箱區', id: '064號' }, parkingSpot: '064號車位' },
+                        { id: 'smartCabinet', label: '智慧櫃', status: 'online', health: 100, plan: '旗艦方案' }
                     ],
                     historyRecords: [
-                        { id: 'T-9921', date: '2025/06/15', category: '對講機', status: '已結案', result: '更換按鈕面板' }
+                        { id: 'T-9921', date: '2025/06/15', category: '對講機', status: '已結案', result: '更換按鈕面板' },
+                        { id: 'T-9840', date: '2025/05/20', category: '系統', status: '已結案', result: '優化伺服器路徑' }
                     ]
                 }
             ];
 
             const handleSearch = () => {
-                const found = mockCustomers.find(c => 
-                    c.phone === searchQuery.trim() || c.community.includes(searchQuery.trim())
-                );
+                const q = searchQuery.trim();
+                const found = mockCustomers.find(c => c.phone === q);
                 if (found) {
                     setSelectedCustomer(found);
                     setActiveServiceTab(found.services[0].id);
@@ -135,119 +102,101 @@
             }, [selectedCustomer, activeServiceTab]);
 
             return (
-                <div className="flex h-screen w-full overflow-hidden bg-slate-50 text-slate-800">
-                    {/* 左側選單 */}
-                    <aside className="w-20 lg:w-64 bg-slate-900 text-white flex flex-col flex-shrink-0">
+                <div className="flex h-screen text-slate-800 bg-slate-50 overflow-hidden">
+                    {/* Sidebar */}
+                    <aside className="w-16 lg:w-64 bg-slate-900 text-white flex flex-col transition-all border-r border-slate-800">
                         <div className="p-6 flex items-center gap-3">
                             <div className="bg-blue-600 p-2 rounded-lg flex-shrink-0">
-                                <Icon name="cpu" size={20} />
+                                <Icon name="cpu" size={20} className="text-white" />
                             </div>
-                            <span className="font-bold text-xl hidden lg:block tracking-tight">ESI AIoT</span>
+                            <span className="font-black text-lg hidden lg:block tracking-tight">ESI AIoT</span>
                         </div>
-                        
-                        <nav className="flex-1 px-4 mt-6 space-y-2">
-                            <button 
-                                onClick={() => setCurrentPage('center')}
-                                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${currentPage === 'center' ? 'bg-blue-600' : 'text-slate-400 hover:bg-slate-800'}`}
-                            >
-                                <Icon name="user-search" size={20} />
-                                <span className="hidden lg:block font-medium">客訴受理中心</span>
+                        <nav className="flex-1 px-3 space-y-2 mt-4">
+                            <button onClick={() => setCurrentPage('center')} className={`w-full flex items-center gap-3 p-3 rounded-xl ${currentPage === 'center' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-800'}`}>
+                                <Icon name="search" size={20} /> <span className="font-medium hidden lg:block">客訴受理中心</span>
                             </button>
-                            <button 
-                                onClick={() => setCurrentPage('monitoring')}
-                                className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${currentPage === 'monitoring' ? 'bg-blue-600' : 'text-slate-400 hover:bg-slate-800'}`}
-                            >
-                                <Icon name="activity" size={20} />
-                                <span className="hidden lg:block font-medium">設備告警監控</span>
+                            <button onClick={() => setCurrentPage('monitoring')} className={`w-full flex items-center gap-3 p-3 rounded-xl ${currentPage === 'monitoring' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-400 hover:bg-slate-800'}`}>
+                                <Icon name="activity" size={20} /> <span className="font-medium hidden lg:block">設備告警監控</span>
                             </button>
                         </nav>
                     </aside>
 
-                    {/* 主內容區 */}
-                    <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+                    {/* Main Content */}
+                    <main className="flex-1 flex flex-col overflow-hidden">
                         {currentPage === 'center' ? (
-                            <div className="flex flex-col h-full">
-                                {/* 搜尋列 */}
-                                <header className="h-20 bg-white border-b px-8 flex items-center shadow-sm z-10 flex-shrink-0">
-                                    <div className="max-w-3xl w-full mx-auto relative flex items-center">
+                            <div className="flex flex-col h-full overflow-hidden">
+                                <header className="h-20 bg-white border-b px-8 flex items-center justify-center flex-shrink-0 z-10">
+                                    <div className="w-full max-w-3xl relative flex items-center">
                                         <div className="absolute left-4 text-slate-400">
                                             <Icon name="search" size={18} />
                                         </div>
                                         <input 
-                                            type="text"
-                                            className="w-full bg-slate-100 border-none rounded-2xl py-3 pl-12 pr-32 outline-none focus:ring-2 ring-blue-500 transition-all text-lg"
-                                            placeholder="請輸入電話 0912345678 測試..."
+                                            type="text" 
+                                            placeholder="輸入 0912345678 測試..." 
+                                            className="w-full bg-slate-100 border-2 border-transparent focus:border-blue-500 focus:bg-white rounded-2xl py-3 pl-12 pr-32 text-lg outline-none transition-all shadow-inner"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                                         />
-                                        <button 
-                                            onClick={handleSearch}
-                                            className="absolute right-2 bg-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-700"
-                                        >
+                                        <button onClick={handleSearch} className="absolute right-2 bg-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-700 shadow-md">
                                             搜尋
                                         </button>
                                     </div>
                                 </header>
 
-                                {/* 內容展示區 */}
-                                <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
+                                <div className="flex-1 overflow-auto custom-scrollbar p-6">
                                     {!selectedCustomer ? (
                                         <div className="h-full flex flex-col items-center justify-center text-slate-300">
-                                            <Icon name="layout-dashboard" size={64} />
-                                            <p className="mt-4 text-xl font-bold">請輸入關鍵字搜尋社區或用戶</p>
+                                            <Icon name="phone-call" size={80} className="mb-6 opacity-20" />
+                                            <p className="text-2xl font-black">等待輸入搜尋條件</p>
                                         </div>
                                     ) : (
-                                        <div className="max-w-6xl mx-auto grid grid-cols-12 gap-6">
-                                            {/* 用戶資訊卡 */}
+                                        <div className="max-w-7xl mx-auto grid grid-cols-12 gap-6">
                                             <div className="col-span-12 lg:col-span-4 space-y-6">
-                                                <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                                                    <div className="bg-slate-800 p-6 text-white text-center">
-                                                        <h2 className="text-xl font-bold">{selectedCustomer.community}</h2>
-                                                        <p className="text-blue-400 text-xs mt-1 font-mono tracking-widest">ID: {selectedCustomer.id}</p>
+                                                <div className="bg-white rounded-3xl shadow-sm border p-6">
+                                                    <div className="bg-slate-800 -m-6 mb-6 p-6 text-white rounded-t-3xl">
+                                                        <p className="text-[10px] font-bold text-blue-400 mb-1 tracking-widest uppercase">Community Profile</p>
+                                                        <h2 className="text-2xl font-black">{selectedCustomer.community}</h2>
                                                     </div>
-                                                    <div className="p-6 space-y-4">
-                                                        <div className="flex justify-between items-center border-b pb-4">
-                                                            <span className="text-slate-400 text-sm">主要窗口</span>
-                                                            <span className="font-bold">{selectedCustomer.name}</span>
+                                                    <div className="space-y-4">
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div><p className="text-[10px] text-slate-400 font-bold uppercase mb-1">住戶姓名</p><p className="font-bold">{selectedCustomer.name}</p></div>
+                                                            <div><p className="text-[10px] text-slate-400 font-bold uppercase mb-1">聯繫電話</p><p className="font-bold">{selectedCustomer.phone}</p></div>
                                                         </div>
-                                                        <div className="flex justify-between items-center border-b pb-4">
-                                                            <span className="text-slate-400 text-sm">聯繫電話</span>
-                                                            <span className="font-bold">{selectedCustomer.phone}</span>
-                                                        </div>
-                                                        <div className="flex justify-between items-center">
-                                                            <span className="text-slate-400 text-sm">負責業務</span>
-                                                            <span className="font-bold text-blue-600">{selectedCustomer.salesRep}</span>
+                                                        <div className="pt-4 border-t space-y-3">
+                                                            <p className="text-sm text-slate-600"><span className="font-bold text-slate-400 mr-2">管理室:</span> {selectedCustomer.managerPhone}</p>
+                                                            <p className="text-sm text-slate-600"><span className="font-bold text-slate-400 mr-2">業務員:</span> {selectedCustomer.salesRep}</p>
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-200">
-                                                    <p className="text-xs font-bold text-slate-400 mb-3 px-2 uppercase tracking-widest">服務清單</p>
+                                                <div className="bg-white rounded-3xl p-4 shadow-sm border">
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-3 px-2">服務類別</p>
                                                     <div className="space-y-2">
                                                         {selectedCustomer.services.map(svc => (
                                                             <button 
-                                                                key={svc.id}
-                                                                onClick={() => setActiveServiceTab(svc.id)}
-                                                                className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all ${activeServiceTab === svc.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'hover:bg-slate-100 text-slate-600'}`}
+                                                                key={svc.id} 
+                                                                onClick={() => setActiveServiceTab(svc.id)} 
+                                                                className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all ${activeServiceTab === svc.id ? 'bg-blue-600 text-white shadow-lg' : 'hover:bg-slate-50 text-slate-600'}`}
                                                             >
-                                                                <span className="font-bold">{svc.label}</span>
-                                                                <div className={`w-2 h-2 rounded-full ${svc.status === 'online' ? 'bg-emerald-400' : 'bg-red-500 animate-pulse'}`}></div>
+                                                                <div className="flex items-center gap-3">
+                                                                    <Icon name={svc.id === 'intercom' ? 'phone' : svc.id === 'charging' ? 'zap' : 'package'} size={18} />
+                                                                    <span className="font-bold">{svc.label}</span>
+                                                                </div>
+                                                                <div className={`w-2.5 h-2.5 rounded-full border-2 border-white ${svc.status === 'online' ? 'bg-emerald-400' : 'bg-red-500'}`}></div>
                                                             </button>
                                                         ))}
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            {/* 技術詳情卡 */}
                                             <div className="col-span-12 lg:col-span-8 space-y-6">
-                                                <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                                                    <div className="p-6 bg-slate-50 border-b flex justify-between items-center">
-                                                        <h3 className="font-bold flex items-center gap-2">
-                                                            <Icon name="settings-2" size={18} className="text-blue-600" />
-                                                            {activeServiceData?.label} 技術參數診斷
-                                                        </h3>
-                                                        <span className={`px-3 py-1 rounded-full text-xs font-bold ${activeServiceData?.health > 80 ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
+                                                <div className="bg-white rounded-3xl shadow-sm border overflow-hidden min-h-[400px]">
+                                                    <div className="p-6 border-b flex items-center justify-between bg-slate-50">
+                                                        <h2 className="text-lg font-bold flex items-center gap-2">
+                                                            <Icon name="wrench" size={18} className="text-blue-600" /> {activeServiceData?.label} 即時資訊
+                                                        </h2>
+                                                        <span className={`px-4 py-1 rounded-full text-[10px] font-black ${activeServiceData?.health > 80 ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'}`}>
                                                             健康度: {activeServiceData?.health}%
                                                         </span>
                                                     </div>
@@ -255,34 +204,45 @@
                                                         {activeServiceTab === 'intercom' && (
                                                             <div className="space-y-6">
                                                                 <div className="grid grid-cols-2 gap-4">
-                                                                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
-                                                                        <p className="text-xs text-slate-400 font-bold mb-1">硬體保固</p>
-                                                                        <p className="font-bold">{activeServiceData.warranty.hardware}</p>
+                                                                    <div className="p-4 bg-slate-50 rounded-2xl">
+                                                                        <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">硬體保固</p>
+                                                                        <p className="text-xs font-bold">{activeServiceData.warranty.hardware}</p>
                                                                     </div>
-                                                                    <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
-                                                                        <p className="text-xs text-slate-400 font-bold mb-1">線路保固</p>
-                                                                        <p className="font-bold">{activeServiceData.warranty.line}</p>
+                                                                    <div className="p-4 bg-slate-50 rounded-2xl">
+                                                                        <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">線路保固</p>
+                                                                        <p className="text-xs font-bold">{activeServiceData.warranty.line}</p>
                                                                     </div>
                                                                 </div>
-                                                                <div className="bg-slate-900 rounded-2xl p-6 text-white border-l-4 border-blue-500 shadow-xl">
-                                                                    <div className="flex justify-between items-center mb-4">
-                                                                        <span className="text-xs font-bold text-blue-400">NETWORK MONITOR</span>
-                                                                        <span className={`text-xs font-bold ${activeServiceData.network.sipStatus === '斷線' ? 'text-red-400' : 'text-emerald-400'}`}>
-                                                                            {activeServiceData.network.sipStatus}
-                                                                        </span>
+                                                                <div className="bg-slate-900 rounded-3xl p-6 text-white">
+                                                                    <div className="flex justify-between mb-4">
+                                                                        <span className="text-[10px] text-blue-400 font-bold uppercase">SIP 雲端連線狀態</span>
+                                                                        <span className={activeServiceData.network.sipStatus === '斷線' ? 'text-red-400 animate-pulse' : 'text-emerald-400'}>{activeServiceData.network.sipStatus}</span>
                                                                     </div>
-                                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs font-mono opacity-80">
-                                                                        <p>MAC: {activeServiceData.network.mac}</p>
-                                                                        <p>IP: {activeServiceData.network.ip}</p>
+                                                                    <div className="grid grid-cols-2 gap-4 font-mono text-xs">
+                                                                        <div><p className="text-slate-500 mb-1">MAC ADDRESS</p><p>{activeServiceData.network.mac}</p></div>
+                                                                        <div><p className="text-slate-500 mb-1">INTERNAL IP</p><p>{activeServiceData.network.ip}</p></div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         )}
                                                         {activeServiceTab === 'charging' && (
-                                                            <div className="p-10 text-center border-2 border-dashed border-slate-100 rounded-3xl">
-                                                                <Icon name="battery-charging" size={48} className="mx-auto text-blue-200 mb-4" />
-                                                                <p className="font-bold text-slate-600">動力箱位置: {activeServiceData.powerBox.location}</p>
-                                                                <p className="text-sm text-slate-400 mt-2">對應車位: {activeServiceData.parkingSpot}</p>
+                                                            <div className="grid grid-cols-2 gap-6">
+                                                                <div className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100">
+                                                                    <p className="text-[10px] font-bold text-emerald-600 uppercase mb-1">動力箱編號</p>
+                                                                    <p className="text-2xl font-black">{activeServiceData.powerBox.id}</p>
+                                                                    <p className="text-xs text-slate-500 mt-2">{activeServiceData.powerBox.location}</p>
+                                                                </div>
+                                                                <div className="p-6 bg-slate-50 rounded-3xl border">
+                                                                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">車位號碼</p>
+                                                                    <p className="text-2xl font-black">{activeServiceData.parkingSpot}</p>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        {activeServiceTab === 'smartCabinet' && (
+                                                            <div className="text-center p-12 bg-indigo-50 rounded-3xl">
+                                                                <Icon name="package" size={48} className="text-indigo-300 mb-4" />
+                                                                <h3 className="text-xl font-bold">{activeServiceData.plan}</h3>
+                                                                <p className="text-sm text-slate-500 mt-2">櫃體連線正常，可遠端操作。</p>
                                                             </div>
                                                         )}
                                                     </div>
@@ -293,33 +253,27 @@
                                 </div>
                             </div>
                         ) : (
-                            /* 全球監控頁面 */
-                            <div className="flex-1 flex flex-col bg-slate-950 text-slate-200 overflow-hidden">
-                                <header className="h-16 border-b border-slate-800 px-8 flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
-                                        <h2 className="font-black italic tracking-tighter">AIoT LIVE DASHBOARD</h2>
-                                    </div>
-                                    <span className="text-xs font-mono opacity-50">{lastUpdate}</span>
-                                </header>
-                                <div className="flex-1 p-8 overflow-y-auto custom-scrollbar">
-                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                                        {[
-                                            { label: '異常社區', val: '12', color: 'text-red-500' },
-                                            { label: '設備離線', val: '158', color: 'text-orange-500' },
-                                            { label: '待辦工單', val: '24', color: 'text-blue-500' },
-                                            { label: '平均修復時效', val: '4.2h', color: 'text-emerald-500' }
-                                        ].map((item, i) => (
-                                            <div key={i} className="bg-slate-900/50 border border-slate-800 p-6 rounded-3xl hover:border-slate-700 transition-all">
-                                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{item.label}</p>
-                                                <p className={`text-4xl font-black mt-2 ${item.color}`}>{item.val}</p>
+                            <div className="flex-1 bg-slate-950 text-slate-200 flex flex-col p-8">
+                                <h2 className="text-2xl font-black italic mb-8">GLOBAL MONITORING</h2>
+                                <div className="grid grid-cols-4 gap-6">
+                                    {[
+                                        { label: '異常社區', val: '12', color: 'text-red-500', icon: 'alert-triangle' },
+                                        { label: '離線設備', val: '158', color: 'text-orange-500', icon: 'wifi-off' },
+                                        { label: '待處理工單', val: '24', color: 'text-blue-500', icon: 'clipboard' },
+                                        { label: '修復率', val: '98%', color: 'text-emerald-500', icon: 'trending-up' }
+                                    ].map((stat, i) => (
+                                        <div key={i} className="bg-slate-900 p-6 rounded-3xl border border-slate-800">
+                                            <p className="text-[10px] text-slate-500 font-bold uppercase mb-2">{stat.label}</p>
+                                            <div className="flex justify-between items-center">
+                                                <span className={`text-3xl font-black ${stat.color}`}>{stat.val}</span>
+                                                <Icon name={stat.icon} size={24} className="opacity-20" />
                                             </div>
-                                        ))}
-                                    </div>
-                                    <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-20 flex flex-col items-center justify-center">
-                                        <Icon name="refresh-cw" size={48} className="text-blue-500 animate-spin-slow mb-4" />
-                                        <p className="text-sm font-mono opacity-30">ENCRYPTED DATA STREAM CONNECTED...</p>
-                                    </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="flex-1 mt-8 bg-slate-900 border border-slate-800 rounded-3xl flex flex-col items-center justify-center">
+                                    <div className="animate-spin-slow mb-4"><Icon name="refresh-cw" size={48} className="text-blue-500" /></div>
+                                    <p className="text-slate-500 font-mono text-xs tracking-widest">REALTIME NETWORK SCANNING...</p>
                                 </div>
                             </div>
                         )}
