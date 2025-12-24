@@ -1,452 +1,123 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Search, Phone, User, BatteryCharging, Lock, Package, 
-  PhoneCall, History, CheckCircle2, AlertCircle, RefreshCw, 
-  ExternalLink, ShieldAlert, Cpu, ChevronRight, 
-  Activity, Terminal, MapPin, ShieldCheck, Cloud,
-  Filter, Calendar, FileText, Settings, Wifi,
-  Link as LinkIcon, Box, HardDrive, Info, Map as MapIcon, Bell,
-  MessageSquare, Wrench, Clock, TrendingUp, Zap, Server
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react'; import { Search, Phone, User, BatteryCharging, Lock, Package, PhoneCall, History, CheckCircle2, AlertCircle, RefreshCw, ExternalLink, ShieldAlert, Cpu, ChevronRight, Activity, Terminal, MapPin, ShieldCheck, Cloud, Filter, Calendar, FileText, Settings, Wifi, Link as LinkIcon, Box, HardDrive, Info, Map as MapIcon, Bell, MessageSquare, Wrench, Clock, TrendingUp, Zap, Server } from 'lucide-react'; const App = () => { const [currentPage, setCurrentPage] = useState('center'); const [searchQuery, setSearchQuery] = useState(''); const [selectedCustomer, setSelectedCustomer] = useState(null); const [activeServiceTab, setActiveServiceTab] = useState(null); const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleTimeString()); // 定期更新監控時間 useEffect(() => { const timer = setInterval(() => { setLastUpdate(new Date().toLocaleTimeString()); }, 5000); return () => clearInterval(timer); }, []); // 客訴中心 Mock Data - 嚴格遵守原始資料庫欄位 const mockCustomers = [ { id: 'CUST-8801', name: '林大華', phone: '0912345678', community: '天籟之音社區', address: '台北市信義區忠孝東路五段', managerPhone: '02-2345-6789', salesRep: '張小明', services: [ { id: 'intercom', label: '對講機', status: 'error', health: 35, warranty: { hardware: '2025/07/02~2027/07/02', line: '2025/07/02~2026/07/02' }, deviceInfo: { maker: 'Akuvox', model: 'R29C', location: 'B棟B1F大門' }, accessControl: { location: 'B棟B1F大門', maker: 'SOYAL', model: 'AR-725' }, installation: { rainRisk: '否', waterproofBox: '有', acrylicPanel: '有' }, network: { sipStatus: '斷線', disconnectTime: '2025/7/2 09:30', ip: '192.168.1.10', mac: '00:1A:2B:3C:4D:5E' } }, { id: 'charging', label: '充電樁', status: 'online', health: 98, powerBox: { location: 'B3動力箱區', id: '064號動力箱' }, parkingSpot: '064號汽車車位', diagramLink: 'https://map.kingnetsmart.com.tw/diagram/8801', warrantyLevel: '標準保固' }, { id: 'smartCabinet', label: '智慧櫃', status: 'online', health: 100, plan: '旗艦方案', contractPeriod: '2025/07/02~2027/07/02', managerContact: '02-2345-6789' } ], historyRecords: [ { id: 'T-9921', date: '2025/06/15', category: '對講機', issue: '住戶反映按鈕無反應', status: '已結案', technician: '陳技師', result: '更換按鈕面板' }, { id: 'T-9840', date: '2025/05/20', category: 'APP', issue: '推播延遲', status: '已結案', technician: '王工程師', result: '優化伺服器路徑' } ] } ]; // 監控頁面數據 (ESI AIoT Monitoring) const monitoringData = { stats: [ { label: '異常社區', value: '12', color: 'text-red-500', icon: MapIcon }, { label: '離線設備', value: '158', color: 'text-orange-500', icon: Wifi }, { label: '處理中工單', value: '24', color: 'text-blue-500', icon: FileText }, { label: '平均修復時間', value: '4.2h', color: 'text-emerald-500', icon: Clock }, ], alerts: [ { id: 1, level: 'Critical', community: '信義之星', device: 'SIP 伺服器', desc: '主要通訊服務未回應', time: '5m ago' }, { id: 2, level: 'Warning', community: '天籟之音', device: '對講機-B1', desc: '網路封包丟失率過高', time: '12m ago' }, { id: 3, level: 'Warning', community: '大安森林', device: '充電樁 #04', desc: '負載電流異常', time: '20m ago' }, { id: 4, level: 'Info', community: '國泰社區', device: '智慧櫃系統', desc: '軟體版本更新完成', time: '45m ago' }, ] }; const handleSearch = () => { const found = mockCustomers.find(c => c.phone === searchQuery || c.name.includes(searchQuery)); setSelectedCustomer(found || null); if (found) setActiveServiceTab(found.services[0].id); }; const getActiveServiceData = () => { return selectedCustomer?.services.find(s => s.id === activeServiceTab); }; return (
+{/* 側邊導航 */}
+ESI AIoT 戰情中心
+setCurrentPage('center')} className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${currentPage === 'center' ? 'bg-blue-600 shadow-lg text-white' : 'text-slate-400 hover:bg-slate-800'}`}> 客訴受理中心 setCurrentPage('monitoring')} className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${currentPage === 'monitoring' ? 'bg-blue-600 shadow-lg text-white' : 'text-slate-400 hover:bg-slate-800'}`}> 設備告警監控
+{/* 主內容區 */}
+{currentPage === 'center' ? ( <>
+{searchQuery}
+ setSearchQuery(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()} /> 搜尋資料
+{!selectedCustomer ? (
+等待搜尋指令
 
-const App = () => {
-  const [currentPage, setCurrentPage] = useState('center'); 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [activeServiceTab, setActiveServiceTab] = useState(null);
-  const [lastUpdate, setLastUpdate] = useState(new Date().toLocaleTimeString());
+) : (
+{/* 左側：社區與窗口基本資料 */}
+社區資料庫連線中
+{selectedCustomer.community}
+窗口姓名
 
-  // 定期更新監控時間
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setLastUpdate(new Date().toLocaleTimeString());
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+{selectedCustomer.name}
 
-  // 客訴中心 Mock Data - 嚴格遵守原始資料庫欄位
-  const mockCustomers = [
-    {
-      id: 'CUST-8801',
-      name: '林大華',
-      phone: '0912345678',
-      community: '天籟之音社區',
-      address: '台北市信義區忠孝東路五段',
-      managerPhone: '02-2345-6789',
-      salesRep: '張小明',
-      services: [
-        { 
-          id: 'intercom', 
-          label: '對講機', 
-          status: 'error', 
-          health: 35,
-          warranty: { hardware: '2025/07/02~2027/07/02', line: '2025/07/02~2026/07/02' },
-          deviceInfo: { maker: 'Akuvox', model: 'R29C', location: 'B棟B1F大門' },
-          accessControl: { location: 'B棟B1F大門', maker: 'SOYAL', model: 'AR-725' },
-          installation: { rainRisk: '否', waterproofBox: '有', acrylicPanel: '有' },
-          network: { sipStatus: '斷線', disconnectTime: '2025/7/2 09:30', ip: '192.168.1.10', mac: '00:1A:2B:3C:4D:5E' }
-        },
-        { 
-          id: 'charging', 
-          label: '充電樁', 
-          status: 'online', 
-          health: 98,
-          powerBox: { location: 'B3動力箱區', id: '064號動力箱' },
-          parkingSpot: '064號汽車車位',
-          diagramLink: 'https://map.kingnetsmart.com.tw/diagram/8801',
-          warrantyLevel: '標準保固'
-        },
-        { 
-          id: 'smartCabinet', 
-          label: '智慧櫃', 
-          status: 'online', 
-          health: 100,
-          plan: '旗艦方案',
-          contractPeriod: '2025/07/02~2027/07/02',
-          managerContact: '02-2345-6789'
-        }
-      ],
-      historyRecords: [
-        { id: 'T-9921', date: '2025/06/15', category: '對講機', issue: '住戶反映按鈕無反應', status: '已結案', technician: '陳技師', result: '更換按鈕面板' },
-        { id: 'T-9840', date: '2025/05/20', category: 'APP', issue: '推播延遲', status: '已結案', technician: '王工程師', result: '優化伺服器路徑' }
-      ]
-    }
-  ];
+管理室電話
 
-  // 監控頁面數據 (ESI AIoT Monitoring)
-  const monitoringData = {
-    stats: [
-      { label: '異常社區', value: '12', color: 'text-red-500', icon: MapIcon },
-      { label: '離線設備', value: '158', color: 'text-orange-500', icon: Wifi },
-      { label: '處理中工單', value: '24', color: 'text-blue-500', icon: FileText },
-      { label: '平均修復時間', value: '4.2h', color: 'text-emerald-500', icon: Clock },
-    ],
-    alerts: [
-      { id: 1, level: 'Critical', community: '信義之星', device: 'SIP 伺服器', desc: '主要通訊服務未回應', time: '5m ago' },
-      { id: 2, level: 'Warning', community: '天籟之音', device: '對講機-B1', desc: '網路封包丟失率過高', time: '12m ago' },
-      { id: 3, level: 'Warning', community: '大安森林', device: '充電樁 #04', desc: '負載電流異常', time: '20m ago' },
-      { id: 4, level: 'Info', community: '國泰社區', device: '智慧櫃系統', desc: '軟體版本更新完成', time: '45m ago' },
-    ]
-  };
+{selectedCustomer.managerPhone}
 
-  const handleSearch = () => {
-    const found = mockCustomers.find(c => c.phone === searchQuery || c.name.includes(searchQuery));
-    setSelectedCustomer(found || null);
-    if (found) setActiveServiceTab(found.services[0].id);
-  };
+社區地址
 
-  const getActiveServiceData = () => {
-    return selectedCustomer?.services.find(s => s.id === activeServiceTab);
-  };
+{selectedCustomer.address}
 
-  return (
-    <div className="flex h-screen bg-slate-50 text-slate-800 font-sans overflow-hidden">
-      {/* 側邊導航 */}
-      <aside className="w-16 lg:w-64 bg-slate-900 text-white flex flex-col transition-all flex-shrink-0">
-        <div className="p-6 flex items-center gap-3">
-          <div className="bg-blue-600 p-2 rounded-lg flex-shrink-0"><Cpu size={20} /></div>
-          <span className="font-bold text-lg hidden lg:block tracking-tight">ESI AIoT 戰情中心</span>
-        </div>
-        <nav className="flex-1 px-3 space-y-2 mt-4">
-          <button onClick={() => setCurrentPage('center')} className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${currentPage === 'center' ? 'bg-blue-600 shadow-lg text-white' : 'text-slate-400 hover:bg-slate-800'}`}>
-            <User size={20} /> <span className="font-medium hidden lg:block">客訴受理中心</span>
-          </button>
-          <button onClick={() => setCurrentPage('monitoring')} className={`w-full flex items-center gap-3 p-3 rounded-xl transition-all ${currentPage === 'monitoring' ? 'bg-blue-600 shadow-lg text-white' : 'text-slate-400 hover:bg-slate-800'}`}>
-            <ShieldAlert size={20} /> <span className="font-medium hidden lg:block">設備告警監控</span>
-          </button>
-        </nav>
-      </aside>
+AIOT 聯繫業務 {selectedCustomer.salesRep}
+系統服務分項
 
-      {/* 主內容區 */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {currentPage === 'center' ? (
-          <>
-            <header className="h-20 bg-white border-b border-slate-200 px-8 flex items-center justify-center flex-shrink-0 shadow-sm z-10">
-              <div className="w-full max-w-3xl relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                <input 
-                  type="text" 
-                  placeholder="請輸入電話、社區名稱或住戶姓名..." 
-                  className="w-full bg-slate-100 border-2 border-transparent focus:border-blue-500 focus:bg-white rounded-2xl py-3 pl-12 pr-32 text-lg outline-none transition-all"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                />
-                <button onClick={handleSearch} className="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-blue-700 transition-colors">搜尋資料</button>
-              </div>
-            </header>
+{selectedCustomer.services.map(svc => ( setActiveServiceTab(svc.id)} className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all duration-200 ${activeServiceTab === svc.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 translate-x-1' : 'hover:bg-slate-50 text-slate-600'}`} >
+{svc.id === 'intercom' && } {svc.id === 'charging' && } {svc.id === 'smartCabinet' && } {svc.label}
+ ))}
+{/* 右側：診斷面板與歷史客訴 */}
+{getActiveServiceData()?.label} 即時技術欄位
+{activeServiceTab === 'intercom' && ( <>
+設備保固 (2年)
 
-            <div className="flex-1 overflow-auto p-6 bg-slate-50">
-              {!selectedCustomer ? (
-                <div className="h-full flex flex-col items-center justify-center opacity-30 text-slate-500">
-                  <PhoneCall size={80} strokeWidth={1.5} className="mb-6" />
-                  <p className="text-2xl font-bold tracking-tight">等待搜尋指令</p>
-                </div>
-              ) : (
-                <div className="max-w-7xl mx-auto grid grid-cols-12 gap-6 pb-12">
-                  {/* 左側：社區與窗口基本資料 */}
-                  <div className="col-span-12 lg:col-span-4 space-y-6">
-                    <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                      <div className="bg-slate-800 p-6 text-white">
-                        <h3 className="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-1">社區資料庫連線中</h3>
-                        <h2 className="text-2xl font-bold">{selectedCustomer.community}</h2>
-                      </div>
-                      <div className="p-6 space-y-4 text-sm">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">窗口姓名</p>
-                            <p className="font-bold text-slate-700">{selectedCustomer.name}</p>
-                          </div>
-                          <div>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">管理室電話</p>
-                            <p className="font-bold text-slate-700">{selectedCustomer.managerPhone}</p>
-                          </div>
-                        </div>
-                        <div className="pt-4 border-t border-slate-100">
-                          <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">社區地址</p>
-                          <p className="text-slate-600 leading-snug">{selectedCustomer.address}</p>
-                        </div>
-                        <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
-                          <span className="text-slate-500 text-xs font-medium">AIOT 聯繫業務</span>
-                          <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold">{selectedCustomer.salesRep}</span>
-                        </div>
-                      </div>
-                    </div>
+{getActiveServiceData().warranty.hardware}
 
-                    <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-200">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase mb-3 px-2 tracking-widest">系統服務分項</p>
-                      <div className="space-y-2">
-                        {selectedCustomer.services.map(svc => (
-                          <button 
-                            key={svc.id} 
-                            onClick={() => setActiveServiceTab(svc.id)} 
-                            className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all duration-200 ${activeServiceTab === svc.id ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 translate-x-1' : 'hover:bg-slate-50 text-slate-600'}`}
-                          >
-                            <div className="flex items-center gap-3">
-                              {svc.id === 'intercom' && <PhoneCall size={18} />}
-                              {svc.id === 'charging' && <BatteryCharging size={18} />}
-                              {svc.id === 'smartCabinet' && <Package size={18} />}
-                              <span className="font-bold text-sm">{svc.label}</span>
-                            </div>
-                            <div className={`w-2.5 h-2.5 rounded-full border-2 border-white ${svc.status === 'online' ? 'bg-emerald-400' : 'bg-red-400 animate-pulse'}`}></div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+線路保固 (1年)
 
-                  {/* 右側：診斷面板與歷史客訴 */}
-                  <div className="col-span-12 lg:col-span-8 space-y-6">
-                    <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                      <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                        <h2 className="text-lg font-bold flex items-center gap-2">
-                           <Wrench size={18} className="text-blue-600" /> {getActiveServiceData()?.label} 即時技術欄位
-                        </h2>
-                      </div>
+{getActiveServiceData().warranty.line}
 
-                      <div className="p-8 space-y-8">
-                        {activeServiceTab === 'intercom' && (
-                          <>
-                            <div className="grid grid-cols-2 gap-4">
-                              <div className="p-4 bg-blue-50/30 rounded-2xl border border-blue-100">
-                                <p className="text-[10px] font-bold text-blue-500 uppercase mb-1">設備保固 (2年)</p>
-                                <p className="text-xs font-bold text-slate-700">{getActiveServiceData().warranty.hardware}</p>
-                              </div>
-                              <div className="p-4 bg-blue-50/30 rounded-2xl border border-blue-100">
-                                <p className="text-[10px] font-bold text-blue-500 uppercase mb-1">線路保固 (1年)</p>
-                                <p className="text-xs font-bold text-slate-700">{getActiveServiceData().warranty.line}</p>
-                              </div>
-                            </div>
-                            <div className="grid grid-cols-3 gap-4">
-                               <div className="p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
-                                 <p className="text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-tight">對講機型號</p>
-                                 <p className="text-xs font-bold text-slate-800">{getActiveServiceData().deviceInfo.maker} {getActiveServiceData().deviceInfo.model}</p>
-                               </div>
-                               <div className="p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
-                                 <p className="text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-tight">門禁位置</p>
-                                 <p className="text-xs font-bold text-slate-800">{getActiveServiceData().accessControl.location}</p>
-                               </div>
-                               <div className="p-4 bg-white border border-slate-100 rounded-xl shadow-sm">
-                                 <p className="text-[10px] text-slate-400 font-bold mb-1 uppercase tracking-tight">門禁型號</p>
-                                 <p className="text-xs font-bold text-slate-800">{getActiveServiceData().accessControl.model}</p>
-                               </div>
-                            </div>
-                            <div className="flex gap-4">
-                               {[
-                                 { label: '淋雨風險', val: getActiveServiceData().installation.rainRisk },
-                                 { label: '防水盒', val: getActiveServiceData().installation.waterproofBox },
-                                 { label: '壓克力背板', val: getActiveServiceData().installation.acrylicPanel }
-                               ].map((item, idx) => (
-                                 <div key={idx} className="flex-1 p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center">
-                                    <span className="text-[11px] text-slate-500 font-medium">{item.label}</span>
-                                    <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${item.val === '是' ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'}`}>{item.val}</span>
-                                 </div>
-                               ))}
-                            </div>
-                            <div className="bg-slate-900 rounded-2xl p-6 shadow-xl border-l-4 border-blue-500">
-                              <div className="flex items-center justify-between mb-4">
-                                <span className="text-[10px] font-bold text-blue-400 flex items-center gap-2 tracking-widest uppercase"><Cloud size={14}/> SIP 雲端通訊監控</span>
-                                <span className={`text-[11px] font-bold flex items-center gap-1.5 ${getActiveServiceData().network.sipStatus === '斷線' ? 'text-red-400 animate-pulse' : 'text-emerald-400'}`}>
-                                  <AlertCircle size={12} /> {getActiveServiceData().network.sipStatus}
-                                </span>
-                              </div>
-                              <div className="grid grid-cols-2 gap-y-2 text-[10px] font-mono">
-                                <p className="text-slate-500">斷線時間: <span className="text-white ml-2">{getActiveServiceData().network.disconnectTime}</span></p>
-                                <p className="text-slate-500">網卡位置: <span className="text-white ml-2">{getActiveServiceData().network.mac}</span></p>
-                                <p className="text-slate-500">內部 IP: <span className="text-white ml-2">{getActiveServiceData().network.ip}</span></p>
-                              </div>
-                            </div>
-                          </>
-                        )}
+對講機型號
 
-                        {activeServiceTab === 'charging' && (
-                          <div className="space-y-6">
-                            <div className="grid grid-cols-2 gap-4">
-                              <div className="p-5 bg-emerald-50 rounded-2xl border border-emerald-100 flex justify-between items-center">
-                                 <div>
-                                   <p className="text-[10px] font-bold text-emerald-600 uppercase mb-1">動力箱資訊</p>
-                                   <p className="text-sm font-bold text-slate-800">{getActiveServiceData().powerBox.location} ({getActiveServiceData().powerBox.id})</p>
-                                 </div>
-                                 <Box size={24} className="text-emerald-200" />
-                              </div>
-                              <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center">
-                                <div>
-                                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">車位編號</p>
-                                  <p className="text-sm font-bold text-slate-800">{getActiveServiceData().parkingSpot}</p>
-                                </div>
-                                <MapPin size={24} className="text-slate-200" />
-                              </div>
-                            </div>
-                            <div className="p-6 bg-white border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-between">
-                               <div className="flex items-center gap-4">
-                                  <div className="p-3 bg-blue-100 text-blue-600 rounded-xl"><MapIcon size={20} /></div>
-                                  <div>
-                                    <p className="text-sm font-bold text-slate-700">社區架構圖 (試算表同步)</p>
-                                    <p className="text-[10px] text-slate-400 italic">連結: {getActiveServiceData().diagramLink}</p>
-                                  </div>
-                               </div>
-                               <ExternalLink size={18} className="text-slate-300" />
-                            </div>
-                          </div>
-                        )}
+{getActiveServiceData().deviceInfo.maker} {getActiveServiceData().deviceInfo.model}
 
-                        {activeServiceTab === 'smartCabinet' && (
-                          <div className="grid grid-cols-3 gap-4">
-                            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                               <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">導入方案</p>
-                               <p className="text-sm font-bold text-slate-800">{getActiveServiceData().plan}</p>
-                            </div>
-                            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                               <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">合約期間</p>
-                               <p className="text-sm font-bold text-slate-800">{getActiveServiceData().contractPeriod}</p>
-                            </div>
-                            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                               <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">管理室聯繫</p>
-                               <p className="text-sm font-bold text-slate-800">{getActiveServiceData().managerContact}</p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+門禁位置
 
-                    {/* 歷史客訴紀錄表格 */}
-                    <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                       <div className="p-6 border-b border-slate-100">
-                          <h2 className="text-lg font-bold flex items-center gap-2 text-slate-700">
-                             <History size={18} className="text-slate-400" /> 社區歷史客訴與報修
-                          </h2>
-                       </div>
-                       <div className="overflow-x-auto">
-                          <table className="w-full text-left border-collapse min-w-[600px]">
-                             <thead>
-                                <tr className="bg-slate-50/50 border-b border-slate-100 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
-                                   <th className="p-4">報修日期</th><th className="p-4">類別</th><th className="p-4">描述</th><th className="p-4">狀態</th><th className="p-4">結案結果</th>
-                                </tr>
-                             </thead>
-                             <tbody className="divide-y divide-slate-100 text-xs">
-                                {selectedCustomer.historyRecords.map((record) => (
-                                   <tr key={record.id} className="hover:bg-slate-50/50 transition-colors">
-                                      <td className="p-4 font-semibold text-slate-600">{record.date}</td>
-                                      <td className="p-4 font-bold text-blue-600">{record.category}</td>
-                                      <td className="p-4 font-bold text-slate-700">{record.issue}</td>
-                                      <td className="p-4 text-emerald-600 font-black">{record.status}</td>
-                                      <td className="p-4 text-slate-500">{record.result}</td>
-                                   </tr>
-                                ))}
-                             </tbody>
-                          </table>
-                       </div>
-                    </div>
+{getActiveServiceData().accessControl.location}
 
-                    <div className="flex justify-end gap-4 pb-12">
-                       <button className="px-10 py-4 rounded-2xl font-bold bg-blue-600 text-white shadow-2xl hover:bg-blue-700 flex items-center gap-3">
-                          <MessageSquare size={20} /> 發起新報修工單
-                       </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </>
-        ) : (
-          /* 全域設備告警監控 (對齊 ESI Monitoring 內容) */
-          <div className="flex-1 flex flex-col bg-slate-950 text-slate-200 overflow-hidden">
-            <header className="h-16 border-b border-slate-800 px-6 flex items-center justify-between bg-slate-900/50 backdrop-blur-md sticky top-0 z-20">
-              <div className="flex items-center gap-4">
-                <div className="bg-red-500/20 text-red-500 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-2 animate-pulse">
-                  <Activity size={14} /> LIVE MONITORING
-                </div>
-                <h2 className="font-bold text-white tracking-tight italic">AIoT 設備全球監控看板</h2>
-              </div>
-              <div className="flex items-center gap-6 text-sm">
-                <div className="flex items-center gap-2 text-slate-400"><Clock size={16} /><span className="font-mono">{lastUpdate}</span></div>
-                <div className="flex items-center gap-2 text-blue-400"><RefreshCw size={16} className="animate-spin-slow" /><span className="font-bold">自動刷新中</span></div>
-              </div>
-            </header>
+門禁型號
 
-            <div className="flex-1 overflow-auto p-6 space-y-6">
-              <div className="grid grid-cols-4 gap-6">
-                {monitoringData.stats.map((stat, i) => (
-                  <div key={i} className="bg-slate-900 border border-slate-800 p-6 rounded-3xl hover:border-slate-700 transition-all">
-                    <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest">{stat.label}</p>
-                    <div className="flex items-center justify-between mt-2">
-                       <p className={`text-3xl font-black ${stat.color}`}>{stat.value}</p>
-                       <stat.icon size={24} className="opacity-20" />
-                    </div>
-                  </div>
-                ))}
-              </div>
+{getActiveServiceData().accessControl.model}
 
-              <div className="grid grid-cols-12 gap-6">
-                <div className="col-span-8 bg-slate-900 border border-slate-800 rounded-3xl p-6">
-                  <h3 className="font-bold text-white mb-6 flex items-center gap-2 text-sm"><Zap size={18} className="text-yellow-500" /> 系統負載與數據流量 (即時動態)</h3>
-                  <div className="h-48 flex items-end justify-between gap-1">
-                    {[30, 45, 60, 40, 80, 95, 70, 55, 90, 100, 85, 65, 50, 45, 75, 80, 40, 60, 55, 90, 85, 40, 60, 100].map((h, i) => (
-                      <div key={i} className="flex-1 bg-blue-600/10 rounded-t-sm relative">
-                        <div className="absolute bottom-0 w-full bg-blue-500 rounded-t-sm transition-all duration-1000 shadow-lg shadow-blue-500/20" style={{ height: `${h}%` }}></div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="col-span-4 bg-slate-900 border border-slate-800 rounded-3xl p-6">
-                   <h3 className="font-bold text-white mb-6 text-sm flex items-center gap-2"><MapPin size={18} className="text-emerald-500" /> 地區告警分佈</h3>
-                   <div className="space-y-4">
-                      {[{a:'北部',h:65,c:'bg-orange-500'},{a:'中部',h:92,c:'bg-emerald-500'},{a:'南部',h:88,c:'bg-emerald-500'},{a:'東部',h:98,c:'bg-blue-400'}].map((r,idx) => (
-                        <div key={idx} className="space-y-2">
-                          <div className="flex justify-between text-[10px] font-bold text-slate-400"><span>{r.a}</span><span>{r.h}%</span></div>
-                          <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden"><div className={`h-full ${r.c} transition-all duration-1000`} style={{ width: `${r.h}%` }}></div></div>
-                        </div>
-                      ))}
-                   </div>
-                </div>
-              </div>
+{[ { label: '淋雨風險', val: getActiveServiceData().installation.rainRisk }, { label: '防水盒', val: getActiveServiceData().installation.waterproofBox }, { label: '壓克力背板', val: getActiveServiceData().installation.acrylicPanel } ].map((item, idx) => (
+{item.label} {item.val}
+))}
+SIP 雲端通訊監控 {getActiveServiceData().network.sipStatus}
+斷線時間: {getActiveServiceData().network.disconnectTime}
 
-              <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-                 <div className="p-6 border-b border-slate-800 flex items-center justify-between">
-                    <h3 className="font-bold text-white flex items-center gap-2 text-sm"><AlertCircle size={18} className="text-red-500" /> 即時異常事件清單</h3>
-                 </div>
-                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                       <thead className="bg-slate-950 text-slate-500 text-[10px] uppercase font-bold">
-                          <tr>
-                             <th className="p-4">等級</th><th className="p-4">社區名稱</th><th className="p-4">異常對象</th><th className="p-4">描述</th><th className="p-4">時間</th><th className="p-4">診斷</th>
-                          </tr>
-                       </thead>
-                       <tbody className="divide-y divide-slate-800 text-xs">
-                          {monitoringData.alerts.map((alert) => (
-                             <tr key={alert.id} className="hover:bg-slate-800/50 transition-colors">
-                                <td className="p-4">
-                                   <span className={`px-2 py-0.5 rounded text-[10px] font-black ${alert.level === 'Critical' ? 'bg-red-500/20 text-red-500 border border-red-500/50' : 'bg-orange-500/20 text-orange-500 border border-orange-500/50'}`}>
-                                      {alert.level}
-                                   </span>
-                                </td>
-                                <td className="p-4 font-bold text-slate-200">{alert.community}</td>
-                                <td className="p-4 text-blue-400 font-mono">{alert.device}</td>
-                                <td className="p-4 text-slate-500">{alert.desc}</td>
-                                <td className="p-4 font-mono">{alert.time}</td>
-                                <td className="p-4">
-                                  <button onClick={() => { setSearchQuery(alert.community); handleSearch(); setCurrentPage('center'); }} className="text-blue-500 hover:underline">查看詳情</button>
-                                </td>
-                             </tr>
-                          ))}
-                       </tbody>
-                    </table>
-                 </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
+網卡位置: {getActiveServiceData().network.mac}
 
-      <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .animate-spin-slow { animation: spin-slow 12s linear infinite; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
-      `}} />
-    </div>
-  );
-};
+內部 IP: {getActiveServiceData().network.ip}
 
-export default App;
+)} {activeServiceTab === 'charging' && (
+動力箱資訊
+
+{getActiveServiceData().powerBox.location} ({getActiveServiceData().powerBox.id})
+
+車位編號
+
+{getActiveServiceData().parkingSpot}
+
+社區架構圖 (試算表同步)
+
+連結: {getActiveServiceData().diagramLink}
+
+)} {activeServiceTab === 'smartCabinet' && (
+導入方案
+
+{getActiveServiceData().plan}
+
+合約期間
+
+{getActiveServiceData().contractPeriod}
+
+管理室聯繫
+
+{getActiveServiceData().managerContact}
+
+)}
+{/* 歷史客訴紀錄表格 */}
+社區歷史客訴與報修
+{selectedCustomer.historyRecords.map((record) => ( ))}
+報修日期	類別	描述	狀態	結案結果
+{record.date}	{record.category}	{record.issue}	{record.status}	{record.result}
+發起新報修工單
+)}
+) : ( /* 全域設備告警監控 (對齊 ESI Monitoring 內容) */
+LIVE MONITORING
+AIoT 設備全球監控看板
+{lastUpdate}
+自動刷新中
+{monitoringData.stats.map((stat, i) => (
+{stat.label}
+
+{stat.value}
+
+))}
+系統負載與數據流量 (即時動態)
+{[30, 45, 60, 40, 80, 95, 70, 55, 90, 100, 85, 65, 50, 45, 75, 80, 40, 60, 55, 90, 85, 40, 60, 100].map((h, i) => (
+))}
+地區告警分佈
+{[{a:'北部',h:65,c:'bg-orange-500'},{a:'中部',h:92,c:'bg-emerald-500'},{a:'南部',h:88,c:'bg-emerald-500'},{a:'東部',h:98,c:'bg-blue-400'}].map((r,idx) => (
+{r.a}{r.h}%
+))}
+即時異常事件清單
+{monitoringData.alerts.map((alert) => ( ))}
+等級	社區名稱	異常對象	描述	時間	診斷
+{alert.level}	{alert.community}	{alert.device}	{alert.desc}	{alert.time}	{ setSearchQuery(alert.community); handleSearch(); setCurrentPage('center'); }} className="text-blue-500 hover:underline">查看詳情
+)}
