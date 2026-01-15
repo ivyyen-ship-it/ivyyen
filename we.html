@@ -3,55 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智生活公告專區</title>
-    <!-- 引入 React 核心庫 -->
+    <title>無敵團隊公告系統</title>
+    <!-- 引入核心庫 -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- 引入 Babel 用於解析 JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- 引入 Tailwind CSS 用於美化 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入 Lucide 圖示庫 -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/lucide-react@latest"></script>
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: #F7FBFA;
+            background-color: #F8FAFC;
+            margin: 0;
+            padding: 0;
         }
-        .tiffany-bg { background-color: #81D8D0; }
-        .tiffany-text { color: #4A8F88; }
-        .tiffany-border { border-color: #E0F2F0; }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 10px;
+        }
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #EF4444;
+            border-radius: 50%;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">載入中...</div>
 
     <script type="text/babel">
         const { useState, useMemo, useEffect } = React;
-        const { 
-            Bell, CheckCircle, AlertCircle, Users, ChevronRight, 
-            ClipboardCheck, LayoutDashboard, Megaphone, PlusCircle, 
-            X, Send, UserCheck, Clock 
-        } = lucide;
 
-        // 部門成員清單
+        // 圖示組件
+        const Icon = ({ name, className = "w-5 h-5" }) => {
+            useEffect(() => { lucide.createIcons(); }, [name]);
+            return <i data-lucide={name} className={className}></i>;
+        };
+
         const STAFF_LIST = [
-            { id: 1, dept: '電銷部', title: '經理', name: '郭雅玲', nickname: 'Vivian' },
-            { id: 2, dept: '電銷部', title: '培訓師', name: '嚴婕瑜', nickname: '小艾' },
-            { id: 3, dept: '電銷部', title: '管理師', name: '沈姵妤', nickname: '' },
-            { id: 4, dept: '電銷部', title: '業助', name: '吳宜庭', nickname: '' },
-            { id: 5, dept: '電銷部', title: '業務', name: '李家榛', nickname: '' },
-            { id: 6, dept: '電銷部', title: '業務', name: '黃鈞霖', nickname: '' },
-            { id: 7, dept: '電銷部', title: '業務', name: '蕭茜文', nickname: '' },
-            { id: 8, dept: '電銷部', title: '業務', name: '葉潭', nickname: '小葉' },
-            { id: 9, dept: '電銷部', title: '業務', name: '陳鐿瑄', nickname: '' },
-            { id: 10, dept: '電銷部', title: '業務', name: '楊曉念', nickname: '' },
-            { id: 11, dept: '電銷部', title: '業務', name: '張妤甄', nickname: '' },
-            { id: 12, dept: '電銷部', title: '業務', name: '卓于琬', nickname: '' },
-            { id: 13, dept: '電銷部', title: '業務', name: '吳昀庭', nickname: '' },
+            { id: 1, dept: '電銷部', title: '經理', name: '郭雅玲' },
+            { id: 2, dept: '電銷部', title: '培訓師', name: '嚴婕瑜' },
+            { id: 3, dept: '電銷部', title: '管理師', name: '沈姵妤' },
+            { id: 4, dept: '電銷部', title: '業助', name: '吳宜庭' },
+            { id: 5, dept: '電銷部', title: '業務', name: '李家榛' },
+            { id: 6, dept: '電銷部', title: '業務', name: '黃鈞霖' },
+            { id: 7, dept: '電銷部', title: '業務', name: '蕭茜文' },
+            { id: 8, dept: '電銷部', title: '業務', name: '葉潭' },
+            { id: 9, dept: '電銷部', title: '業務', name: '陳鐿瑄' },
+            { id: 10, dept: '電銷部', title: '業務', name: '楊曉念' },
+            { id: 11, dept: '電銷部', title: '業務', name: '張妤甄' },
+            { id: 12, dept: '電銷部', title: '業務', name: '卓于琬' },
+            { id: 13, dept: '電銷部', title: '業務', name: '吳昀庭' },
         ];
 
         const App = () => {
@@ -61,36 +74,77 @@
                     authorId: 1,
                     title: '電銷話務流程標準化調整',
                     content: '請各位夥伴注意，自明日起進線標籤需統一標記「A級意向」。',
-                    createdAt: '2024-05-20 09:00',
+                    createdAt: new Date().toISOString().split('T')[0],
                     priority: 'high',
-                    targetStaffIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-                    readBy: [1, 2, 13]
+                    targetStaffIds: STAFF_LIST.map(s => s.id),
+                    readBy: [1, 2],
+                    attachments: [{ name: '流程手冊.pdf', type: 'pdf' }]
+                },
+                {
+                    id: 'ann-002',
+                    authorId: 2,
+                    title: '本月績效獎金核算通知',
+                    content: '本月獎金已核算完畢，請各位至個人後台查看詳情。',
+                    createdAt: new Date().toISOString().split('T')[0],
+                    priority: 'normal',
+                    targetStaffIds: STAFF_LIST.map(s => s.id),
+                    readBy: [],
+                    attachments: []
                 }
             ]);
 
-            const [currentUserId, setCurrentUserId] = useState(1);
+            const [currentUserId, setCurrentUserId] = useState(() => {
+                const saved = localStorage.getItem('smart_life_user_id');
+                return saved ? parseInt(saved) : null;
+            });
+
+            const [favorites, setFavorites] = useState([]);
             const [activeTab, setActiveTab] = useState('lobby');
             const [selectedAnn, setSelectedAnn] = useState(null);
             const [showCreateModal, setShowCreateModal] = useState(false);
+            const [showLoginModal, setShowLoginModal] = useState(false);
+            const [showQuickList, setShowQuickList] = useState(null); // 'all_unread' | 'my_unread'
+            const [searchQuery, setSearchQuery] = useState('');
+            const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+            const [currentMonth, setCurrentMonth] = useState(new Date());
 
-            const [newAnn, setNewAnn] = useState({
-                title: '',
-                content: '',
-                priority: 'normal',
-                targetStaffIds: STAFF_LIST.map(s => s.id)
-            });
+            useEffect(() => {
+                if (currentUserId) localStorage.setItem('smart_life_user_id', currentUserId);
+                lucide.createIcons();
+            }, [currentUserId, activeTab, selectedAnn, showLoginModal, showQuickList]);
 
             const formatName = (fullName) => fullName.length > 2 ? fullName.substring(fullName.length - 2) : fullName;
 
-            const incompleteAnnouncements = useMemo(() => {
-                return announcements.filter(ann => ann.readBy.length < ann.targetStaffIds.length);
-            }, [announcements]);
-
-            const myRelevantAnnouncements = useMemo(() => {
-                return announcements.filter(ann => ann.targetStaffIds.includes(currentUserId));
+            // 數據計算
+            const myUnreadCount = useMemo(() => {
+                if (!currentUserId) return 0;
+                return announcements.filter(ann => 
+                    ann.targetStaffIds.includes(currentUserId) && !ann.readBy.includes(currentUserId)
+                ).length;
             }, [announcements, currentUserId]);
 
+            const notAllReadCount = useMemo(() => {
+                return announcements.filter(ann => 
+                    ann.readBy.length < ann.targetStaffIds.length
+                ).length;
+            }, [announcements]);
+
+            const filteredAnnouncements = useMemo(() => {
+                let list = [...announcements];
+                if (searchQuery) {
+                    list = list.filter(ann => 
+                        ann.title.includes(searchQuery) || ann.content.includes(searchQuery)
+                    );
+                }
+                return list;
+            }, [announcements, searchQuery]);
+
+            const dailyAnnouncements = useMemo(() => {
+                return filteredAnnouncements.filter(ann => ann.createdAt === selectedDate);
+            }, [filteredAnnouncements, selectedDate]);
+
             const handleConfirmRead = (annId) => {
+                if (!currentUserId) return;
                 setAnnouncements(prev => prev.map(ann => {
                     if (ann.id === annId && !ann.readBy.includes(currentUserId)) {
                         return { ...ann, readBy: [...ann.readBy, currentUserId] };
@@ -100,176 +154,364 @@
                 setSelectedAnn(null);
             };
 
-            const handleCreateAnnouncement = () => {
-                if (!newAnn.title || !newAnn.content) return;
-                const newEntry = {
-                    ...newAnn,
-                    id: `ann-${Date.now()}`,
-                    authorId: currentUserId,
-                    createdAt: new Date().toLocaleString(),
-                    readBy: [currentUserId]
-                };
-                setAnnouncements([newEntry, ...announcements]);
-                setShowCreateModal(false);
-                setNewAnn({ title: '', content: '', priority: 'normal', targetStaffIds: STAFF_LIST.map(s => s.id) });
+            const toggleFavorite = (e, annId) => {
+                e.stopPropagation();
+                setFavorites(prev => 
+                    prev.includes(annId) ? prev.filter(id => id !== annId) : [...prev, annId]
+                );
             };
 
-            const toggleTargetStaff = (staffId) => {
-                setNewAnn(prev => ({
-                    ...prev,
-                    targetStaffIds: prev.targetStaffIds.includes(staffId)
-                        ? prev.targetStaffIds.filter(id => id !== staffId)
-                        : [...prev.targetStaffIds, staffId]
-                }));
+            const renderCalendar = () => {
+                const year = currentMonth.getFullYear();
+                const month = currentMonth.getMonth();
+                const totalDays = new Date(year, month + 1, 0).getDate();
+                const startDay = new Date(year, month, 1).getDay();
+                const days = [];
+
+                for (let i = 0; i < startDay; i++) {
+                    days.push(<div key={`empty-${i}`} className="h-24 border-t border-r border-slate-100 bg-slate-50/50"></div>);
+                }
+
+                for (let d = 1; d <= totalDays; d++) {
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                    const dayAnns = announcements.filter(ann => ann.createdAt === dateStr);
+                    const hasMyUnread = currentUserId && dayAnns.some(ann => 
+                        ann.targetStaffIds.includes(currentUserId) && !ann.readBy.includes(currentUserId)
+                    );
+                    const isSelected = selectedDate === dateStr;
+
+                    days.push(
+                        <div 
+                            key={d} 
+                            onClick={() => setSelectedDate(dateStr)}
+                            className={`h-24 border-t border-r border-slate-100 p-2 cursor-pointer transition-all hover:bg-sky-50 relative ${isSelected ? 'bg-sky-50 ring-1 ring-sky-300 z-10' : 'bg-white'}`}
+                        >
+                            <div className="flex justify-between items-start">
+                                <span className={`text-sm font-bold ${isSelected ? 'text-sky-600' : 'text-slate-400'}`}>{d}</span>
+                                {hasMyUnread && <div className="unread-dot shadow-sm animate-pulse"></div>}
+                            </div>
+                            {dayAnns.length > 0 && (
+                                <div className="mt-1 flex flex-wrap gap-1">
+                                    <span className="text-[10px] bg-slate-600 text-white px-1.5 py-0.5 rounded font-bold">
+                                        {dayAnns.length} 則
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    );
+                }
+                return days;
             };
 
-            const currentUser = STAFF_LIST.find(s => s.id === currentUserId);
+            const currentUser = STAFF_LIST.find(s => s.id === currentUserId) || { name: '訪客', dept: '未登入' };
 
             return (
-                <div className="min-h-screen pb-12">
-                    <header className="bg-white border-b border-[#E0F2F0] sticky top-0 z-40 shadow-sm">
-                        <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
-                            <div className="flex items-center space-x-3">
-                                <div className="bg-[#81D8D0] p-2.5 rounded-2xl shadow-sm text-white">
-                                    <i data-lucide="megaphone"></i>
+                <div className="min-h-screen bg-[#F8FAFC]">
+                    {/* 導航欄 */}
+                    <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+                        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                                <div className="bg-sky-500 p-1.5 rounded-lg text-white">
+                                    <Icon name="shield-check" className="w-5 h-5" />
                                 </div>
-                                <div>
-                                    <h1 className="text-2xl font-black tracking-tight text-[#4A8F88]">智生活公告專區</h1>
-                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Smart Life Announcement</p>
-                                </div>
+                                <h1 className="text-xl font-black text-slate-800 tracking-tight">無敵團隊公告</h1>
                             </div>
-                            <div className="flex items-center space-x-6">
-                                <button 
-                                    onClick={() => setShowCreateModal(true)}
-                                    className="hidden md:flex items-center px-4 py-2.5 bg-[#81D8D0] hover:bg-[#6ec9c1] text-white rounded-xl font-bold transition-all shadow-md shadow-[#81d8d044]"
-                                >
-                                    <i data-lucide="plus-circle" className="mr-2 w-5 h-5"></i>
-                                    發佈新公告
-                                </button>
-                                <div className="flex items-center text-right">
-                                    <div className="mr-3 hidden sm:block">
-                                        <p className="text-xs text-slate-400 font-medium">{currentUser.dept}</p>
-                                        <p className="text-sm font-bold text-slate-700">{currentUser.name}</p>
+                            <div className="flex items-center space-x-4">
+                                {currentUserId ? (
+                                    <div className="flex items-center cursor-pointer hover:opacity-80 transition-opacity" onClick={() => setShowLoginModal(true)}>
+                                        <div className="mr-3 text-right hidden sm:block">
+                                            <p className="text-xs text-slate-400 font-bold leading-none">{currentUser.dept}</p>
+                                            <p className="text-sm font-black text-slate-700">{currentUser.name}</p>
+                                        </div>
+                                        <div className="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center text-sky-600 font-black border border-sky-200">
+                                            {formatName(currentUser.name)}
+                                        </div>
                                     </div>
-                                    <div className="w-12 h-12 rounded-2xl bg-[#E0F2F0] flex items-center justify-center text-[#4A8F88] font-black border-2 border-white shadow-sm">
-                                        {formatName(currentUser.name)}
-                                    </div>
-                                </div>
+                                ) : (
+                                    <button onClick={() => setShowLoginModal(true)} className="px-4 py-2 bg-sky-500 text-white rounded-lg text-sm font-bold hover:bg-sky-600 transition-colors">登入系統</button>
+                                )}
                             </div>
                         </div>
                     </header>
 
-                    <main className="max-w-6xl mx-auto p-6 space-y-8">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            <div className="flex space-x-2 bg-[#E0F2F0]/50 p-1.5 rounded-2xl w-fit border border-white">
-                                <button onClick={() => setActiveTab('lobby')} className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'lobby' ? 'bg-white shadow-md text-[#4A8F88]' : 'text-slate-500'}`}>數據大廳</button>
-                                <button onClick={() => setActiveTab('my')} className={`flex items-center px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'my' ? 'bg-white shadow-md text-[#4A8F88]' : 'text-slate-500'}`}>我的收件夾</button>
+                    <main className="max-w-6xl mx-auto p-6 space-y-6">
+                        {/* 功能統計框 (新需求) */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div 
+                                onClick={() => setShowQuickList('all_unread')}
+                                className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between cursor-pointer hover:border-amber-300 transition-all group"
+                            >
+                                <div className="flex items-center space-x-4">
+                                    <div className="bg-amber-100 p-3 rounded-xl text-amber-600 group-hover:scale-110 transition-transform">
+                                        <Icon name="users" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-slate-500">尚未全員讀取的公告</p>
+                                        <p className="text-2xl font-black text-slate-800">共有 <span className="text-amber-500">{notAllReadCount}</span> 則</p>
+                                    </div>
+                                </div>
+                                <Icon name="chevron-right" className="text-slate-300" />
                             </div>
-                            <div className="flex items-center space-x-2 overflow-x-auto pb-2">
-                                <span className="text-xs font-bold text-slate-400 whitespace-nowrap">切換角色:</span>
-                                {STAFF_LIST.slice(0, 5).map(staff => (
-                                    <button key={staff.id} onClick={() => setCurrentUserId(staff.id)} className={`text-[10px] px-3 py-1.5 rounded-lg border font-bold ${currentUserId === staff.id ? 'bg-[#4A8F88] text-white' : 'bg-white text-slate-500'}`}>{formatName(staff.name)}</button>
-                                ))}
+                            <div 
+                                onClick={() => setShowQuickList('my_unread')}
+                                className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between cursor-pointer hover:border-red-300 transition-all group"
+                            >
+                                <div className="flex items-center space-x-4">
+                                    <div className="bg-red-100 p-3 rounded-xl text-red-600 group-hover:scale-110 transition-transform">
+                                        <Icon name="bell" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-slate-500">個人尚未讀取的公告</p>
+                                        <p className="text-2xl font-black text-slate-800">共有 <span className="text-red-500">{myUnreadCount}</span> 則</p>
+                                    </div>
+                                </div>
+                                <Icon name="chevron-right" className="text-slate-300" />
+                            </div>
+                        </div>
+
+                        {/* 標籤頁切換 */}
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div className="flex bg-slate-200/50 p-1 rounded-xl w-fit">
+                                <button onClick={() => setActiveTab('lobby')} className={`px-6 py-2 rounded-lg text-sm font-black transition-all ${activeTab === 'lobby' ? 'bg-white shadow text-sky-600' : 'text-slate-500'}`}>公告首頁</button>
+                                <button onClick={() => setActiveTab('my')} className={`px-6 py-2 rounded-lg text-sm font-black transition-all ${activeTab === 'my' ? 'bg-white shadow text-sky-600' : 'text-slate-500'}`}>我的收藏</button>
+                            </div>
+                            <div className="relative">
+                                <span className="absolute left-3 top-2.5 text-slate-400"><Icon name="search" className="w-4 h-4" /></span>
+                                <input 
+                                    type="text" 
+                                    placeholder="搜尋公告標題..." 
+                                    className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm w-full md:w-64 outline-none focus:ring-2 ring-sky-500/20"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
                             </div>
                         </div>
 
                         {activeTab === 'lobby' ? (
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                                <div className="lg:col-span-4 space-y-6">
-                                    <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-[#E0F2F0] relative overflow-hidden">
-                                        <h3 className="text-slate-400 font-bold text-sm mb-2">待全員簽署公告</h3>
-                                        <div className="text-6xl font-black text-[#4A8F88] mb-4">{incompleteAnnouncements.length}</div>
-                                        <p className="text-xs text-slate-400 leading-relaxed font-medium">目前有 {incompleteAnnouncements.length} 則公告尚未完成，請督促讀取進度。</p>
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                                {/* 月曆部分 */}
+                                <div className="lg:col-span-8 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                                    <div className="p-4 border-b flex justify-between items-center bg-slate-50/50">
+                                        <h3 className="font-black text-slate-700 flex items-center text-sm"><Icon name="calendar" className="w-4 h-4 mr-2 text-sky-500" /> 公告月曆</h3>
+                                        <div className="flex items-center space-x-3">
+                                            <button onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() - 1)))} className="p-1 hover:bg-slate-200 rounded-md transition-colors"><Icon name="chevron-left" /></button>
+                                            <span className="font-bold text-sm text-slate-800">{currentMonth.getFullYear()}年 {currentMonth.getMonth() + 1}月</span>
+                                            <button onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() + 1)))} className="p-1 hover:bg-slate-200 rounded-md transition-colors"><Icon name="chevron-right" /></button>
+                                        </div>
+                                    </div>
+                                    <div className="calendar-grid bg-slate-100">
+                                        {['日','一','二','三','四','五','六'].map(w => (
+                                            <div key={w} className="py-2 text-center text-[10px] font-black text-slate-400 bg-white border-r border-slate-100">{w}</div>
+                                        ))}
+                                        {renderCalendar()}
                                     </div>
                                 </div>
-                                <div className="lg:col-span-8 space-y-6">
-                                    <h2 className="text-xl font-black text-slate-800">即時追蹤進度</h2>
-                                    {incompleteAnnouncements.map(ann => {
-                                        const unreadStaff = STAFF_LIST.filter(s => ann.targetStaffIds.includes(s.id) && !ann.readBy.includes(s.id));
-                                        const progress = Math.round((ann.readBy.length / ann.targetStaffIds.length) * 100);
-                                        return (
-                                            <div key={ann.id} className="bg-white rounded-[1.5rem] border border-[#E0F2F0] p-6 shadow-sm">
-                                                <div className="flex justify-between items-start mb-4">
-                                                    <div>
-                                                        <h4 className="font-black text-lg text-slate-800">{ann.title}</h4>
-                                                        <p className="text-xs text-slate-400">{ann.createdAt}</p>
+
+                                {/* 今日公告列表 */}
+                                <div className="lg:col-span-4 space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <h2 className="text-sm font-black text-slate-700 flex items-center italic">
+                                            <span className="w-1 h-4 bg-sky-500 rounded-full mr-2"></span> {selectedDate} 公告
+                                        </h2>
+                                        <button onClick={() => setShowCreateModal(true)} className="p-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-all shadow-sm">
+                                            <Icon name="plus" className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                    <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1 custom-scrollbar">
+                                        {dailyAnnouncements.length > 0 ? dailyAnnouncements.map(ann => {
+                                            const isUnread = currentUserId && !ann.readBy.includes(currentUserId);
+                                            return (
+                                                <div 
+                                                    key={ann.id} 
+                                                    onClick={() => setSelectedAnn(ann)}
+                                                    className={`p-4 rounded-xl border bg-white cursor-pointer relative transition-all hover:shadow-md ${isUnread ? 'border-sky-200 ring-1 ring-sky-100' : 'border-slate-100'}`}
+                                                >
+                                                    <div className="flex justify-between items-start mb-1">
+                                                        <div className="flex items-center space-x-2">
+                                                            {isUnread && <div className="unread-dot"></div>}
+                                                            <h4 className={`font-black text-sm ${isUnread ? 'text-slate-800' : 'text-slate-400'}`}>{ann.title}</h4>
+                                                        </div>
+                                                        <button onClick={(e) => toggleFavorite(e, ann.id)}>
+                                                            <Icon name="star" className={`w-4 h-4 ${favorites.includes(ann.id) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
+                                                        </button>
                                                     </div>
-                                                    <div className="text-right text-[#4A8F88] font-black text-2xl">{progress}%</div>
+                                                    <div className="flex items-center text-[10px] text-slate-400 font-bold space-x-2">
+                                                        <span>由 {STAFF_LIST.find(s => s.id === ann.authorId)?.name} 發佈</span>
+                                                        {ann.attachments.length > 0 && <span className="flex items-center text-sky-500"><Icon name="paperclip" className="w-3 h-3 mr-0.5" /> 附檔</span>}
+                                                    </div>
                                                 </div>
-                                                <div className="w-full h-1.5 bg-slate-100 rounded-full mb-6">
-                                                    <div className="h-full bg-[#81D8D0] rounded-full" style={{ width: `${progress}%` }}></div>
-                                                </div>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {unreadStaff.map(s => <span key={s.id} className="text-[11px] font-bold px-3 py-1 bg-slate-50 border rounded-xl">{formatName(s.name)}</span>)}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
+                                            );
+                                        }) : <div className="text-center py-10 bg-white border border-dashed rounded-xl text-slate-300 text-sm font-bold">該日無公告事項</div>}
+                                    </div>
                                 </div>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {myRelevantAnnouncements.map(ann => {
-                                    const isRead = ann.readBy.includes(currentUserId);
-                                    return (
-                                        <div key={ann.id} onClick={() => setSelectedAnn(ann)} className={`p-6 rounded-3xl border cursor-pointer bg-white ${isRead ? 'border-slate-100' : 'border-[#81D8D0] ring-1 ring-[#81D8D0]'}`}>
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center space-x-4">
-                                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isRead ? 'bg-slate-50 text-slate-300' : 'bg-[#E0F2F0] text-[#4A8F88]'}`}>
-                                                        <i data-lucide={isRead ? "check-circle" : "bell"}></i>
-                                                    </div>
-                                                    <h4 className={`font-black text-lg ${isRead ? 'text-slate-500' : 'text-slate-900'}`}>{ann.title}</h4>
-                                                </div>
-                                                <i data-lucide="chevron-right" className="text-slate-300"></i>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                            /* 我的收藏標籤內容 */
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {announcements.filter(ann => favorites.includes(ann.id)).map(ann => (
+                                    <div key={ann.id} onClick={() => setSelectedAnn(ann)} className="p-5 bg-white rounded-xl border border-slate-200 hover:shadow-lg transition-all cursor-pointer relative">
+                                        <button onClick={(e) => toggleFavorite(e, ann.id)} className="absolute top-4 right-4">
+                                            <Icon name="star" className="w-5 h-5 fill-amber-400 text-amber-400" />
+                                        </button>
+                                        <p className="text-[10px] font-black text-sky-500 mb-2">{ann.createdAt}</p>
+                                        <h4 className="font-black text-slate-800 mb-2">{ann.title}</h4>
+                                        <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">{ann.content}</p>
+                                    </div>
+                                ))}
                             </div>
                         )}
                     </main>
 
-                    {showCreateModal && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#4A8F88]/40 backdrop-blur-md">
-                            <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden">
-                                <div className="p-8 border-b flex justify-between items-center">
-                                    <h2 className="text-2xl font-black text-[#4A8F88]">發佈新公告</h2>
-                                    <button onClick={() => setShowCreateModal(false)} className="text-slate-400">✕</button>
+                    {/* 快速列表 Modal (新功能：展列未讀公告) */}
+                    {showQuickList && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+                            <div className="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
+                                <div className="p-4 border-b flex justify-between items-center bg-slate-50">
+                                    <h3 className="font-black text-slate-700">
+                                        {showQuickList === 'all_unread' ? '尚未全員讀取的公告' : '個人尚未讀取的公告'}
+                                    </h3>
+                                    <button onClick={() => setShowQuickList(null)} className="text-slate-400 hover:text-slate-600"><Icon name="x" /></button>
                                 </div>
-                                <div className="flex-1 overflow-y-auto p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-                                    <div className="space-y-6">
-                                        <input type="text" placeholder="標題" className="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-[#81D8D0] outline-none" value={newAnn.title} onChange={e => setNewAnn({...newAnn, title: e.target.value})} />
-                                        <textarea rows="6" placeholder="內容" className="w-full px-4 py-3 border rounded-xl outline-none" value={newAnn.content} onChange={e => setNewAnn({...newAnn, content: e.target.value})} />
-                                    </div>
-                                    <div className="bg-slate-50 p-6 rounded-[2rem] border overflow-y-auto max-h-[400px]">
-                                        <p className="text-sm font-black mb-4 tiffany-text">指定必讀人員</p>
-                                        <div className="grid grid-cols-2 gap-2">
-                                            {STAFF_LIST.map(s => (
-                                                <button key={s.id} onClick={() => toggleTargetStaff(s.id)} className={`px-3 py-2 rounded-xl border text-xs font-bold ${newAnn.targetStaffIds.includes(s.id) ? 'bg-[#81D8D0] text-white border-[#81D8D0]' : 'bg-white text-slate-500'}`}>
-                                                    {formatName(s.name)}
-                                                </button>
-                                            ))}
+                                <div className="p-2 max-h-[400px] overflow-y-auto custom-scrollbar">
+                                    {(showQuickList === 'all_unread' 
+                                        ? announcements.filter(ann => ann.readBy.length < ann.targetStaffIds.length)
+                                        : announcements.filter(ann => currentUserId && ann.targetStaffIds.includes(currentUserId) && !ann.readBy.includes(currentUserId))
+                                    ).map(ann => (
+                                        <div 
+                                            key={ann.id} 
+                                            onClick={() => { setSelectedAnn(ann); setShowQuickList(null); }}
+                                            className="p-3 hover:bg-slate-50 rounded-lg cursor-pointer flex justify-between items-center group"
+                                        >
+                                            <div>
+                                                <p className="text-sm font-black text-slate-800 group-hover:text-sky-600">{ann.title}</p>
+                                                <p className="text-[10px] text-slate-400 font-bold">{ann.createdAt} · 已讀 {ann.readBy.length}/{ann.targetStaffIds.length}</p>
+                                            </div>
+                                            <Icon name="chevron-right" className="w-4 h-4 text-slate-200 group-hover:text-sky-400" />
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="p-8 border-t flex justify-end">
-                                    <button onClick={handleCreateAnnouncement} className="px-10 py-4 bg-[#4A8F88] text-white rounded-2xl font-black">立即發佈</button>
+                                    ))}
+                                    {((showQuickList === 'all_unread' && notAllReadCount === 0) || (showQuickList === 'my_unread' && myUnreadCount === 0)) && (
+                                        <div className="py-10 text-center text-slate-300 font-bold text-sm italic">無相關公告紀錄</div>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     )}
 
+                    {/* 公告詳情 Modal (含附件查看) */}
                     {selectedAnn && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#2C524E]/80 backdrop-blur-sm">
-                            <div className="bg-white w-full max-w-xl rounded-[3rem] p-10">
-                                <h2 className="text-3xl font-black text-slate-800 mb-6">{selectedAnn.title}</h2>
-                                <div className="bg-[#F7FBFA] p-8 rounded-[2rem] mb-10 border">{selectedAnn.content}</div>
-                                {selectedAnn.readBy.includes(currentUserId) ? (
-                                    <div className="text-center py-5 bg-[#E0F2F0] rounded-2xl tiffany-text font-black">您已完成確認</div>
-                                ) : (
-                                    <button onClick={() => handleConfirmRead(selectedAnn.id)} className="w-full bg-[#81D8D0] text-white font-black py-6 rounded-[1.5rem] shadow-lg">確認已詳讀</button>
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+                            <div className="bg-white w-full max-w-xl rounded-3xl p-8 relative shadow-2xl">
+                                <button onClick={() => setSelectedAnn(null)} className="absolute top-6 right-6 text-slate-300 hover:text-slate-500"><Icon name="x" className="w-6 h-6" /></button>
+                                <div className="mb-6">
+                                    <div className="flex items-center space-x-2 mb-2">
+                                        <span className="px-2 py-0.5 bg-sky-100 text-sky-600 text-[10px] font-black rounded uppercase">{selectedAnn.priority}</span>
+                                        <span className="text-[10px] text-slate-400 font-bold">{selectedAnn.createdAt}</span>
+                                    </div>
+                                    <h2 className="text-2xl font-black text-slate-800">{selectedAnn.title}</h2>
+                                </div>
+                                <div className="bg-slate-50 p-6 rounded-2xl mb-6 text-slate-600 text-sm leading-relaxed min-h-[120px] border border-slate-100">
+                                    {selectedAnn.content}
+                                </div>
+                                
+                                {selectedAnn.attachments.length > 0 && (
+                                    <div className="mb-8">
+                                        <h5 className="text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">附件檔案</h5>
+                                        <div className="flex flex-wrap gap-2">
+                                            {selectedAnn.attachments.map((file, idx) => (
+                                                <div key={idx} className="flex items-center px-3 py-2 bg-white border border-slate-200 rounded-lg text-[11px] font-bold text-slate-600 hover:bg-sky-50 transition-colors cursor-pointer">
+                                                    <Icon name={file.type === 'pdf' ? 'file-text' : 'image'} className="w-3.5 h-3.5 mr-2 text-sky-500" />
+                                                    {file.name}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
                                 )}
-                                <button onClick={() => setSelectedAnn(null)} className="w-full mt-4 text-slate-400 text-sm font-bold">關閉窗口</button>
+
+                                {currentUserId && !selectedAnn.readBy.includes(currentUserId) ? (
+                                    <button onClick={() => handleConfirmRead(selectedAnn.id)} className="w-full bg-sky-500 text-white font-black py-4 rounded-xl shadow-lg hover:bg-sky-600 transition-all flex items-center justify-center space-x-2">
+                                        <Icon name="check-square" /> <span>我已閱讀並理解公告內容</span>
+                                    </button>
+                                ) : (
+                                    <div className="text-center py-4 bg-emerald-50 text-emerald-600 font-black rounded-xl text-sm flex items-center justify-center space-x-2">
+                                        <Icon name="check-circle" /> <span>閱覽紀錄已送出</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* 新增公告 Modal (含模擬上傳附件) */}
+                    {showCreateModal && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+                            <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
+                                <h2 className="text-lg font-black text-slate-800 mb-6">發佈公告</h2>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-[10px] font-black text-slate-400 mb-1 block">公告標題</label>
+                                        <input id="new-title" type="text" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 ring-sky-500/20 font-bold text-sm" />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-black text-slate-400 mb-1 block">內容詳情</label>
+                                        <textarea id="new-content" rows="4" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 ring-sky-500/20 text-sm font-medium"></textarea>
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-black text-slate-400 mb-1 block">上傳附件 (圖片/PDF)</label>
+                                        <div className="flex items-center justify-center w-full">
+                                            <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-200 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
+                                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                    <Icon name="upload-cloud" className="text-slate-400 mb-1" />
+                                                    <p className="text-[10px] text-slate-400">點擊或拖曳檔案上傳</p>
+                                                </div>
+                                                <input type="file" className="hidden" multiple accept="image/*,.pdf" onChange={(e) => {
+                                                    // 模擬上傳邏輯
+                                                    console.log("Selected files:", e.target.files);
+                                                }} />
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex space-x-3 mt-8">
+                                    <button onClick={() => setShowCreateModal(false)} className="flex-1 py-3 bg-slate-100 text-slate-500 rounded-xl font-bold text-sm hover:bg-slate-200">取消</button>
+                                    <button 
+                                        onClick={() => {
+                                            const t = document.getElementById('new-title').value;
+                                            const c = document.getElementById('new-content').value;
+                                            if(!t || !c) return;
+                                            setAnnouncements([{
+                                                id: `ann-${Date.now()}`,
+                                                authorId: currentUserId || 1,
+                                                title: t,
+                                                content: c,
+                                                createdAt: selectedDate,
+                                                priority: 'normal',
+                                                targetStaffIds: STAFF_LIST.map(s => s.id),
+                                                readBy: [],
+                                                attachments: []
+                                            }, ...announcements]);
+                                            setShowCreateModal(false);
+                                        }}
+                                        className="flex-1 py-3 bg-sky-500 text-white rounded-xl font-black text-sm shadow-md hover:bg-sky-600 transition-all"
+                                    >確認發佈</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* 登入 Modal */}
+                    {showLoginModal && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+                            <div className="bg-white w-full max-w-sm rounded-3xl p-8 shadow-2xl">
+                                <h2 className="text-xl font-black text-slate-800 mb-2 text-center">切換團隊成員</h2>
+                                <p className="text-xs text-slate-400 text-center mb-6">請選擇您的身份以模擬閱覽權限</p>
+                                <div className="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                                    {STAFF_LIST.map(staff => (
+                                        <button key={staff.id} onClick={() => { setCurrentUserId(staff.id); setShowLoginModal(false); }} className={`p-3 rounded-xl border text-center transition-all ${currentUserId === staff.id ? 'border-sky-500 bg-sky-50 ring-1 ring-sky-500' : 'border-slate-100 hover:border-sky-200 hover:bg-slate-50'}`}>
+                                            <div className="text-sm font-black text-slate-700">{staff.name}</div>
+                                            <div className="text-[10px] text-slate-400 font-bold">{staff.title}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                                <button onClick={() => setShowLoginModal(false)} className="w-full mt-6 py-3 text-slate-400 font-bold text-sm">取消</button>
                             </div>
                         </div>
                     )}
@@ -279,9 +521,6 @@
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
-
-        // 初始化圖示
-        setTimeout(() => lucide.createIcons(), 500);
     </script>
 </body>
 </html>
