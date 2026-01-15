@@ -151,6 +151,7 @@
             const [newContent, setNewContent] = useState('');
             const [newPriority, setNewPriority] = useState('normal');
             const [newFiles, setNewFiles] = useState([]);
+            const [newTargetIds, setNewTargetIds] = useState(STAFF_LIST.map(s => s.id));
 
             useEffect(() => {
                 if (currentUserId) localStorage.setItem('invincible_user_id', currentUserId);
@@ -160,7 +161,7 @@
                 localStorage.setItem('invincible_favorites', JSON.stringify(favorites));
             }, [favorites]);
 
-            useEffect(() => { lucide.createIcons(); }, [activeTab, selectedAnn, showLoginModal, currentUserId, favorites, showFilteredList, showCreateModal]);
+            useEffect(() => { lucide.createIcons(); }, [activeTab, selectedAnn, showLoginModal, currentUserId, favorites, showFilteredList, showCreateModal, newTargetIds]);
 
             const currentUser = STAFF_LIST.find(s => s.id === currentUserId);
 
@@ -209,8 +210,22 @@
                 });
             };
 
+            const toggleTargetId = (id) => {
+                setNewTargetIds(prev => 
+                    prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+                );
+            };
+
+            const handleSelectAllTargets = () => {
+                if (newTargetIds.length === STAFF_LIST.length) {
+                    setNewTargetIds([]);
+                } else {
+                    setNewTargetIds(STAFF_LIST.map(s => s.id));
+                }
+            };
+
             const handleCreateAnnouncement = () => {
-                if (!newTitle || !newContent) return;
+                if (!newTitle || !newContent || newTargetIds.length === 0) return;
                 const newAnn = {
                     id: `ann-${Date.now()}`,
                     authorId: currentUserId || 1,
@@ -218,7 +233,7 @@
                     content: newContent,
                     createdAt: selectedDate,
                     priority: newPriority,
-                    targetStaffIds: STAFF_LIST.map(s => s.id),
+                    targetStaffIds: newTargetIds,
                     readBy: [],
                     attachments: newFiles
                 };
@@ -228,6 +243,7 @@
                 setNewContent('');
                 setNewPriority('normal');
                 setNewFiles([]);
+                setNewTargetIds(STAFF_LIST.map(s => s.id));
             };
 
             const dailyAnnouncements = useMemo(() => {
@@ -397,7 +413,7 @@
                         )}
                     </main>
 
-                    {/* 公告詳情彈窗：增加檔案展示 */}
+                    {/* 公告詳情彈窗 */}
                     {selectedAnn && (
                         <div className="fixed inset-0 z-[210] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
                             <div className="bg-white w-full max-w-3xl rounded-[3rem] p-8 md:p-10 relative shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
@@ -415,7 +431,7 @@
                                         {selectedAnn.content}
                                     </div>
 
-                                    {/* 附件展示區 */}
+                                    {/* 附件展示 */}
                                     {selectedAnn.attachments && selectedAnn.attachments.length > 0 && (
                                         <div className="space-y-6 mb-8">
                                             <h4 className="text-sm font-black text-slate-700 border-l-4 border-[#0ABAB5] pl-3">附件內容</h4>
@@ -475,19 +491,36 @@
                         </div>
                     )}
 
-                    {/* 發佈新公告彈窗：新增等級切換與檔案上傳 */}
+                    {/* 發佈新公告彈窗：新增必讀人員選取 */}
                     {showCreateModal && (
                         <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-                            <div className="bg-white w-full max-w-lg rounded-[2.5rem] p-8 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+                            <div className="bg-white w-full max-w-xl rounded-[2.5rem] p-8 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
                                 <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center"><Icon name="plus-circle" className="mr-3 text-[#0ABAB5]" /> 發佈新公告</h2>
                                 
-                                <div className="space-y-5">
-                                    {/* 等級切換按鈕 */}
+                                <div className="space-y-6">
+                                    {/* 公告等級 */}
                                     <div className="space-y-2">
                                         <label className="text-xs font-black text-slate-400 uppercase tracking-widest">公告等級</label>
                                         <div className="flex bg-slate-100 p-1 rounded-xl">
                                             <button onClick={() => setNewPriority('normal')} className={`flex-1 py-2 rounded-lg text-sm font-black transition-all ${newPriority === 'normal' ? 'bg-white text-[#0ABAB5] shadow-sm' : 'text-slate-400'}`}>一般公告</button>
                                             <button onClick={() => setNewPriority('high')} className={`flex-1 py-2 rounded-lg text-sm font-black transition-all ${newPriority === 'high' ? 'bg-red-500 text-white shadow-md' : 'text-slate-400'}`}>重要公告</button>
+                                        </div>
+                                    </div>
+
+                                    {/* 必讀人員選取區 */}
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-end">
+                                            <label className="text-xs font-black text-slate-400 uppercase tracking-widest">設定必讀人員 ({newTargetIds.length}/{STAFF_LIST.length})</label>
+                                            <button onClick={handleSelectAllTargets} className="text-[10px] font-black text-[#0ABAB5] hover:underline underline-offset-2">
+                                                {newTargetIds.length === STAFF_LIST.length ? '全部取消' : '全部選取'}
+                                            </button>
+                                        </div>
+                                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                                            {STAFF_LIST.map(staff => (
+                                                <button key={staff.id} onClick={() => toggleTargetId(staff.id)} className={`py-2 px-1 rounded-xl text-[11px] font-bold transition-all border ${newTargetIds.includes(staff.id) ? 'bg-[#0ABAB5] text-white border-[#0ABAB5] shadow-sm' : 'bg-white text-slate-400 border-slate-100 hover:border-[#0ABAB5]/30'}`}>
+                                                    {staff.name}
+                                                </button>
+                                            ))}
                                         </div>
                                     </div>
 
@@ -498,20 +531,18 @@
                                     
                                     <div>
                                         <label className="text-xs font-black text-slate-400 uppercase tracking-widest">內容</label>
-                                        <textarea rows="4" placeholder="輸入詳細內容..." className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-sm text-slate-600 mt-2 focus:ring-2 ring-[#0ABAB5]/10" value={newContent} onChange={e => setNewContent(e.target.value)}></textarea>
+                                        <textarea rows="3" placeholder="輸入詳細內容..." className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-sm text-slate-600 mt-2 focus:ring-2 ring-[#0ABAB5]/10" value={newContent} onChange={e => setNewContent(e.target.value)}></textarea>
                                     </div>
 
-                                    {/* 檔案上傳區 */}
+                                    {/* 檔案上傳 */}
                                     <div>
-                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest">附件 (支援圖片與 PDF)</label>
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest">附件 (圖片或 PDF)</label>
                                         <div className="mt-2 space-y-3">
-                                            <div className="flex items-center space-x-3">
-                                                <label className="flex-1 cursor-pointer bg-white border-2 border-dashed border-slate-200 p-4 rounded-2xl text-center hover:border-[#0ABAB5] transition-colors group">
-                                                    <input type="file" multiple accept="image/*,application/pdf" className="hidden" onChange={handleFileUpload} />
-                                                    <Icon name="upload" className="mx-auto mb-1 text-slate-300 group-hover:text-[#0ABAB5]" />
-                                                    <span className="text-[10px] font-black text-slate-400">點擊上傳檔案</span>
-                                                </label>
-                                            </div>
+                                            <label className="block cursor-pointer bg-white border-2 border-dashed border-slate-200 p-4 rounded-2xl text-center hover:border-[#0ABAB5] transition-colors group">
+                                                <input type="file" multiple accept="image/*,application/pdf" className="hidden" onChange={handleFileUpload} />
+                                                <Icon name="upload" className="mx-auto mb-1 text-slate-300 group-hover:text-[#0ABAB5]" />
+                                                <span className="text-[10px] font-black text-slate-400">點擊上傳檔案</span>
+                                            </label>
                                             {newFiles.length > 0 && (
                                                 <div className="grid grid-cols-2 gap-2">
                                                     {newFiles.map((f, i) => (
@@ -526,15 +557,15 @@
                                     </div>
                                 </div>
 
-                                <div className="flex space-x-3 mt-8">
+                                <div className="flex space-x-3 mt-8 pt-6 border-t border-slate-50">
                                     <button onClick={() => { setShowCreateModal(false); setNewFiles([]); }} className="flex-1 py-4 bg-slate-50 text-slate-400 rounded-2xl font-bold">取消</button>
-                                    <button onClick={handleCreateAnnouncement} className={`flex-1 py-4 rounded-2xl font-black shadow-lg transition-all ${newTitle && newContent ? 'bg-[#0ABAB5] text-white hover:bg-[#08928e]' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`}>確認發佈</button>
+                                    <button onClick={handleCreateAnnouncement} className={`flex-1 py-4 rounded-2xl font-black shadow-lg transition-all ${newTitle && newContent && newTargetIds.length > 0 ? 'bg-[#0ABAB5] text-white hover:bg-[#08928e]' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`}>確認發佈</button>
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    {/* 通用組件與剩餘彈窗 */}
+                    {/* 篩選清單彈窗 */}
                     {showFilteredList && (
                         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
                             <div className="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl">
@@ -551,11 +582,15 @@
                                             </div>
                                         </div>
                                     ))}
+                                    {(showFilteredList === 'all_unread' ? stats.allUnread : stats.myUnread).length === 0 && (
+                                        <div className="text-center py-10 text-slate-300 font-bold italic">目前沒有相關公告</div>
+                                    )}
                                 </div>
                             </div>
                         </div>
                     )}
 
+                    {/* 登入彈窗 */}
                     {showLoginModal && (
                         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
                             <div className="bg-white w-full max-w-sm rounded-[3rem] p-10 shadow-2xl text-center">
