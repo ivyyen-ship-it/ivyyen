@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>無敵團隊公告系統</title>
-    <!-- 引入核心庫 -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -13,39 +12,88 @@
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        
+        :root {
+            --tiffany-green: #0ABAB5;
+            --star-gold: #FFD700;
+        }
+
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: #F8FAFC;
+            background-color: #F4FAFA;
             margin: 0;
             padding: 0;
         }
+
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
         }
+
         .custom-scrollbar::-webkit-scrollbar {
             width: 5px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #CBD5E1;
+            background: #0ABAB5;
             border-radius: 10px;
         }
-        .unread-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #EF4444;
+
+        /* 星星交互隔離 */
+        .ann-card-container {
+            position: relative;
+            isolation: isolate;
+        }
+
+        .star-clickable-area {
+            position: absolute !important;
+            top: 1rem !important;
+            right: 1rem !important;
+            width: 44px !important;
+            height: 44px !important;
+            z-index: 100 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            pointer-events: auto !important;
+            background: transparent;
             border-radius: 50%;
-            display: inline-block;
+            transition: background 0.2s;
+        }
+
+        .star-clickable-area:hover {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .star-active {
+            filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+        }
+
+        .ann-card-main {
+            position: relative;
+            z-index: 1;
+        }
+
+        .pdf-preview {
+            width: 100%;
+            height: 400px;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
-    <div id="root">載入中...</div>
+    <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useMemo, useEffect } = React;
 
-        // 圖示組件
         const Icon = ({ name, className = "w-5 h-5" }) => {
             useEffect(() => { lucide.createIcons(); }, [name]);
             return <i data-lucide={name} className={className}></i>;
@@ -60,14 +108,21 @@
             { id: 6, dept: '電銷部', title: '業務', name: '黃鈞霖' },
             { id: 7, dept: '電銷部', title: '業務', name: '蕭茜文' },
             { id: 8, dept: '電銷部', title: '業務', name: '葉潭' },
-            { id: 9, dept: '電銷部', title: '業務', name: '陳鐿瑄' },
             { id: 10, dept: '電銷部', title: '業務', name: '楊曉念' },
             { id: 11, dept: '電銷部', title: '業務', name: '張妤甄' },
-            { id: 12, dept: '電銷部', title: '業務', name: '卓于琬' },
             { id: 13, dept: '電銷部', title: '業務', name: '吳昀庭' },
         ];
 
         const App = () => {
+            const [currentUserId, setCurrentUserId] = useState(() => {
+                const saved = localStorage.getItem('invincible_user_id');
+                return saved ? parseInt(saved) : null;
+            });
+            const [favorites, setFavorites] = useState(() => {
+                const saved = localStorage.getItem('invincible_favorites');
+                return saved ? JSON.parse(saved) : [];
+            });
+            
             const [announcements, setAnnouncements] = useState([
                 {
                     id: 'ann-001',
@@ -78,72 +133,57 @@
                     priority: 'high',
                     targetStaffIds: STAFF_LIST.map(s => s.id),
                     readBy: [1, 2],
-                    attachments: [{ name: '流程手冊.pdf', type: 'pdf' }]
-                },
-                {
-                    id: 'ann-002',
-                    authorId: 2,
-                    title: '本月績效獎金核算通知',
-                    content: '本月獎金已核算完畢，請各位至個人後台查看詳情。',
-                    createdAt: new Date().toISOString().split('T')[0],
-                    priority: 'normal',
-                    targetStaffIds: STAFF_LIST.map(s => s.id),
-                    readBy: [],
                     attachments: []
                 }
             ]);
 
-            const [currentUserId, setCurrentUserId] = useState(() => {
-                const saved = localStorage.getItem('smart_life_user_id');
-                return saved ? parseInt(saved) : null;
-            });
-
-            const [favorites, setFavorites] = useState([]);
             const [activeTab, setActiveTab] = useState('lobby');
             const [selectedAnn, setSelectedAnn] = useState(null);
             const [showCreateModal, setShowCreateModal] = useState(false);
             const [showLoginModal, setShowLoginModal] = useState(false);
-            const [showQuickList, setShowQuickList] = useState(null); // 'all_unread' | 'my_unread'
+            const [showFilteredList, setShowFilteredList] = useState(null); 
             const [searchQuery, setSearchQuery] = useState('');
             const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
             const [currentMonth, setCurrentMonth] = useState(new Date());
 
+            // 發佈表單狀態
+            const [newTitle, setNewTitle] = useState('');
+            const [newContent, setNewContent] = useState('');
+            const [newPriority, setNewPriority] = useState('normal');
+            const [newFiles, setNewFiles] = useState([]);
+
             useEffect(() => {
-                if (currentUserId) localStorage.setItem('smart_life_user_id', currentUserId);
-                lucide.createIcons();
-            }, [currentUserId, activeTab, selectedAnn, showLoginModal, showQuickList]);
+                if (currentUserId) localStorage.setItem('invincible_user_id', currentUserId);
+            }, [currentUserId]);
 
-            const formatName = (fullName) => fullName.length > 2 ? fullName.substring(fullName.length - 2) : fullName;
+            useEffect(() => {
+                localStorage.setItem('invincible_favorites', JSON.stringify(favorites));
+            }, [favorites]);
 
-            // 數據計算
-            const myUnreadCount = useMemo(() => {
-                if (!currentUserId) return 0;
-                return announcements.filter(ann => 
-                    ann.targetStaffIds.includes(currentUserId) && !ann.readBy.includes(currentUserId)
-                ).length;
+            useEffect(() => { lucide.createIcons(); }, [activeTab, selectedAnn, showLoginModal, currentUserId, favorites, showFilteredList, showCreateModal]);
+
+            const currentUser = STAFF_LIST.find(s => s.id === currentUserId);
+
+            const stats = useMemo(() => {
+                const allUnread = announcements.filter(ann => ann.readBy.length < ann.targetStaffIds.length);
+                const myUnread = currentUserId ? announcements.filter(ann => ann.targetStaffIds.includes(currentUserId) && !ann.readBy.includes(currentUserId)) : [];
+                return { allUnread, myUnread };
             }, [announcements, currentUserId]);
 
-            const notAllReadCount = useMemo(() => {
-                return announcements.filter(ann => 
-                    ann.readBy.length < ann.targetStaffIds.length
-                ).length;
-            }, [announcements]);
+            const toggleFavorite = (e, annId) => {
+                e.preventDefault();
+                e.stopPropagation(); 
+                setFavorites(prev => 
+                    prev.includes(annId) ? prev.filter(id => id !== annId) : [...prev, annId]
+                );
+            };
 
-            const filteredAnnouncements = useMemo(() => {
-                let list = [...announcements];
-                if (searchQuery) {
-                    list = list.filter(ann => 
-                        ann.title.includes(searchQuery) || ann.content.includes(searchQuery)
-                    );
-                }
-                return list;
-            }, [announcements, searchQuery]);
+            const handleLogin = (id) => {
+                setCurrentUserId(id);
+                setShowLoginModal(false);
+            };
 
-            const dailyAnnouncements = useMemo(() => {
-                return filteredAnnouncements.filter(ann => ann.createdAt === selectedDate);
-            }, [filteredAnnouncements, selectedDate]);
-
-            const handleConfirmRead = (annId) => {
+            const handleMarkAsRead = (annId) => {
                 if (!currentUserId) return;
                 setAnnouncements(prev => prev.map(ann => {
                     if (ann.id === annId && !ann.readBy.includes(currentUserId)) {
@@ -154,12 +194,49 @@
                 setSelectedAnn(null);
             };
 
-            const toggleFavorite = (e, annId) => {
-                e.stopPropagation();
-                setFavorites(prev => 
-                    prev.includes(annId) ? prev.filter(id => id !== annId) : [...prev, annId]
-                );
+            const handleFileUpload = (e) => {
+                const files = Array.from(e.target.files);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        setNewFiles(prev => [...prev, {
+                            name: file.name,
+                            type: file.type,
+                            data: event.target.result
+                        }]);
+                    };
+                    reader.readAsDataURL(file);
+                });
             };
+
+            const handleCreateAnnouncement = () => {
+                if (!newTitle || !newContent) return;
+                const newAnn = {
+                    id: `ann-${Date.now()}`,
+                    authorId: currentUserId || 1,
+                    title: newTitle,
+                    content: newContent,
+                    createdAt: selectedDate,
+                    priority: newPriority,
+                    targetStaffIds: STAFF_LIST.map(s => s.id),
+                    readBy: [],
+                    attachments: newFiles
+                };
+                setAnnouncements([newAnn, ...announcements]);
+                setShowCreateModal(false);
+                setNewTitle('');
+                setNewContent('');
+                setNewPriority('normal');
+                setNewFiles([]);
+            };
+
+            const dailyAnnouncements = useMemo(() => {
+                let list = announcements.filter(ann => ann.createdAt === selectedDate);
+                if (searchQuery) {
+                    list = list.filter(ann => ann.title.includes(searchQuery) || ann.content.includes(searchQuery));
+                }
+                return list;
+            }, [announcements, selectedDate, searchQuery]);
 
             const renderCalendar = () => {
                 const year = currentMonth.getFullYear();
@@ -167,34 +244,17 @@
                 const totalDays = new Date(year, month + 1, 0).getDate();
                 const startDay = new Date(year, month, 1).getDay();
                 const days = [];
-
-                for (let i = 0; i < startDay; i++) {
-                    days.push(<div key={`empty-${i}`} className="h-24 border-t border-r border-slate-100 bg-slate-50/50"></div>);
-                }
-
+                for (let i = 0; i < startDay; i++) days.push(<div key={`empty-${i}`} className="h-14 border-t border-r border-slate-100 bg-slate-50/50"></div>);
                 for (let d = 1; d <= totalDays; d++) {
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                    const dayAnns = announcements.filter(ann => ann.createdAt === dateStr);
-                    const hasMyUnread = currentUserId && dayAnns.some(ann => 
-                        ann.targetStaffIds.includes(currentUserId) && !ann.readBy.includes(currentUserId)
-                    );
+                    const count = announcements.filter(ann => ann.createdAt === dateStr).length;
                     const isSelected = selectedDate === dateStr;
-
                     days.push(
-                        <div 
-                            key={d} 
-                            onClick={() => setSelectedDate(dateStr)}
-                            className={`h-24 border-t border-r border-slate-100 p-2 cursor-pointer transition-all hover:bg-sky-50 relative ${isSelected ? 'bg-sky-50 ring-1 ring-sky-300 z-10' : 'bg-white'}`}
-                        >
-                            <div className="flex justify-between items-start">
-                                <span className={`text-sm font-bold ${isSelected ? 'text-sky-600' : 'text-slate-400'}`}>{d}</span>
-                                {hasMyUnread && <div className="unread-dot shadow-sm animate-pulse"></div>}
-                            </div>
-                            {dayAnns.length > 0 && (
-                                <div className="mt-1 flex flex-wrap gap-1">
-                                    <span className="text-[10px] bg-slate-600 text-white px-1.5 py-0.5 rounded font-bold">
-                                        {dayAnns.length} 則
-                                    </span>
+                        <div key={d} onClick={() => setSelectedDate(dateStr)} className={`h-14 border-t border-r border-slate-100 p-1 cursor-pointer relative transition-colors ${isSelected ? 'bg-[#e6f7f7] ring-1 ring-[#0ABAB5] z-10' : 'bg-white hover:bg-slate-50'}`}>
+                            <span className={`text-xs font-bold ${isSelected ? 'text-[#0ABAB5]' : 'text-slate-400'}`}>{d}</span>
+                            {count > 0 && (
+                                <div className="absolute bottom-1 right-1 bg-[#0ABAB5] text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                                    {count}
                                 </div>
                             )}
                         </div>
@@ -203,315 +263,312 @@
                 return days;
             };
 
-            const currentUser = STAFF_LIST.find(s => s.id === currentUserId) || { name: '訪客', dept: '未登入' };
-
             return (
-                <div className="min-h-screen bg-[#F8FAFC]">
-                    {/* 導航欄 */}
+                <div className="min-h-screen pb-20">
                     <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
                         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
                             <div className="flex items-center space-x-2">
-                                <div className="bg-sky-500 p-1.5 rounded-lg text-white">
-                                    <Icon name="shield-check" className="w-5 h-5" />
-                                </div>
-                                <h1 className="text-xl font-black text-slate-800 tracking-tight">無敵團隊公告</h1>
+                                <div className="bg-[#0ABAB5] p-1.5 rounded-lg text-white"><Icon name="shield-check" /></div>
+                                <h1 className="text-xl font-black text-slate-800">無敵團隊<span className="text-[#0ABAB5]">公告</span></h1>
                             </div>
-                            <div className="flex items-center space-x-4">
-                                {currentUserId ? (
-                                    <div className="flex items-center cursor-pointer hover:opacity-80 transition-opacity" onClick={() => setShowLoginModal(true)}>
-                                        <div className="mr-3 text-right hidden sm:block">
-                                            <p className="text-xs text-slate-400 font-bold leading-none">{currentUser.dept}</p>
+                            <div>
+                                {currentUser ? (
+                                    <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setShowLoginModal(true)}>
+                                        <div className="text-right hidden sm:block leading-none">
+                                            <p className="text-[10px] text-slate-400 font-bold mb-1 uppercase">{currentUser.dept}</p>
                                             <p className="text-sm font-black text-slate-700">{currentUser.name}</p>
                                         </div>
-                                        <div className="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center text-sky-600 font-black border border-sky-200">
-                                            {formatName(currentUser.name)}
+                                        <div className="w-10 h-10 rounded-full bg-[#e6f7f7] flex items-center justify-center text-[#0ABAB5] font-black border border-[#0ABAB5]/20 shadow-sm">
+                                            {currentUser.name.slice(-2)}
                                         </div>
                                     </div>
                                 ) : (
-                                    <button onClick={() => setShowLoginModal(true)} className="px-4 py-2 bg-sky-500 text-white rounded-lg text-sm font-bold hover:bg-sky-600 transition-colors">登入系統</button>
+                                    <button onClick={() => setShowLoginModal(true)} className="px-5 py-2 bg-[#0ABAB5] text-white rounded-xl text-sm font-black shadow-lg hover:bg-[#08928e] transition-all">登入系統</button>
                                 )}
                             </div>
                         </div>
                     </header>
 
                     <main className="max-w-6xl mx-auto p-6 space-y-6">
-                        {/* 功能統計框 (新需求) */}
+                        {/* 儀表板統計 */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div 
-                                onClick={() => setShowQuickList('all_unread')}
-                                className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between cursor-pointer hover:border-amber-300 transition-all group"
-                            >
+                            <div onClick={() => setShowFilteredList('all_unread')} className="stat-card bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between cursor-pointer group hover:border-[#0ABAB5]">
                                 <div className="flex items-center space-x-4">
-                                    <div className="bg-amber-100 p-3 rounded-xl text-amber-600 group-hover:scale-110 transition-transform">
-                                        <Icon name="users" />
-                                    </div>
+                                    <div className="bg-amber-100 p-3 rounded-xl text-amber-600 group-hover:bg-amber-200 transition-colors"><Icon name="users" /></div>
                                     <div>
-                                        <p className="text-sm font-bold text-slate-500">尚未全員讀取的公告</p>
-                                        <p className="text-2xl font-black text-slate-800">共有 <span className="text-amber-500">{notAllReadCount}</span> 則</p>
+                                        <p className="text-xs font-bold text-slate-400 mb-0.5">尚未全員讀取的公告</p>
+                                        <p className="text-xl font-black text-slate-700">共有 <span className="text-amber-600">{stats.allUnread.length}</span> 則</p>
                                     </div>
                                 </div>
-                                <Icon name="chevron-right" className="text-slate-300" />
+                                <Icon name="chevron-right" className="text-slate-300 group-hover:text-[#0ABAB5]" />
                             </div>
-                            <div 
-                                onClick={() => setShowQuickList('my_unread')}
-                                className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between cursor-pointer hover:border-red-300 transition-all group"
-                            >
+                            <div onClick={() => setShowFilteredList('my_unread')} className="stat-card bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between cursor-pointer group hover:border-[#0ABAB5]">
                                 <div className="flex items-center space-x-4">
-                                    <div className="bg-red-100 p-3 rounded-xl text-red-600 group-hover:scale-110 transition-transform">
-                                        <Icon name="bell" />
-                                    </div>
+                                    <div className="bg-[#e6f7f7] p-3 rounded-xl text-[#0ABAB5] group-hover:bg-[#0ABAB5] group-hover:text-white transition-all"><Icon name="bell" /></div>
                                     <div>
-                                        <p className="text-sm font-bold text-slate-500">個人尚未讀取的公告</p>
-                                        <p className="text-2xl font-black text-slate-800">共有 <span className="text-red-500">{myUnreadCount}</span> 則</p>
+                                        <p className="text-xs font-bold text-slate-400 mb-0.5">個人尚未讀取的公告</p>
+                                        <p className="text-xl font-black text-slate-700">共有 <span className="text-[#0ABAB5]">{stats.myUnread.length}</span> 則</p>
                                     </div>
                                 </div>
-                                <Icon name="chevron-right" className="text-slate-300" />
+                                <Icon name="chevron-right" className="text-slate-300 group-hover:text-[#0ABAB5]" />
                             </div>
                         </div>
 
-                        {/* 標籤頁切換 */}
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        {/* 操作區域 */}
+                        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                             <div className="flex bg-slate-200/50 p-1 rounded-xl w-fit">
-                                <button onClick={() => setActiveTab('lobby')} className={`px-6 py-2 rounded-lg text-sm font-black transition-all ${activeTab === 'lobby' ? 'bg-white shadow text-sky-600' : 'text-slate-500'}`}>公告首頁</button>
-                                <button onClick={() => setActiveTab('my')} className={`px-6 py-2 rounded-lg text-sm font-black transition-all ${activeTab === 'my' ? 'bg-white shadow text-sky-600' : 'text-slate-500'}`}>我的收藏</button>
+                                <button onClick={() => setActiveTab('lobby')} className={`px-6 py-2 rounded-lg text-sm font-black transition-all ${activeTab === 'lobby' ? 'bg-white shadow text-[#0ABAB5]' : 'text-slate-500'}`}>公告首頁</button>
+                                <button onClick={() => setActiveTab('my')} className={`px-6 py-2 rounded-lg text-sm font-black transition-all ${activeTab === 'my' ? 'bg-white shadow text-[#0ABAB5]' : 'text-slate-500'}`}>我的收藏 ({favorites.length})</button>
                             </div>
-                            <div className="relative">
-                                <span className="absolute left-3 top-2.5 text-slate-400"><Icon name="search" className="w-4 h-4" /></span>
-                                <input 
-                                    type="text" 
-                                    placeholder="搜尋公告標題..." 
-                                    className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm w-full md:w-64 outline-none focus:ring-2 ring-sky-500/20"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
+                            <div className="flex items-center space-x-2 w-full md:w-auto">
+                                <div className="relative flex-1">
+                                    <span className="absolute left-3 top-2.5 text-slate-400"><Icon name="search" className="w-4 h-4" /></span>
+                                    <input type="text" placeholder="搜尋標題或內容..." className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm w-full md:w-64 outline-none focus:ring-2 ring-[#0ABAB5]/20" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                                </div>
+                                <button onClick={() => setShowCreateModal(true)} className="p-2.5 bg-[#0ABAB5] text-white rounded-xl shadow-md hover:bg-[#08928e]"><Icon name="plus" /></button>
                             </div>
                         </div>
 
                         {activeTab === 'lobby' ? (
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                                {/* 月曆部分 */}
-                                <div className="lg:col-span-8 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                                    <div className="p-4 border-b flex justify-between items-center bg-slate-50/50">
-                                        <h3 className="font-black text-slate-700 flex items-center text-sm"><Icon name="calendar" className="w-4 h-4 mr-2 text-sky-500" /> 公告月曆</h3>
-                                        <div className="flex items-center space-x-3">
-                                            <button onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() - 1)))} className="p-1 hover:bg-slate-200 rounded-md transition-colors"><Icon name="chevron-left" /></button>
-                                            <span className="font-bold text-sm text-slate-800">{currentMonth.getFullYear()}年 {currentMonth.getMonth() + 1}月</span>
-                                            <button onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth() + 1)))} className="p-1 hover:bg-slate-200 rounded-md transition-colors"><Icon name="chevron-right" /></button>
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                                <div className="lg:col-span-8 space-y-4">
+                                    <h2 className="text-lg font-black text-slate-800 flex items-center mb-4">
+                                        <span className="w-1.5 h-6 bg-[#0ABAB5] rounded-full mr-3"></span>
+                                        {selectedDate} 公告事項
+                                    </h2>
+                                    {dailyAnnouncements.length > 0 ? dailyAnnouncements.map(ann => (
+                                        <div key={ann.id} className="ann-card-container group">
+                                            <div className="star-clickable-area" onClick={(e) => toggleFavorite(e, ann.id)}>
+                                                <Icon name="star" className={`w-6 h-6 transition-all ${favorites.includes(ann.id) ? 'fill-[#FFD700] text-[#FFD700] star-active scale-110' : 'text-slate-200 hover:text-slate-300'}`} />
+                                            </div>
+                                            <div className="ann-card-main bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-[#0ABAB5]/30 transition-all cursor-pointer" onClick={() => setSelectedAnn(ann)}>
+                                                <div className="flex items-center space-x-2 mb-3 pr-10">
+                                                    {ann.priority === 'high' && <span className="px-2 py-0.5 bg-red-500 text-white text-[10px] font-black rounded-full">重要</span>}
+                                                    {ann.attachments?.length > 0 && <span className="text-slate-300 flex items-center"><Icon name="paperclip" className="w-3 h-3" /></span>}
+                                                    <span className="text-[10px] text-slate-400 font-bold tracking-wider">{STAFF_LIST.find(s => s.id === ann.authorId)?.name} 發佈</span>
+                                                </div>
+                                                <h3 className="text-xl font-black text-slate-800 mb-2 group-hover:text-[#0ABAB5] transition-colors pr-8">{ann.title}</h3>
+                                                <p className="text-sm text-slate-400 line-clamp-2 leading-relaxed">{ann.content}</p>
+                                                <div className="mt-5 pt-4 border-t border-slate-50 flex items-center justify-between">
+                                                    <span className="text-[10px] font-bold text-slate-300">已讀：{ann.readBy.length}/{ann.targetStaffIds.length}</span>
+                                                    <span className="text-[10px] font-black text-[#0ABAB5] italic">查看詳情 →</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="calendar-grid bg-slate-100">
-                                        {['日','一','二','三','四','五','六'].map(w => (
-                                            <div key={w} className="py-2 text-center text-[10px] font-black text-slate-400 bg-white border-r border-slate-100">{w}</div>
-                                        ))}
-                                        {renderCalendar()}
-                                    </div>
+                                    )) : (
+                                        <div className="py-20 bg-white border border-dashed rounded-[3rem] text-center text-slate-300 font-bold italic">當日尚無公告內容</div>
+                                    )}
                                 </div>
 
-                                {/* 今日公告列表 */}
-                                <div className="lg:col-span-4 space-y-4">
-                                    <div className="flex items-center justify-between">
-                                        <h2 className="text-sm font-black text-slate-700 flex items-center italic">
-                                            <span className="w-1 h-4 bg-sky-500 rounded-full mr-2"></span> {selectedDate} 公告
-                                        </h2>
-                                        <button onClick={() => setShowCreateModal(true)} className="p-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600 transition-all shadow-sm">
-                                            <Icon name="plus" className="w-4 h-4" />
-                                        </button>
-                                    </div>
-                                    <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1 custom-scrollbar">
-                                        {dailyAnnouncements.length > 0 ? dailyAnnouncements.map(ann => {
-                                            const isUnread = currentUserId && !ann.readBy.includes(currentUserId);
-                                            return (
-                                                <div 
-                                                    key={ann.id} 
-                                                    onClick={() => setSelectedAnn(ann)}
-                                                    className={`p-4 rounded-xl border bg-white cursor-pointer relative transition-all hover:shadow-md ${isUnread ? 'border-sky-200 ring-1 ring-sky-100' : 'border-slate-100'}`}
-                                                >
-                                                    <div className="flex justify-between items-start mb-1">
-                                                        <div className="flex items-center space-x-2">
-                                                            {isUnread && <div className="unread-dot"></div>}
-                                                            <h4 className={`font-black text-sm ${isUnread ? 'text-slate-800' : 'text-slate-400'}`}>{ann.title}</h4>
-                                                        </div>
-                                                        <button onClick={(e) => toggleFavorite(e, ann.id)}>
-                                                            <Icon name="star" className={`w-4 h-4 ${favorites.includes(ann.id) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
-                                                        </button>
-                                                    </div>
-                                                    <div className="flex items-center text-[10px] text-slate-400 font-bold space-x-2">
-                                                        <span>由 {STAFF_LIST.find(s => s.id === ann.authorId)?.name} 發佈</span>
-                                                        {ann.attachments.length > 0 && <span className="flex items-center text-sky-500"><Icon name="paperclip" className="w-3 h-3 mr-0.5" /> 附檔</span>}
-                                                    </div>
-                                                </div>
-                                            );
-                                        }) : <div className="text-center py-10 bg-white border border-dashed rounded-xl text-slate-300 text-sm font-bold">該日無公告事項</div>}
+                                <div className="lg:col-span-4">
+                                    <div className="bg-white rounded-[2rem] border border-slate-200 overflow-hidden sticky top-24 shadow-sm">
+                                        <div className="p-4 bg-slate-50/50 border-b flex items-center justify-between">
+                                            <span className="font-black text-slate-700 text-sm">{currentMonth.getFullYear()}年 {currentMonth.getMonth()+1}月</span>
+                                            <div className="flex space-x-1">
+                                                <button onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth()-1)))} className="p-1.5 hover:bg-white rounded-lg transition-colors"><Icon name="chevron-left" className="w-4 h-4" /></button>
+                                                <button onClick={() => setCurrentMonth(new Date(currentMonth.setMonth(currentMonth.getMonth()+1)))} className="p-1.5 hover:bg-white rounded-lg transition-colors"><Icon name="chevron-right" className="w-4 h-4" /></button>
+                                            </div>
+                                        </div>
+                                        <div className="calendar-grid">
+                                            {['日','一','二','三','四','五','六'].map(w => <div key={w} className="py-2 text-center text-[10px] font-black text-slate-300 uppercase">{w}</div>)}
+                                            {renderCalendar()}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         ) : (
-                            /* 我的收藏標籤內容 */
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {announcements.filter(ann => favorites.includes(ann.id)).map(ann => (
-                                    <div key={ann.id} onClick={() => setSelectedAnn(ann)} className="p-5 bg-white rounded-xl border border-slate-200 hover:shadow-lg transition-all cursor-pointer relative">
-                                        <button onClick={(e) => toggleFavorite(e, ann.id)} className="absolute top-4 right-4">
-                                            <Icon name="star" className="w-5 h-5 fill-amber-400 text-amber-400" />
-                                        </button>
-                                        <p className="text-[10px] font-black text-sky-500 mb-2">{ann.createdAt}</p>
-                                        <h4 className="font-black text-slate-800 mb-2">{ann.title}</h4>
-                                        <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">{ann.content}</p>
+                                    <div key={ann.id} className="ann-card-container group">
+                                        <div className="star-clickable-area" onClick={(e) => toggleFavorite(e, ann.id)}>
+                                            <Icon name="star" className="w-6 h-6 fill-[#FFD700] text-[#FFD700] star-active" />
+                                        </div>
+                                        <div className="ann-card-main bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all cursor-pointer" onClick={() => setSelectedAnn(ann)}>
+                                            <span className="text-[10px] text-slate-400 font-bold">{ann.createdAt}</span>
+                                            <h4 className="text-lg font-black text-slate-800 mb-2 mt-2 group-hover:text-[#0ABAB5] pr-8">{ann.title}</h4>
+                                            <p className="text-xs text-slate-400 line-clamp-2">{ann.content}</p>
+                                        </div>
                                     </div>
                                 ))}
+                                {favorites.length === 0 && (
+                                    <div className="col-span-full py-20 text-center text-slate-300 font-bold italic bg-white/50 border border-dashed rounded-[3rem]">目前沒有收藏的公告</div>
+                                )}
                             </div>
                         )}
                     </main>
 
-                    {/* 快速列表 Modal (新功能：展列未讀公告) */}
-                    {showQuickList && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-                            <div className="bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
-                                <div className="p-4 border-b flex justify-between items-center bg-slate-50">
-                                    <h3 className="font-black text-slate-700">
-                                        {showQuickList === 'all_unread' ? '尚未全員讀取的公告' : '個人尚未讀取的公告'}
-                                    </h3>
-                                    <button onClick={() => setShowQuickList(null)} className="text-slate-400 hover:text-slate-600"><Icon name="x" /></button>
-                                </div>
-                                <div className="p-2 max-h-[400px] overflow-y-auto custom-scrollbar">
-                                    {(showQuickList === 'all_unread' 
-                                        ? announcements.filter(ann => ann.readBy.length < ann.targetStaffIds.length)
-                                        : announcements.filter(ann => currentUserId && ann.targetStaffIds.includes(currentUserId) && !ann.readBy.includes(currentUserId))
-                                    ).map(ann => (
-                                        <div 
-                                            key={ann.id} 
-                                            onClick={() => { setSelectedAnn(ann); setShowQuickList(null); }}
-                                            className="p-3 hover:bg-slate-50 rounded-lg cursor-pointer flex justify-between items-center group"
-                                        >
-                                            <div>
-                                                <p className="text-sm font-black text-slate-800 group-hover:text-sky-600">{ann.title}</p>
-                                                <p className="text-[10px] text-slate-400 font-bold">{ann.createdAt} · 已讀 {ann.readBy.length}/{ann.targetStaffIds.length}</p>
-                                            </div>
-                                            <Icon name="chevron-right" className="w-4 h-4 text-slate-200 group-hover:text-sky-400" />
-                                        </div>
-                                    ))}
-                                    {((showQuickList === 'all_unread' && notAllReadCount === 0) || (showQuickList === 'my_unread' && myUnreadCount === 0)) && (
-                                        <div className="py-10 text-center text-slate-300 font-bold text-sm italic">無相關公告紀錄</div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* 公告詳情 Modal (含附件查看) */}
+                    {/* 公告詳情彈窗：增加檔案展示 */}
                     {selectedAnn && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
-                            <div className="bg-white w-full max-w-xl rounded-3xl p-8 relative shadow-2xl">
-                                <button onClick={() => setSelectedAnn(null)} className="absolute top-6 right-6 text-slate-300 hover:text-slate-500"><Icon name="x" className="w-6 h-6" /></button>
-                                <div className="mb-6">
-                                    <div className="flex items-center space-x-2 mb-2">
-                                        <span className="px-2 py-0.5 bg-sky-100 text-sky-600 text-[10px] font-black rounded uppercase">{selectedAnn.priority}</span>
-                                        <span className="text-[10px] text-slate-400 font-bold">{selectedAnn.createdAt}</span>
-                                    </div>
-                                    <h2 className="text-2xl font-black text-slate-800">{selectedAnn.title}</h2>
-                                </div>
-                                <div className="bg-slate-50 p-6 rounded-2xl mb-6 text-slate-600 text-sm leading-relaxed min-h-[120px] border border-slate-100">
-                                    {selectedAnn.content}
-                                </div>
+                        <div className="fixed inset-0 z-[210] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+                            <div className="bg-white w-full max-w-3xl rounded-[3rem] p-8 md:p-10 relative shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+                                <button onClick={() => setSelectedAnn(null)} className="absolute top-8 right-8 text-slate-300 hover:text-slate-500 bg-slate-50 p-2 rounded-full"><Icon name="x" /></button>
                                 
-                                {selectedAnn.attachments.length > 0 && (
-                                    <div className="mb-8">
-                                        <h5 className="text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">附件檔案</h5>
-                                        <div className="flex flex-wrap gap-2">
+                                <div className="mb-6">
+                                    <div className="flex items-center space-x-2 mb-3">
+                                        <span className={`px-2.5 py-1 text-[10px] font-black rounded-full ${selectedAnn.priority === 'high' ? 'bg-red-50 text-red-500' : 'bg-[#e6f7f7] text-[#0ABAB5]'}`}>
+                                            {selectedAnn.priority === 'high' ? '重要' : '一般'}
+                                        </span>
+                                        <span className="text-[10px] text-slate-400 font-bold tracking-widest">{selectedAnn.createdAt}</span>
+                                    </div>
+                                    <h2 className="text-3xl font-black text-slate-800 leading-tight mb-4">{selectedAnn.title}</h2>
+                                    <div className="bg-slate-50 p-6 md:p-8 rounded-[2rem] text-slate-600 leading-relaxed border border-slate-100/50 mb-6 whitespace-pre-wrap text-base">
+                                        {selectedAnn.content}
+                                    </div>
+
+                                    {/* 附件展示區 */}
+                                    {selectedAnn.attachments && selectedAnn.attachments.length > 0 && (
+                                        <div className="space-y-6 mb-8">
+                                            <h4 className="text-sm font-black text-slate-700 border-l-4 border-[#0ABAB5] pl-3">附件內容</h4>
                                             {selectedAnn.attachments.map((file, idx) => (
-                                                <div key={idx} className="flex items-center px-3 py-2 bg-white border border-slate-200 rounded-lg text-[11px] font-bold text-slate-600 hover:bg-sky-50 transition-colors cursor-pointer">
-                                                    <Icon name={file.type === 'pdf' ? 'file-text' : 'image'} className="w-3.5 h-3.5 mr-2 text-sky-500" />
-                                                    {file.name}
+                                                <div key={idx} className="bg-white border border-slate-100 rounded-2xl p-4">
+                                                    <p className="text-xs font-bold text-slate-400 mb-3 flex items-center"><Icon name="file" className="w-3 h-3 mr-1" /> {file.name}</p>
+                                                    {file.type.includes('image') ? (
+                                                        <img src={file.data} className="image-preview mx-auto" alt="attachment" />
+                                                    ) : file.type === 'application/pdf' ? (
+                                                        <iframe src={file.data} className="pdf-preview" title="pdf-viewer"></iframe>
+                                                    ) : (
+                                                        <a href={file.data} download={file.name} className="flex items-center p-4 bg-slate-50 rounded-xl text-[#0ABAB5] font-bold text-sm">
+                                                            <Icon name="download" className="mr-2" /> 下載檔案
+                                                        </a>
+                                                    )}
                                                 </div>
                                             ))}
                                         </div>
-                                    </div>
-                                )}
+                                    )}
+                                </div>
 
-                                {currentUserId && !selectedAnn.readBy.includes(currentUserId) ? (
-                                    <button onClick={() => handleConfirmRead(selectedAnn.id)} className="w-full bg-sky-500 text-white font-black py-4 rounded-xl shadow-lg hover:bg-sky-600 transition-all flex items-center justify-center space-x-2">
-                                        <Icon name="check-square" /> <span>我已閱讀並理解公告內容</span>
-                                    </button>
-                                ) : (
-                                    <div className="text-center py-4 bg-emerald-50 text-emerald-600 font-black rounded-xl text-sm flex items-center justify-center space-x-2">
-                                        <Icon name="check-circle" /> <span>閱覽紀錄已送出</span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* 新增公告 Modal (含模擬上傳附件) */}
-                    {showCreateModal && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-                            <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl">
-                                <h2 className="text-lg font-black text-slate-800 mb-6">發佈公告</h2>
-                                <div className="space-y-4">
+                                <div className="grid grid-cols-2 gap-6 mb-8">
                                     <div>
-                                        <label className="text-[10px] font-black text-slate-400 mb-1 block">公告標題</label>
-                                        <input id="new-title" type="text" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 ring-sky-500/20 font-bold text-sm" />
+                                        <h5 className="text-[10px] font-black text-[#0ABAB5] mb-3 uppercase tracking-widest flex items-center">
+                                            <Icon name="check-circle-2" className="w-3 h-3 mr-1.5" /> 已讀人員 ({selectedAnn.readBy.length})
+                                        </h5>
+                                        <div className="flex flex-wrap gap-2">
+                                            {selectedAnn.readBy.length > 0 ? selectedAnn.readBy.map(uid => (
+                                                <span key={uid} className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[11px] font-bold rounded-full">
+                                                    {STAFF_LIST.find(s => s.id === uid)?.name}
+                                                </span>
+                                            )) : <span className="text-xs text-slate-300 italic">尚無人讀取</span>}
+                                        </div>
                                     </div>
                                     <div>
-                                        <label className="text-[10px] font-black text-slate-400 mb-1 block">內容詳情</label>
-                                        <textarea id="new-content" rows="4" className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 ring-sky-500/20 text-sm font-medium"></textarea>
-                                    </div>
-                                    <div>
-                                        <label className="text-[10px] font-black text-slate-400 mb-1 block">上傳附件 (圖片/PDF)</label>
-                                        <div className="flex items-center justify-center w-full">
-                                            <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-slate-200 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors">
-                                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                    <Icon name="upload-cloud" className="text-slate-400 mb-1" />
-                                                    <p className="text-[10px] text-slate-400">點擊或拖曳檔案上傳</p>
-                                                </div>
-                                                <input type="file" className="hidden" multiple accept="image/*,.pdf" onChange={(e) => {
-                                                    // 模擬上傳邏輯
-                                                    console.log("Selected files:", e.target.files);
-                                                }} />
-                                            </label>
+                                        <h5 className="text-[10px] font-black text-red-400 mb-3 uppercase tracking-widest flex items-center">
+                                            <Icon name="alert-circle" className="w-3 h-3 mr-1.5" /> 未讀人員 ({selectedAnn.targetStaffIds.length - selectedAnn.readBy.length})
+                                        </h5>
+                                        <div className="flex flex-wrap gap-2">
+                                            {selectedAnn.targetStaffIds.filter(id => !selectedAnn.readBy.includes(id)).map(uid => (
+                                                <span key={uid} className="px-3 py-1 bg-red-50 text-red-400 text-[11px] font-bold rounded-full">
+                                                    {STAFF_LIST.find(s => s.id === uid)?.name}
+                                                </span>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
+
+                                {currentUserId && !selectedAnn.readBy.includes(currentUserId) && selectedAnn.targetStaffIds.includes(currentUserId) ? (
+                                    <button onClick={() => handleMarkAsRead(selectedAnn.id)} className="w-full bg-[#0ABAB5] text-white font-black py-5 rounded-2xl shadow-lg hover:bg-[#08928e] flex items-center justify-center space-x-2">
+                                        <Icon name="check-square" /> <span>我已閱畢此公告</span>
+                                    </button>
+                                ) : (
+                                    <button onClick={() => setSelectedAnn(null)} className="w-full bg-slate-100 text-slate-400 font-black py-5 rounded-2xl">關閉視窗</button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* 發佈新公告彈窗：新增等級切換與檔案上傳 */}
+                    {showCreateModal && (
+                        <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+                            <div className="bg-white w-full max-w-lg rounded-[2.5rem] p-8 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+                                <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center"><Icon name="plus-circle" className="mr-3 text-[#0ABAB5]" /> 發佈新公告</h2>
+                                
+                                <div className="space-y-5">
+                                    {/* 等級切換按鈕 */}
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest">公告等級</label>
+                                        <div className="flex bg-slate-100 p-1 rounded-xl">
+                                            <button onClick={() => setNewPriority('normal')} className={`flex-1 py-2 rounded-lg text-sm font-black transition-all ${newPriority === 'normal' ? 'bg-white text-[#0ABAB5] shadow-sm' : 'text-slate-400'}`}>一般公告</button>
+                                            <button onClick={() => setNewPriority('high')} className={`flex-1 py-2 rounded-lg text-sm font-black transition-all ${newPriority === 'high' ? 'bg-red-500 text-white shadow-md' : 'text-slate-400'}`}>重要公告</button>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest">標題</label>
+                                        <input type="text" placeholder="輸入公告標題..." className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold text-slate-700 mt-2 focus:ring-2 ring-[#0ABAB5]/10" value={newTitle} onChange={e => setNewTitle(e.target.value)} />
+                                    </div>
+                                    
+                                    <div>
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest">內容</label>
+                                        <textarea rows="4" placeholder="輸入詳細內容..." className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none text-sm text-slate-600 mt-2 focus:ring-2 ring-[#0ABAB5]/10" value={newContent} onChange={e => setNewContent(e.target.value)}></textarea>
+                                    </div>
+
+                                    {/* 檔案上傳區 */}
+                                    <div>
+                                        <label className="text-xs font-black text-slate-400 uppercase tracking-widest">附件 (支援圖片與 PDF)</label>
+                                        <div className="mt-2 space-y-3">
+                                            <div className="flex items-center space-x-3">
+                                                <label className="flex-1 cursor-pointer bg-white border-2 border-dashed border-slate-200 p-4 rounded-2xl text-center hover:border-[#0ABAB5] transition-colors group">
+                                                    <input type="file" multiple accept="image/*,application/pdf" className="hidden" onChange={handleFileUpload} />
+                                                    <Icon name="upload" className="mx-auto mb-1 text-slate-300 group-hover:text-[#0ABAB5]" />
+                                                    <span className="text-[10px] font-black text-slate-400">點擊上傳檔案</span>
+                                                </label>
+                                            </div>
+                                            {newFiles.length > 0 && (
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    {newFiles.map((f, i) => (
+                                                        <div key={i} className="flex items-center justify-between p-2 bg-[#e6f7f7] rounded-lg border border-[#0ABAB5]/10">
+                                                            <span className="text-[10px] font-bold text-[#0ABAB5] truncate max-w-[80%]">{f.name}</span>
+                                                            <button onClick={() => setNewFiles(newFiles.filter((_, idx) => idx !== i))}><Icon name="x" className="w-3 h-3 text-red-400" /></button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div className="flex space-x-3 mt-8">
-                                    <button onClick={() => setShowCreateModal(false)} className="flex-1 py-3 bg-slate-100 text-slate-500 rounded-xl font-bold text-sm hover:bg-slate-200">取消</button>
-                                    <button 
-                                        onClick={() => {
-                                            const t = document.getElementById('new-title').value;
-                                            const c = document.getElementById('new-content').value;
-                                            if(!t || !c) return;
-                                            setAnnouncements([{
-                                                id: `ann-${Date.now()}`,
-                                                authorId: currentUserId || 1,
-                                                title: t,
-                                                content: c,
-                                                createdAt: selectedDate,
-                                                priority: 'normal',
-                                                targetStaffIds: STAFF_LIST.map(s => s.id),
-                                                readBy: [],
-                                                attachments: []
-                                            }, ...announcements]);
-                                            setShowCreateModal(false);
-                                        }}
-                                        className="flex-1 py-3 bg-sky-500 text-white rounded-xl font-black text-sm shadow-md hover:bg-sky-600 transition-all"
-                                    >確認發佈</button>
+                                    <button onClick={() => { setShowCreateModal(false); setNewFiles([]); }} className="flex-1 py-4 bg-slate-50 text-slate-400 rounded-2xl font-bold">取消</button>
+                                    <button onClick={handleCreateAnnouncement} className={`flex-1 py-4 rounded-2xl font-black shadow-lg transition-all ${newTitle && newContent ? 'bg-[#0ABAB5] text-white hover:bg-[#08928e]' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`}>確認發佈</button>
                                 </div>
                             </div>
                         </div>
                     )}
 
-                    {/* 登入 Modal */}
+                    {/* 通用組件與剩餘彈窗 */}
+                    {showFilteredList && (
+                        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+                            <div className="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl">
+                                <div className="p-5 border-b flex justify-between items-center bg-slate-50">
+                                    <h3 className="font-black text-slate-700">{showFilteredList === 'all_unread' ? '尚未全員讀取的公告' : '個人待讀公告'}</h3>
+                                    <button onClick={() => setShowFilteredList(null)} className="text-slate-400 hover:text-slate-600 p-2"><Icon name="x" /></button>
+                                </div>
+                                <div className="p-4 max-h-[400px] overflow-y-auto custom-scrollbar space-y-2">
+                                    {(showFilteredList === 'all_unread' ? stats.allUnread : stats.myUnread).map(ann => (
+                                        <div key={ann.id} onClick={() => { setSelectedAnn(ann); setShowFilteredList(null); }} className="p-4 border border-slate-100 rounded-2xl hover:bg-[#e6f7f7] hover:border-[#0ABAB5]/20 cursor-pointer group transition-all">
+                                            <div className="flex justify-between items-start">
+                                                <p className="text-sm font-black text-slate-800 group-hover:text-[#0ABAB5]">{ann.title}</p>
+                                                <span className="text-[10px] text-slate-400 font-bold whitespace-nowrap ml-4">{ann.createdAt}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {showLoginModal && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
-                            <div className="bg-white w-full max-w-sm rounded-3xl p-8 shadow-2xl">
-                                <h2 className="text-xl font-black text-slate-800 mb-2 text-center">切換團隊成員</h2>
-                                <p className="text-xs text-slate-400 text-center mb-6">請選擇您的身份以模擬閱覽權限</p>
-                                <div className="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+                            <div className="bg-white w-full max-w-sm rounded-[3rem] p-10 shadow-2xl text-center">
+                                <div className="w-20 h-20 bg-[#e6f7f7] text-[#0ABAB5] rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-white shadow-xl"><Icon name="user-check" className="w-10 h-10" /></div>
+                                <h2 className="text-2xl font-black text-slate-800 mb-6 tracking-tight">切換登入身份</h2>
+                                <div className="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
                                     {STAFF_LIST.map(staff => (
-                                        <button key={staff.id} onClick={() => { setCurrentUserId(staff.id); setShowLoginModal(false); }} className={`p-3 rounded-xl border text-center transition-all ${currentUserId === staff.id ? 'border-sky-500 bg-sky-50 ring-1 ring-sky-500' : 'border-slate-100 hover:border-sky-200 hover:bg-slate-50'}`}>
+                                        <button key={staff.id} onClick={() => handleLogin(staff.id)} className={`p-4 rounded-2xl border transition-all text-left ${currentUserId === staff.id ? 'border-[#0ABAB5] bg-[#e6f7f7] ring-2 ring-[#0ABAB5]/10' : 'border-slate-50 bg-slate-50 hover:bg-white hover:border-[#0ABAB5]/40 hover:shadow-md'}`}>
                                             <div className="text-sm font-black text-slate-700">{staff.name}</div>
-                                            <div className="text-[10px] text-slate-400 font-bold">{staff.title}</div>
+                                            <div className="text-[9px] text-slate-400 font-bold uppercase">{staff.title}</div>
                                         </button>
                                     ))}
                                 </div>
-                                <button onClick={() => setShowLoginModal(false)} className="w-full mt-6 py-3 text-slate-400 font-bold text-sm">取消</button>
                             </div>
                         </div>
                     )}
