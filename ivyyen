@@ -1,529 +1,554 @@
-<!-- Chosen Palette: Indigo/Green Minimalist -->
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今網大雙網客戶工項自動化介面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>線上退費服務中心</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
-        /* Base styling for Inter font and chart container control */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body {
-            font-family: 'Inter', 'Noto Sans TC', sans-serif;
             background-color: #f3f4f6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
-        /* Custom styling for inputs */
-        .form-select {
-            transition: all 0.15s ease-in-out;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath d='M7 7l3-3 3 3m0 6l-3 3-3-3' stroke='%234B5563' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3csvg%3e");
-            background-repeat: no-repeat;
-            background-position: right 0.5rem center;
-            background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
+        .signature-canvas {
+            touch-action: none;
+            cursor: crosshair;
         }
-        .form-select:focus {
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.4);
+        /* Hide scrollbar for clean modal */
+        .no-scroll {
+            overflow: hidden;
         }
-        /* Adjusted font size for primary output text */
-        .primary-output-text {
-            font-size: 1.25rem; /* Smaller text for primary output (was 1.5rem) */
-            font-weight: 700;
-            color: #4338CA; /* Indigo 700 */
+        .app-container {
+            max-width: 480px; /* Mobile width simulation */
+            margin: 0 auto;
+            min-height: 100vh;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            position: relative;
         }
     </style>
 </head>
-<body class="p-4 sm:p-8">
-    <!-- Main Content Container -->
-    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl overflow-hidden">
-        
-        <!-- Header Section -->
-        <header class="p-6 bg-indigo-700 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center rounded-t-xl">
-            <h1 class="text-2xl font-bold tracking-tight mb-2 sm:mb-0">今網大雙網客戶工項自動化介面</h1>
-            <span class="text-sm opacity-80 font-medium bg-indigo-800 px-3 py-1 rounded-full">工項邏輯驗證與輸出</span>
-        </header>
+<body>
+    <div id="root"></div>
 
-        <div class="p-6 sm:p-8 lg:flex lg:space-x-8 lg:items-stretch">
-            
-            <!-- 1. Form Section 填寫區 (Input Area) -->
-            <div class="lg:w-3/5 space-y-6">
-                <h2 class="text-xl font-semibold mb-6 pb-2 border-b border-gray-200 text-indigo-800 flex items-center">
-                    <span class="mr-2">📝</span>
-                    客戶情境設定區 (即時運算工項)
-                </h2>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
 
-                <form id="workOrderForm" class="space-y-6">
-                    
-                    <!-- 區塊一：方案資訊 (用於標題或備註) -->
-                    <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-300 shadow-sm">
-                        <h3 class="text-lg font-bold mb-4 text-indigo-700 flex items-center">
-                            <span class="mr-2 text-xl">❶</span>
-                            區塊一：方案資訊 (用於速記與標題)
-                        </h3>
-                        <!-- Grid updated to 4 columns -->
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            
-                            <!-- 方案狀態 (Select) - MOVED HERE -->
-                            <div class="space-y-1">
-                                <label for="planStatus" class="block text-sm font-medium text-gray-700">方案狀態 <span class="text-red-500">*</span></label>
-                                <select id="planStatus" class="form-select w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
-                                    <option value="">請選擇</option>
-                                    <option value="新辦">新辦</option>
-                                    <option value="攜碼">攜碼</option>
-                                </select>
-                            </div>
+        // --- Mock Data ---
+        const USER_DATA = {
+            name: "王*明",
+            phone: "09**-***-228",
+            id: "A12****789",
+            refundAmount: "NT$ 5,800",
+            caseId: "RF-20231024-0089"
+        };
 
-                            <!-- 申辦電信 (Select) -->
-                            <div class="space-y-1">
-                                <label for="telecomProvider" class="block text-sm font-medium text-gray-700">申辦電信 <span class="text-red-500">*</span></label>
-                                <select id="telecomProvider" class="form-select w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
-                                    <option value="">請選擇</option>
-                                    <option value="中華">中華</option>
-                                    <option value="遠傳">遠傳</option>
-                                </select>
-                            </div>
-                            
-                            <!-- 月資費 (Select) -->
-                            <div class="space-y-1">
-                                <label for="monthlyFee" class="block text-sm font-medium text-gray-700">月資費 <span class="text-red-500">*</span></label>
-                                <select id="monthlyFee" class="form-select w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
-                                    <option value="">請選擇</option>
-                                    <!-- Options populated by JS -->
-                                </select>
-                            </div>
+        // --- Icons Component Wrapper ---
+        const Icon = ({ name, size = 20, className = "" }) => {
+            useEffect(() => {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }, [name]);
+            return <i data-lucide={name} width={size} height={size} className={className}></i>;
+        };
 
-                            <!-- 網路月份 (Select) -->
-                            <div class="space-y-1">
-                                <label for="internetMonths" class="block text-sm font-medium text-gray-700">網路月份 <span class="text-red-500">*</span></label>
-                                <select id="internetMonths" class="form-select w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
-                                    <option value="">請選擇</option>
-                                    <option value="24+1">24+1</option>
-                                    <option value="24+2">24+2</option>
-                                    <option value="24+3">24+3</option>
-                                    <option value="24+4">24+4</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="13">13</option>
-                                    <option value="16">16</option>
-                                    <option value="19">19</option>
-                                    <option value="24">24</option>
-                                    <option value="30">30</option>
-                                </select>
+        // --- View 1: SMS Simulation ---
+        const SMSView = ({ onLinkClick }) => {
+            return (
+                <div className="app-container bg-gray-900 text-white flex flex-col">
+                    <div className="p-4 border-b border-gray-800 flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center text-xs">
+                            <Icon name="user" size={16} />
+                        </div>
+                        <div>
+                            <div className="font-bold text-sm">客服中心</div>
+                            <div className="text-xs text-gray-400">剛剛</div>
+                        </div>
+                    </div>
+                    <div className="flex-1 p-4 space-y-4">
+                        <div className="text-center text-xs text-gray-500 mb-4">今天 下午 2:30</div>
+                        
+                        {/* Message Bubble */}
+                        <div className="flex flex-col items-start max-w-[85%]">
+                            <div className="bg-gray-800 rounded-2xl rounded-tl-none p-4 text-sm leading-relaxed shadow-sm">
+                                <p className="mb-2">【退費通知】親愛的用戶您好，您的服務終止申請已核准。</p>
+                                <p className="mb-2">退費金額：<span className="text-yellow-400 font-bold">{USER_DATA.refundAmount}</span></p>
+                                <p className="mb-3">請點擊下方連結完成身分驗證與帳戶綁定以進行撥款：</p>
+                                <button 
+                                    onClick={onLinkClick}
+                                    className="block w-full text-center bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg font-medium transition-colors"
+                                >
+                                    https://service.refund/verify
+                                </button>
                             </div>
                         </div>
                     </div>
+                </div>
+            );
+        };
 
-                    <!-- 區塊二：細節與工項依據 (剩下欄位) -->
-                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-300 shadow-sm">
-                        <h3 class="text-lg font-bold mb-4 text-gray-700 flex items-center">
-                            <span class="mr-2 text-xl">❷</span>
-                            區塊二：工項計算細節
-                        </h3>
-                        <!-- Input Grid for Block 2 (now only 4 fields) -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                            <!-- 今網網路 (Select) -->
-                            <div class="space-y-1">
-                                <label for="jingnetStatus" class="block text-sm font-medium text-gray-700">今網網路 <span class="text-red-500">*</span></label>
-                                <select id="jingnetStatus" class="form-select w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
-                                    <option value="">請選擇</option>
-                                    <option value="新裝機已付款">新裝機已付款</option>
-                                    <option value="新裝機未付款">新裝機未付款</option>
-                                    <option value="期中客">期中客</option>
-                                    <option value="續約客已付款">續約客已付款</option>
-                                    <option value="續約客未付款">續約客未付款</option>
-                                </select>
-                            </div>
-
-                            <!-- 原電信合約 (Select) -->
-                            <div class="space-y-1">
-                                <label for="originalContract" class="block text-sm font-medium text-gray-700">原電信合約 <span class="text-red-500">*</span></label>
-                                <select id="originalContract" class="form-select w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
-                                    <option value="">請選擇</option>
-                                    <option value="須解約">須解約</option>
-                                    <option value="無合約">無合約</option>
-                                    <option value="28天內">28天內</option>
-                                </select>
-                            </div>
-                            
-                            <!-- 款項 (Select) -->
-                            <div class="space-y-1">
-                                <label for="paymentType" class="block text-sm font-medium text-gray-700">款項 <span class="text-red-500">*</span></label>
-                                <select id="paymentType" class="form-select w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
-                                    <option value="">請選擇</option>
-                                    <option value="預繳金">預繳金</option>
-                                    <option value="無">無</option>
-                                </select>
-                            </div>
-                            
-                            <!-- SIM卡 (Select) -->
-                            <div class="space-y-1">
-                                <label for="simDelivery" class="block text-sm font-medium text-gray-700">SIM卡派送方式 <span class="text-red-500">*</span></label>
-                                <select id="simDelivery" class="form-select w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
-                                    <option value="">請選擇</option>
-                                    <option value="親送">親送</option>
-                                    <option value="寄卡">寄卡</option>
-                                    <option value="送卡">送卡</option>
-                                    <option value="至公司取卡">至公司取卡</option>
-                                    <option value="eSIM">eSIM</option>
-                                    <option value="台中取卡">台中取卡</option>
-                                    <option value="送卡候補拍照">送卡候補拍照</option>
-                                </select>
-                            </div>
-                            
-                        </div>
-
-                        <!-- 其他工項(請說明) -->
-                        <div class="space-y-1 pt-6">
-                            <label for="otherTaskDescription" class="block text-sm font-medium text-gray-700">其他工項說明 (若有則會自動加入清單)</label>
-                            <textarea id="otherTaskDescription" rows="2" placeholder="請輸入需要手動追蹤或特殊處理的任務說明" class="mt-1 block w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"></textarea>
-                        </div>
+        // --- Components for Form ---
+        const UploadCard = ({ title, desc, isDone, onClick }) => (
+            <div 
+                onClick={onClick}
+                className={`border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-all ${isDone ? 'border-green-500 bg-green-50' : 'border-gray-300 hover:border-blue-400 bg-gray-50'}`}
+            >
+                {isDone ? (
+                    <div className="text-green-600 flex flex-col items-center">
+                        <Icon name="check-circle" size={32} className="mb-2" />
+                        <span className="text-sm font-bold">已上傳</span>
                     </div>
-
-                </form>
+                ) : (
+                    <div className="text-gray-400 flex flex-col items-center">
+                        <Icon name="camera" size={32} className="mb-2" />
+                        <span className="text-gray-700 font-medium text-sm">{title}</span>
+                        <span className="text-xs text-gray-400 mt-1">{desc}</span>
+                    </div>
+                )}
             </div>
+        );
 
-            <!-- 2. Output Section 工項區 (Result Area) -->
-            <div class="lg:w-2/5 mt-8 lg:mt-0 space-y-8">
+        const SignaturePad = ({ onClose, onSave }) => {
+            const canvasRef = useRef(null);
+            const [isDrawing, setIsDrawing] = useState(false);
+            const [hasDrawn, setHasDrawn] = useState(false);
+
+            useEffect(() => {
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
                 
-                <!-- === Primary Output (區塊一結果) === -->
-                <div class="p-0">
-                    <h2 class="text-xl font-semibold mb-4 pb-2 border-b border-indigo-200 text-indigo-700 flex items-center">
-                        <span class="mr-2">💡</span>
-                        區塊一：方案速記 (快速複製用)
-                    </h2>
-                    
-                    <div id="primaryOutput" class="p-4 border-2 border-indigo-500 rounded-xl bg-indigo-50 min-h-16 shadow-inner transition duration-300 flex items-center justify-center">
-                        <p class="text-gray-500 italic">請在左側填寫區塊一資訊</p>
+                // Set canvas size
+                const updateSize = () => {
+                    if (canvas && canvas.parentElement) {
+                        const rect = canvas.parentElement.getBoundingClientRect();
+                        canvas.width = rect.width;
+                        canvas.height = rect.height;
+                        ctx.strokeStyle = "#000";
+                        ctx.lineWidth = 3;
+                        ctx.lineCap = "round";
+                    }
+                };
+                
+                updateSize();
+                // window.addEventListener('resize', updateSize);
+                // return () => window.removeEventListener('resize', updateSize);
+            }, []);
+
+            const getPos = (e) => {
+                const canvas = canvasRef.current;
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.clientX || (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
+                const clientY = e.clientY || (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            };
+
+            const startDrawing = (e) => {
+                // e.preventDefault(); // Prevent scrolling on touch
+                const { x, y } = getPos(e);
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                
+                setIsDrawing(true);
+                setHasDrawn(true);
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            };
+
+            const draw = (e) => {
+                // e.preventDefault();
+                if (!isDrawing) return;
+                const { x, y } = getPos(e);
+                const canvas = canvasRef.current;
+                const ctx = canvas.getContext('2d');
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
+            };
+
+            const stopDrawing = () => {
+                setIsDrawing(false);
+            };
+
+            const handleSave = () => {
+                if (!hasDrawn) return;
+                const canvas = canvasRef.current;
+                onSave(canvas.toDataURL());
+                onClose();
+            };
+
+            return (
+                <div className="fixed inset-0 z-50 bg-black/50 flex items-end sm:items-center justify-center animate-fade-in">
+                    <div className="bg-white w-full max-w-md sm:rounded-xl rounded-t-2xl p-4 flex flex-col h-[80vh] sm:h-[500px]">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-bold text-lg">請在下方簽名</h3>
+                            <button onClick={onClose} className="p-2 text-gray-500"><Icon name="x" /></button>
+                        </div>
+                        <div className="flex-1 bg-gray-100 border rounded-xl overflow-hidden touch-none relative">
+                             <canvas 
+                                ref={canvasRef}
+                                className="w-full h-full signature-canvas"
+                                onMouseDown={startDrawing}
+                                onMouseMove={draw}
+                                onMouseUp={stopDrawing}
+                                onMouseLeave={stopDrawing}
+                                onTouchStart={startDrawing}
+                                onTouchMove={draw}
+                                onTouchEnd={stopDrawing}
+                            />
+                            {!hasDrawn && <div className="absolute inset-0 flex items-center justify-center text-gray-300 pointer-events-none text-2xl">簽署區域</div>}
+                        </div>
+                        <div className="mt-4 flex gap-3">
+                            <button onClick={() => {
+                                const canvas = canvasRef.current;
+                                const ctx = canvas.getContext('2d');
+                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                setHasDrawn(false);
+                            }} className="flex-1 py-3 text-gray-600 font-medium">清除</button>
+                            <button 
+                                onClick={handleSave}
+                                disabled={!hasDrawn}
+                                className={`flex-1 py-3 rounded-lg font-bold text-white transition-colors ${hasDrawn ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300'}`}
+                            >
+                                確認簽名
+                            </button>
+                        </div>
                     </div>
-                    
-                    <button id="copyPrimaryButton" class="mt-4 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-lg transition duration-150 ease-in-out transform hover:scale-[1.005] flex items-center justify-center">
-                        <span class="mr-2">📋</span>
-                        複製方案速記
-                    </button>
                 </div>
+            );
+        };
 
+        // --- View 2: Refund Form ---
+        const RefundFormView = ({ onSubmit }) => {
+            const [showSignaturePad, setShowSignaturePad] = useState(false);
+            const [signature, setSignature] = useState(null);
+            const [uploads, setUploads] = useState({ idFront: false, idBack: false, bankBook: false });
+            const [isSubmitting, setIsSubmitting] = useState(false);
 
-                <!-- === Secondary Output (區塊二結果/工項清單) === -->
-                <div class="p-0">
-                    <h2 class="text-xl font-semibold mb-4 pb-2 border-b border-gray-200 text-green-700 flex items-center">
-                        <span class="mr-2">✅</span>
-                        區塊二：自動產出工項清單
-                    </h2>
-                    
-                    <!-- Work Items Output -->
-                    <div id="workItemsOutput" class="space-y-4 p-4 border-2 border-green-300 rounded-xl bg-green-50 min-h-64 shadow-inner transition duration-300">
-                        <p class="text-gray-500 italic text-center pt-8">請在左側完整填寫所有客戶資訊，工項會即時自動生成。</p>
+            const handleUpload = (key) => {
+                // Simulate upload delay
+                setTimeout(() => {
+                    setUploads(prev => ({ ...prev, [key]: true }));
+                }, 800);
+            };
+
+            const canSubmit = signature && uploads.idFront && uploads.idBack && uploads.bankBook;
+
+            const handleSubmit = () => {
+                if (!canSubmit) return;
+                setIsSubmitting(true);
+                // Simulate API call
+                setTimeout(() => {
+                    onSubmit();
+                }, 1500);
+            };
+
+            return (
+                <div className="app-container bg-gray-50 flex flex-col min-h-screen relative pb-24">
+                    {/* Header */}
+                    <header className="bg-white px-4 py-4 shadow-sm sticky top-0 z-10 flex items-center justify-between">
+                        <div className="font-bold text-lg text-gray-800">退費申請中心</div>
+                        <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">SSL 加密保護</div>
+                    </header>
+
+                    <div className="p-4 space-y-6 flex-1 overflow-y-auto">
+                        
+                        {/* Notice */}
+                        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r shadow-sm">
+                            <p className="text-sm text-blue-800">請確認以下資料並完成身分驗證，以利款項順利匯入。</p>
+                        </div>
+
+                        {/* Masked Data Card */}
+                        <div className="bg-white rounded-xl p-5 shadow-sm space-y-3 border border-gray-100">
+                            <h3 className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-2">基本資料核對</h3>
+                            <div className="flex justify-between border-b border-gray-100 pb-2">
+                                <span className="text-gray-500">案件編號</span>
+                                <span className="font-mono text-gray-800">{USER_DATA.caseId}</span>
+                            </div>
+                            <div className="flex justify-between border-b border-gray-100 pb-2">
+                                <span className="text-gray-500">姓名</span>
+                                <span className="font-medium text-gray-800">{USER_DATA.name}</span>
+                            </div>
+                            <div className="flex justify-between border-b border-gray-100 pb-2">
+                                <span className="text-gray-500">聯絡電話</span>
+                                <span className="font-mono text-gray-800">{USER_DATA.phone}</span>
+                            </div>
+                            <div className="flex justify-between border-b border-gray-100 pb-2">
+                                <span className="text-gray-500">身分證字號</span>
+                                <span className="font-mono text-gray-800">{USER_DATA.id}</span>
+                            </div>
+                            <div className="flex justify-between pt-1">
+                                <span className="text-gray-500">退費金額</span>
+                                <span className="font-bold text-xl text-blue-600">{USER_DATA.refundAmount}</span>
+                            </div>
+                        </div>
+
+                        {/* Upload Section */}
+                        <div className="space-y-3">
+                            <h3 className="font-bold text-gray-800 flex items-center gap-2">
+                                <Icon name="file-text" size={18} className="text-blue-600" />
+                                證件上傳
+                            </h3>
+                            <div className="grid grid-cols-2 gap-3">
+                                <UploadCard 
+                                    title="身分證正面" 
+                                    desc="請拍攝正面" 
+                                    isDone={uploads.idFront} 
+                                    onClick={() => handleUpload('idFront')}
+                                />
+                                <UploadCard 
+                                    title="身分證反面" 
+                                    desc="請拍攝反面" 
+                                    isDone={uploads.idBack} 
+                                    onClick={() => handleUpload('idBack')}
+                                />
+                            </div>
+                            <UploadCard 
+                                title="存摺封面" 
+                                desc="需含帳號與戶名" 
+                                isDone={uploads.bankBook} 
+                                onClick={() => handleUpload('bankBook')}
+                            />
+                        </div>
+
+                         {/* Signature Section Display */}
+                         <div className="space-y-2">
+                            <h3 className="font-bold text-gray-800 flex items-center gap-2">
+                                <Icon name="pen-tool" size={18} className="text-blue-600" />
+                                用戶簽署
+                            </h3>
+                            <div className="bg-white border rounded-xl h-24 flex items-center justify-center overflow-hidden relative">
+                                {signature ? (
+                                    <img src={signature} alt="Signed" className="max-h-full" />
+                                ) : (
+                                    <span className="text-gray-400 text-sm">尚未簽名</span>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Spacer for floating button */}
+                        <div className="h-20"></div>
                     </div>
-                    
-                    <!-- Red Warning for Chunghwa Mid-Term -->
-                    <div id="chunghwaMidTermWarning" class="hidden mt-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 font-semibold rounded-lg text-sm shadow-md">
-                        <!-- 提醒語將由 JavaScript 載入 -->
+
+                    {/* Floating Signature Button (Bottom Right) */}
+                    {!signature && (
+                        <button 
+                            onClick={() => setShowSignaturePad(true)}
+                            className="absolute bottom-24 right-4 bg-blue-600 text-white p-4 rounded-full shadow-lg shadow-blue-600/30 flex items-center gap-2 animate-bounce hover:bg-blue-700 transition-colors z-20"
+                        >
+                            <Icon name="pen-tool" size={24} />
+                            <span className="font-bold pr-1">點此簽名</span>
+                        </button>
+                    )}
+
+                    {/* Submit Bar */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-white p-4 border-t shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-20">
+                        <button 
+                            onClick={handleSubmit}
+                            disabled={!canSubmit || isSubmitting}
+                            className={`w-full py-3.5 rounded-xl font-bold text-lg flex items-center justify-center gap-2
+                                ${canSubmit && !isSubmitting ? 'bg-green-600 text-white hover:bg-green-700 shadow-green-200 shadow-lg' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}
+                            `}
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <Icon name="loader-2" className="animate-spin" /> 處理中...
+                                </>
+                            ) : "提交申請"}
+                        </button>
                     </div>
 
-                    <!-- Action Button & Confirmation -->
-                    <button id="copyWorkItemsButton" class="mt-6 w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-lg transition duration-150 ease-in-out transform hover:scale-[1.005] flex items-center justify-center">
-                        <span class="mr-2">📝</span>
-                        複製工項清單
-                    </button>
+                    {showSignaturePad && (
+                        <SignaturePad 
+                            onClose={() => setShowSignaturePad(false)} 
+                            onSave={setSignature} 
+                        />
+                    )}
                 </div>
-                
-                <div id="confirmationMessage" class="hidden mt-4 p-3 text-center rounded-lg font-medium shadow-md">
-                    <!-- Confirmation message will appear here -->
-                </div>
-            </div>
+            );
+        };
 
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('workOrderForm');
+        // --- View 3 & 4: Status Tracking ---
+        const StatusView = ({ status, completionDate }) => {
+            const isCompleted = status === 'completed';
             
-            // Output elements for Primary Section (Block 1)
-            const primaryOutputDiv = document.getElementById('primaryOutput');
-            const copyPrimaryButton = document.getElementById('copyPrimaryButton');
-
-            // Output elements for Secondary Section (Block 2)
-            const workItemsOutputDiv = document.getElementById('workItemsOutput');
-            const copyWorkItemsButton = document.getElementById('copyWorkItemsButton');
-            
-            const confirmationMessage = document.getElementById('confirmationMessage');
-            const chunghwaMidTermWarning = document.getElementById('chunghwaMidTermWarning');
-            
-            // 取得所有 Select 元素
-            const telecomProviderSelect = document.getElementById('telecomProvider');
-            const monthlyFeeSelect = document.getElementById('monthlyFee');
-            const internetMonthsSelect = document.getElementById('internetMonths');
-            const paymentTypeSelect = document.getElementById('paymentType');
-            const planStatusSelect = document.getElementById('planStatus'); 
-            
-            const allFees = ["399", "599", "699", "799", "999", "1399"];
-
-            /**
-             * 根據申辦電信更新月資費選項 (遠傳移除 699)。
-             * @param {string} selectedProvider 申辦電信的值。
-             */
-            function updateMonthlyFeeOptions(selectedProvider) {
-                const currentFee = monthlyFeeSelect.value;
-                monthlyFeeSelect.innerHTML = '<option value="">請選擇</option>';
-
-                let feesToShow = allFees;
-
-                // 遠傳移除 699
-                if (selectedProvider === '遠傳') {
-                    feesToShow = allFees.filter(fee => fee !== "699");
-                }
-
-                feesToShow.forEach(fee => {
-                    const option = document.createElement('option');
-                    option.value = fee;
-                    option.textContent = fee;
-                    monthlyFeeSelect.appendChild(option);
-                });
-
-                // 嘗試還原選中的值
-                if (feesToShow.includes(currentFee)) {
-                    monthlyFeeSelect.value = currentFee;
-                } else {
-                    monthlyFeeSelect.value = ""; 
-                }
-            }
-
-            /**
-             * 根據申辦電信自動設定款項。
-             * @param {string} selectedProvider 申辦電信的值。
-             */
-            function autoSetPaymentType(selectedProvider) {
-                if (selectedProvider === '中華') {
-                    paymentTypeSelect.value = '預繳金';
-                } else if (selectedProvider === '遠傳') {
-                    paymentTypeSelect.value = '無';
-                } else {
-                    // 如果沒有選擇，清空款項
-                    paymentTypeSelect.value = '';
-                }
-            }
-
-            // 工項邏輯定義 (Work Item Rules)
-            const workItemRules = [
-                // 基礎工項 (已刪除 '上線')
-                { name: "改新裝機工單", condition: (v) => v.jingnetStatus === "新裝機未付款", category: "General" },
-                { name: "更新取卡表", condition: (v) => v.telecomProvider === "中華" || v.telecomProvider === "遠傳", category: "General" },
-                { name: "預繳金/匯款資料核對", condition: (v) => v.telecomProvider === "中華", category: "Finance" },
-                { name: "中華上二階", condition: (v) => v.telecomProvider === "中華", category: "General" },
-                { name: "違約單據上傳、送會辦", condition: (v) => v.originalContract === "須解約", category: "Contract" },
-                { name: "主業權贈送", condition: (v) => v.jingnetStatus.includes("新裝機") || v.jingnetStatus.includes("續約客"), category: "General" },
-                
-                // 退費與結單
-                { name: "退費(請確認客戶已繳費、已裝機，金額請貼記事本)", condition: (v) => v.jingnetStatus === "新裝機已付款" || v.jingnetStatus === "續約客已付款", category: "Refund" },
-                { name: "Chat─結單(會計)(請先確認客戶已繳費、已裝機)", condition: (v) => v.jingnetStatus.includes("續約客") || v.jingnetStatus.includes("期中客"), category: "Settlement" },
-                
-                // 派送與 Chat 邏輯
-                
-                // Chat─寄送群: 寄卡, 親送, eSIM, OR (遠傳 + 台中取卡)
-                { 
-                    name: "Chat─寄送群", 
-                    condition: (v) => ["寄卡", "親送", "eSIM"].includes(v.simDelivery) || 
-                                     (v.telecomProvider === "遠傳" && v.simDelivery === "台中取卡"),
-                    category: "Chat" 
-                },
-                
-                // Chat--中華拍照群: 申辦中華 (包含 送卡候補拍照)
-                { 
-                    name: "Chat--中華拍照群", 
-                    condition: (v) => v.telecomProvider === "中華", 
-                    category: "Chat" 
-                },
-                
-                // Chat─全區助理: (中華 且 送卡候補拍照) OR (遠傳 且 送卡)
-                { 
-                    name: "Chat─全區助理", 
-                    condition: (v) => (v.telecomProvider === "中華" && v.simDelivery === "送卡候補拍照") || (v.telecomProvider === "遠傳" && v.simDelivery === "送卡"),
-                    category: "Chat" 
-                },
-                
-                // 派卡網維單(無工單) 
-                { 
-                    name: "派卡網維單(無工單)", 
-                    condition: (v) => v.simDelivery === "送卡" && 
-                                     v.jingnetStatus !== "新裝機未付款" && 
-                                     !(v.telecomProvider === "中華" && v.jingnetStatus === "期中客"), 
-                    category: "Dispatch" 
-                },
-
-                // 電商派案: SIM卡派送方式全部都觸發
-                { name: "電商派案", condition: (v) => v.simDelivery !== "", category: "Dispatch" }, 
+            const steps = [
+                { id: 1, title: "提交申請", date: "2023/10/24", completed: true },
+                { id: 2, title: "資料審核", date: "2023/10/25", completed: true },
+                { id: 3, title: "銀行作業", date: isCompleted ? "2023/11/01" : "處理中", completed: isCompleted, current: !isCompleted },
+                { id: 4, title: "退款完成", date: isCompleted ? completionDate : "預計 2-4 週", completed: isCompleted, current: isCompleted },
             ];
 
-            function calculateWorkItems() {
-                // 1. 取得所有輸入值
-                const values = {
-                    planStatus: planStatusSelect.value, 
-                    telecomProvider: telecomProviderSelect.value,
-                    monthlyFee: monthlyFeeSelect.value,
-                    internetMonths: internetMonthsSelect.value,
+            useEffect(() => {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }, [status]);
 
-                    // Block 2 fields
-                    jingnetStatus: document.getElementById('jingnetStatus').value,
-                    originalContract: document.getElementById('originalContract').value,
-                    paymentType: paymentTypeSelect.value, 
-                    simDelivery: document.getElementById('simDelivery').value,
-                    otherTaskDescription: document.getElementById('otherTaskDescription').value.trim(),
-                };
+            return (
+                <div className="app-container bg-white flex flex-col h-screen">
+                    <div className="bg-blue-600 p-8 text-white text-center rounded-b-[2.5rem] shadow-lg mb-8">
+                        <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
+                            {isCompleted ? (
+                                <Icon name="check" size={32} className="text-white" />
+                            ) : (
+                                <Icon name="clock" size={32} className="text-white animate-pulse" />
+                            )}
+                        </div>
+                        <h2 className="text-2xl font-bold mb-1">
+                            {isCompleted ? "退款已入帳" : "退費處理中"}
+                        </h2>
+                        <p className="text-blue-100 opacity-90">
+                            {isCompleted ? `款項已於 ${completionDate} 匯入指定帳戶` : "您的申請正在進行銀行端作業"}
+                        </p>
+                    </div>
 
+                    <div className="px-6 flex-1">
+                        <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-6 mb-6">
+                            <div className="flex justify-between items-center mb-4 border-b pb-2">
+                                <span className="text-gray-500 text-sm">案件編號</span>
+                                <span className="font-mono font-bold text-gray-800">{USER_DATA.caseId}</span>
+                            </div>
+                            
+                            {/* Timeline */}
+                            <div className="relative space-y-8 pl-4 py-2">
+                                {/* Vertical Line */}
+                                <div className="absolute left-[23px] top-4 bottom-4 w-0.5 bg-gray-200"></div>
+
+                                {steps.map((step, idx) => (
+                                    <div key={step.id} className="relative flex items-center gap-4 z-10">
+                                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center bg-white
+                                            ${step.completed ? 'border-green-500 bg-green-500' : 
+                                              step.current ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}
+                                        `}>
+                                            {step.completed && <Icon name="check" size={12} className="text-white" />}
+                                            {step.current && <div className="w-2 h-2 rounded-full bg-blue-500 animate-ping"></div>}
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className={`font-bold text-sm ${step.current ? 'text-blue-600' : 'text-gray-800'}`}>
+                                                {step.title}
+                                            </p>
+                                            <p className="text-xs text-gray-400">{step.date}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {!isCompleted && (
+                            <div className="bg-yellow-50 p-4 rounded-lg flex gap-3 items-start">
+                                <Icon name="info" className="text-yellow-600 shrink-0 mt-0.5" size={18} />
+                                <div className="text-sm text-yellow-800">
+                                    <p className="font-bold mb-1">預計作業時間</p>
+                                    <p>配合銀行作業流程，退款通常需要 2-4 週的工作天。請您耐心等候。</p>
+                                </div>
+                            </div>
+                        )}
+                        
+                        {isCompleted && (
+                            <div className="text-center mt-8">
+                                <button className="text-blue-600 text-sm font-medium hover:underline">
+                                    查看電子收據
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Main Controller ---
+        const App = () => {
+            // State: 'sms' | 'form' | 'processing' | 'completed'
+            // We read from localStorage to simulate the "come back later" persistence
+            const [view, setView] = useState('sms');
+            const [completionDate, setCompletionDate] = useState(null);
+
+            useEffect(() => {
+                const savedState = localStorage.getItem('refundAppState');
+                const savedDate = localStorage.getItem('refundCompletionDate');
                 
-                // === 區塊一輸出邏輯 (Primary Output) ===
-                // 檢查區塊一所有欄位是否都有值
-                const primarySelected = values.planStatus !== "" && values.telecomProvider !== "" && values.monthlyFee !== "" && values.internetMonths !== "";
+                if (savedState) {
+                    // If user has history, don't show SMS, simulate them clicking the link directly to the app
+                    // However, for this demo, we'll start at SMS but if they click the link, it jumps to correct state
+                }
+                if (savedDate) setCompletionDate(savedDate);
                 
-                // 組合輸出格式: [方案狀態][申辦電信][月資費]/[網路月份]
-                const primaryOutputText = primarySelected 
-                    ? `${values.planStatus}${values.telecomProvider}${values.monthlyFee}/${values.internetMonths}`
-                    : '';
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }, []);
 
-                if (primarySelected) {
-                    primaryOutputDiv.innerHTML = `<span class="primary-output-text">${primaryOutputText}</span>`;
-                    primaryOutputDiv.dataset.plainText = primaryOutputText;
+            const handleSMSLinkClick = () => {
+                const savedState = localStorage.getItem('refundAppState');
+                if (savedState === 'processing' || savedState === 'completed') {
+                    setView(savedState);
                 } else {
-                    primaryOutputDiv.innerHTML = '<p class="text-gray-500 italic">請在左側填寫區塊一資訊</p>';
-                    primaryOutputDiv.dataset.plainText = '';
+                    setView('form');
                 }
+            };
 
-                
-                // === 區塊二工項清單邏輯 (Secondary Output) ===
-                
-                // 檢查是否所有**必要**欄位都有值 (已包含 planStatus)
-                const requiredFields = [
-                    'planStatus', 'telecomProvider', 'monthlyFee', 'jingnetStatus', 
-                    'originalContract', 'internetMonths', 'paymentType', 'simDelivery'
-                ];
+            const handleFormSubmit = () => {
+                const newState = 'processing';
+                setView(newState);
+                localStorage.setItem('refundAppState', newState);
+            };
 
-                const allSelectedForWorkItems = requiredFields.every(key => values[key] !== "");
-
-                if (!allSelectedForWorkItems) {
-                    workItemsOutputDiv.innerHTML = '<p class="text-gray-500 italic text-center pt-8">請在左側**完整**填寫所有客戶資訊，工項會即時自動生成。</p>';
-                    chunghwaMidTermWarning.classList.add('hidden');
-                    workItemsOutputDiv.dataset.plainText = '';
-                    return;
+            // Debug Tools to simulate time passing
+            const debugSetStatus = (status) => {
+                setView(status);
+                localStorage.setItem('refundAppState', status);
+                if (status === 'completed') {
+                    const date = "2023/11/15";
+                    setCompletionDate(date);
+                    localStorage.setItem('refundCompletionDate', date);
                 }
-
-                // 2. 判斷符合的工項
-                let requiredWorkItems = workItemRules
-                    .filter(rule => rule.condition(values))
-                    .map(rule => ({ name: rule.name, category: rule.category }));
-
-                // 3. 處理互斥邏輯: 結單 vs 退費
-                const hasRefund = requiredWorkItems.some(item => item.category === "Refund");
-                if (hasRefund) {
-                    requiredWorkItems = requiredWorkItems.filter(item => item.category !== "Settlement");
+                if (status === 'sms') {
+                    localStorage.clear();
+                    setCompletionDate(null);
                 }
+            };
 
-                // 4. 處理「其他工項(請寫任務說明)」
-                if (values.otherTaskDescription) {
-                    requiredWorkItems.push({ name: `其他(請寫任務說明): ${values.otherTaskDescription}`, category: "Other" });
-                }
+            return (
+                <div>
+                    {view === 'sms' && <SMSView onLinkClick={handleSMSLinkClick} />}
+                    {view === 'form' && <RefundFormView onSubmit={handleFormSubmit} />}
+                    {(view === 'processing' || view === 'completed') && (
+                        <StatusView status={view} completionDate={completionDate} />
+                    )}
 
-                // 5. 處理中華紅字提醒 (邏輯：只要是中華電信就顯示)
-                const isChunghwa = values.telecomProvider === "中華";
-                const warningMessage = '⚠️ 若客戶無法配合時間至公司派照取卡，請另派卡網維單';
-                
-                if (isChunghwa) {
-                    chunghwaMidTermWarning.innerHTML = warningMessage;
-                    chunghwaMidTermWarning.classList.remove('hidden');
-                } else {
-                    chunghwaMidTermWarning.classList.add('hidden');
-                }
+                    {/* Developer Tools Panel (For Simulation) */}
+                    <div className="fixed bottom-0 right-0 left-0 bg-gray-800 text-white p-2 text-xs opacity-90 z-50 flex justify-center gap-2">
+                        <span className="font-bold py-1 px-2 border-r border-gray-600">開發測試區:</span>
+                        <button onClick={() => debugSetStatus('sms')} className="hover:text-blue-300 py-1 px-2">重置流程</button>
+                        <button onClick={() => debugSetStatus('processing')} className="hover:text-blue-300 py-1 px-2">模擬: 處理中</button>
+                        <button onClick={() => debugSetStatus('completed')} className="hover:text-blue-300 py-1 px-2">模擬: 退款完成</button>
+                    </div>
+                </div>
+            );
+        };
 
-                // 6. 產生輸出 HTML/Text
-                const finalWorkItemNames = requiredWorkItems.map(item => item.name);
-
-                if (finalWorkItemNames.length === 0) {
-                     workItemsOutputDiv.innerHTML = '<p class="text-gray-500 italic text-center pt-8">目前情境下無特殊工項需要處理，請檢查資訊。</p>';
-                     workItemsOutputDiv.dataset.plainText = '';
-                } else {
-                    const listHtml = finalWorkItemNames.map(item => 
-                        `<li class="flex items-start text-gray-800">
-                            <span class="text-green-500 mr-2 mt-0.5 text-lg flex-shrink-0">✓</span>
-                            <span class="font-medium">${item}</span>
-                        </li>`
-                    ).join('');
-                    
-                    workItemsOutputDiv.dataset.plainText = finalWorkItemNames.join('\n');
-                    workItemsOutputDiv.innerHTML = `<ul class="space-y-3 list-none p-0 m-0">${listHtml}</ul>`;
-                }
-            }
-            
-            // --- Helper Functions ---
-            function showConfirmation(message, styleClasses) {
-                confirmationMessage.textContent = message;
-                confirmationMessage.className = `mt-4 p-3 text-center rounded-lg font-medium shadow-md transition duration-300 ${styleClasses}`;
-                confirmationMessage.classList.remove('hidden');
-                setTimeout(() => {
-                    confirmationMessage.classList.add('hidden');
-                }, 3000);
-            }
-            
-            function copyToClipboard(text, successMessage, failureMessage) {
-                if (!text || text.trim() === '') {
-                    showConfirmation('無法複製，請先填寫完畢！', 'bg-red-100 border-red-300 text-red-800');
-                    return;
-                }
-                const tempTextarea = document.createElement('textarea');
-                tempTextarea.value = text;
-                document.body.appendChild(tempTextarea);
-                tempTextarea.select();
-                try {
-                    document.execCommand('copy');
-                    showConfirmation(successMessage, 'bg-indigo-100 border-indigo-300 text-indigo-800');
-                } catch (err) {
-                    showConfirmation(failureMessage, 'bg-red-100 border-red-300 text-red-800');
-                }
-                document.body.removeChild(tempTextarea);
-            }
-
-            // --- Event Listeners ---
-            
-            // 即時更新
-            form.addEventListener('change', calculateWorkItems);
-            form.addEventListener('input', calculateWorkItems); 
-            
-            // 監聽申辦電信的變動：更新月資費 及 自動設定款項
-            telecomProviderSelect.addEventListener('change', (event) => {
-                const selectedProvider = event.target.value;
-                updateMonthlyFeeOptions(selectedProvider);
-                autoSetPaymentType(selectedProvider); 
-                calculateWorkItems();
-            });
-
-            // 複製按鈕功能 (區塊一：方案速記)
-            copyPrimaryButton.addEventListener('click', () => {
-                const plainText = primaryOutputDiv.dataset.plainText;
-                copyToClipboard(
-                    plainText, 
-                    '方案速記已成功複製到剪貼簿！', 
-                    '複製方案速記失敗，請手動複製。'
-                );
-            });
-            
-            // 複製按鈕功能 (區塊二：工項清單)
-            copyWorkItemsButton.addEventListener('click', () => {
-                const plainText = workItemsOutputDiv.dataset.plainText;
-                copyToClipboard(
-                    plainText, 
-                    '工項清單已成功複製到剪貼簿！', 
-                    '複製工項清單失敗，請手動複製。'
-                );
-            });
-
-
-            // 初始化時：先設定月資費選項，再計算工項
-            updateMonthlyFeeOptions(telecomProviderSelect.value);
-            calculateWorkItems();
-        });
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
+apps-fileview.texmex_20260108.00_p0
+!DOCTYPE html.html
+目前顯示的是「!DOCTYPE html.html」。
