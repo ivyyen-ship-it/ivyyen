@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智生活今網寬頻雙網方案優惠試算</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f7f7;
+            background-image: linear-gradient(135deg, #ffffff 0%, #e0f2f1 100%);
+            min-height: 100vh;
+            color: #37474f;
+            position: relative;
+            overflow-x: hidden;
+        }
+        .tiffany-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(129, 203, 196, 0.15);
+            border: 1px solid #ffffff;
+            backdrop-filter: blur(10px);
+        }
+        .tiffany-input {
+            background: #ffffff;
+            border: 1.5px solid #b2dfdb;
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #263238;
+            transition: all 0.3s ease;
+        }
+        select.tiffany-input:invalid, 
+        select.tiffany-input option[value=""] {
+            color: #90a4ae;
+        }
+        .tiffany-input:focus {
+            border-color: #4db6ac;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.2);
+        }
+
+        .btn-type {
+            background-color: #f1f8f7;
+            color: #90a4ae;
+            border: 1.5px dashed #b2dfdb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-active {
+            background-color: #4db6ac !important;
+            color: #ffffff !important;
+            border: 1.5px solid #00897b !important;
+            box-shadow: 0 6px 15px rgba(77, 182, 172, 0.4);
+            transform: translateY(-2px);
+            font-weight: 800;
+        }
+
+        .btn-line {
+            background: linear-gradient(135deg, #4db6ac 0%, #26a69a 100%);
+            box-shadow: 0 8px 20px rgba(38, 166, 154, 0.25);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: pulse 2.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        .label-text {
+            color: #546e7a;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            display: block;
+            letter-spacing: 0.05em;
+        }
+        .result-panel {
+            background: linear-gradient(180deg, #ffffff 0%, #f1f8f7 100%);
+            border: 1px solid #e0f2f1;
+        }
+
+        /* 預防說明放大 */
+        .warning-box {
+            background-color: #fffaf0;
+            border: 2px solid #feebc8;
+            border-radius: 16px;
+        }
+        .warning-text {
+            font-size: 14px; 
+            color: #c05621;
+            font-weight: 700;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body class="py-10 px-5">
+
+    <div class="max-w-md mx-auto relative z-10">
+        <!-- Header -->
+        <div class="text-center mb-8 pt-4">
+            <h1 class="text-2xl font-black tracking-tighter mb-4 text-[#00796b]">智生活今網寬頻<br>雙網方案優惠試算</h1>
+            <div class="h-1.5 w-16 bg-[#81cbd4] mx-auto rounded-full"></div>
+        </div>
+
+        <!-- Main Form Card -->
+        <div class="tiffany-card p-7 mb-6">
+            <div class="space-y-6">
+                <!-- 1. 寬頻合約 -->
+                <section>
+                    <label class="label-text">1. 今網寬頻網路合約狀態</label>
+                    <select id="broadband-status" class="tiffany-input w-full appearance-none" required>
+                        <option value="" disabled selected>請選擇...</option>
+                        <option value="qualified">新申裝</option>
+                        <option value="qualified">今網用戶：三個月內到期</option>
+                        <option value="qualified">今網用戶：到期日超過三個月(可提前續約)</option>
+                        <option value="over-3">今網用戶：到期日超過三個月</option>
+                    </select>
+                </section>
+
+                <!-- 2. 目前門號 -->
+                <section>
+                    <label class="label-text">2. 您目前的電信門號</label>
+                    <select id="current-telco" class="tiffany-input w-full" required>
+                        <option value="" disabled selected>請選擇...</option>
+                        <option value="cht">中華電信</option>
+                        <option value="fet">遠傳電信</option>
+                        <option value="twn">台灣大哥大</option>
+                    </select>
+                </section>
+
+                <!-- 3. 辦理類別 -->
+                <section>
+                    <label class="label-text">3. 辦理類別 (請選擇)</label>
+                    <div class="flex gap-3">
+                        <button id="btn-np" class="flex-1 py-4 rounded-xl text-sm font-bold transition-all btn-type btn-active" onclick="setType('np')">攜碼 (NP)</button>
+                        <button id="btn-new" class="flex-1 py-4 rounded-xl text-sm font-bold transition-all btn-type" onclick="setType('new')">新辦門號</button>
+                    </div>
+                </section>
+
+                <!-- 4. 資費方案 -->
+                <section>
+                    <label class="label-text">4. 選擇申辦資費方案</label>
+                    <select id="plan-selection" class="tiffany-input w-full" required>
+                        <option value="" disabled selected>請選擇以上條件...</option>
+                    </select>
+                </section>
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <div class="tiffany-card p-7 result-panel shadow-lg mb-10">
+            <h2 class="text-xl font-bold mb-6 flex items-center text-[#00796b]">
+                <span class="mr-2">✦</span> 試算結果
+            </h2>
+            
+            <div id="result-content" class="space-y-6">
+                <div class="grid grid-cols-3 gap-x-2 gap-y-6">
+                    <div>
+                        <p class="text-[11px] text-[#4db6ac] font-bold uppercase tracking-widest mb-1">辦理方式</p>
+                        <p id="res-apply-type" class="text-lg font-black text-[#00796b]">--</p>
+                    </div>
+                    <div>
+                        <p class="text-[11px] text-[#4db6ac] font-bold uppercase tracking-widest mb-1">申辦電信</p>
+                        <p id="res-brand" class="text-lg font-black text-[#263238]">--</p>
+                    </div>
+                    <div>
+                        <p class="text-[11px] text-[#4db6ac] font-bold uppercase tracking-widest mb-1">資費方案</p>
+                        <p id="res-plan-price" class="text-lg font-black text-[#263238]">--</p>
+                    </div>
+                </div>
+
+                <div class="py-5 border-t border-[#e0f2f1]">
+                    <p class="text-[11px] text-[#4db6ac] font-bold uppercase tracking-widest mb-2">專屬優惠內容</p>
+                    <p id="res-discount" class="text-xl font-black text-[#004d40] leading-relaxed">請先完成上方條件選擇</p>
+                </div>
+
+                <!-- 預防說明放大 -->
+                <div class="warning-box p-5 shadow-inner">
+                    <p class="warning-text">
+                        ※ 預防說明：因雙網方案情境不同優惠可能有所變化，完整優惠仍需由電信專員說明最準確喔！
+                    </p>
+                </div>
+
+                <div class="pt-2">
+                    <a href="https://lin.ee/CPfNPRt" target="_blank" class="btn-line w-full flex flex-col items-center justify-center py-5 rounded-2xl text-white no-underline">
+                        <span class="text-2xl font-black tracking-widest mb-1">加 Line@ 問優惠</span>
+                        <span class="text-[11px] font-bold opacity-90">智生活專人為您服務 ‧ 領取隱藏福利</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-8 mb-4 text-center opacity-60">
+            <p class="text-[11px] text-[#80cbc4] font-bold tracking-[0.2em]">智生活 × 今網寬頻 精心設計</p>
+        </footer>
+    </div>
+
+    <script>
+        const rawData = {
+            'qualified': [
+                { targetBrand: '遠傳', price: 399, discount: '網路費折扣 1500', note: '' },
+                { targetBrand: '遠傳', price: 599, discount: '網路費折扣 3500', note: '' },
+                { targetBrand: '遠傳', price: 799, discount: '網路費折扣 5000', note: '' },
+                { targetBrand: '遠傳', price: 999, discount: '網路費折扣 7000', note: '' },
+                { targetBrand: '遠傳', price: 1399, discount: '30個月免費網路', note: '含冷氣清洗' },
+                { targetBrand: '中華', price: 599, discount: '網路費折扣 2500', note: '' },
+                { targetBrand: '中華', price: 699, discount: '網路費折扣 1000', note: '' },
+                { targetBrand: '中華', price: 799, discount: '網路費折扣 5000', note: '' },
+                { targetBrand: '中華', price: 999, discount: '網路費折扣 7000', note: '' },
+                { targetBrand: '中華', price: 1399, discount: '30個月免費網路', note: '' }
+            ],
+            'over3': [
+                { targetBrand: '遠傳', price: 399, discount: '直接贈送網路 4 個月', note: '' },
+                { targetBrand: '遠傳', price: 599, discount: '直接贈送網路 9 個月', note: '' },
+                { targetBrand: '遠傳', price: 799, discount: '直接贈送網路 16 個月', note: '' },
+                { targetBrand: '遠傳', price: 999, discount: '直接贈送網路 24 個月', note: '' },
+                { targetBrand: '遠傳', price: 1399, discount: '直接贈送網路 24 個月', note: '含冷氣清洗一台' },
+                { targetBrand: '中華', price: 599, discount: '直接贈送網路 8 個月', note: '' },
+                { targetBrand: '中華', price: 799, discount: '直接贈送網路 16 個月', note: '' },
+                { targetBrand: '中華', price: 999, discount: '直接贈送網路 24 個月', note: '' },
+                { targetBrand: '中華', price: 1399, discount: '直接贈送網路 30 個月', note: '含冷氣清洗一台' }
+            ]
+        };
+
+        let currentApplyType = 'np';
+        let filteredOptions = [];
+
+        const broadbandStatus = document.getElementById('broadband-status');
+        const currentTelco = document.getElementById('current-telco');
+        const planSelect = document.getElementById('plan-selection');
+
+        const resApplyType = document.getElementById('res-apply-type');
+        const resBrand = document.getElementById('res-brand');
+        const resPlanPrice = document.getElementById('res-plan-price');
+        const resDiscount = document.getElementById('res-discount');
+
+        function setType(type) {
+            currentApplyType = type;
+            document.getElementById('btn-np').classList.toggle('btn-active', type === 'np');
+            document.getElementById('btn-new').classList.toggle('btn-active', type === 'new');
+            updatePlanOptions();
+        }
+
+        function updatePlanOptions() {
+            const status = broadbandStatus.value;
+            const telco = currentTelco.value;
+            
+            if (!status || !telco) {
+                planSelect.innerHTML = '<option value="" disabled selected>請選擇以上條件...</option>';
+                resetResults();
+                return;
+            }
+
+            const baseData = status === 'qualified' ? rawData.qualified : rawData.over3;
+            
+            filteredOptions = baseData.filter(item => {
+                if (currentApplyType === 'new') return true;
+                if (telco === 'cht') return item.targetBrand === '遠傳';
+                if (telco === 'fet') return item.targetBrand === '中華';
+                if (telco === 'twn') return true;
+                return false;
+            });
+
+            planSelect.innerHTML = '<option value="" disabled selected>請選擇資費方案...</option>';
+            filteredOptions.forEach((item, index) => {
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.textContent = `${item.targetBrand} - ${item.price}型`;
+                planSelect.appendChild(opt);
+            });
+            
+            resetResults();
+        }
+
+        function resetResults() {
+            resApplyType.textContent = '--';
+            resBrand.textContent = '--';
+            resPlanPrice.textContent = '--';
+            resDiscount.textContent = '請先完成選擇以試算結果';
+            checkSelectColors();
+        }
+
+        function checkSelectColors() {
+            [broadbandStatus, currentTelco, planSelect].forEach(select => {
+                if (!select.value) {
+                    select.style.color = '#90a4ae';
+                } else {
+                    select.style.color = '#263238';
+                }
+            });
+        }
+
+        function calculate() {
+            checkSelectColors();
+            const planIdx = planSelect.value;
+            if (planIdx === "" || planIdx === null) return;
+
+            const selected = filteredOptions[planIdx];
+            if (selected) {
+                resApplyType.textContent = currentApplyType === 'np' ? '攜碼 (NP)' : '新辦門號';
+                resBrand.textContent = selected.targetBrand;
+                resPlanPrice.textContent = `${selected.price} 型`;
+                resDiscount.textContent = selected.discount + (selected.note ? ` (${selected.note})` : '');
+            }
+        }
+
+        broadbandStatus.addEventListener('change', updatePlanOptions);
+        currentTelco.addEventListener('change', updatePlanOptions);
+        planSelect.addEventListener('change', calculate);
+
+        checkSelectColors();
+    </script>
+</body>
+</html>
