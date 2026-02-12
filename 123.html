@@ -286,7 +286,17 @@
                     </div>
                 </div>
 
-                <div class="np-method-container space-y-3">
+                <!-- 攜碼專屬：目標電信選擇 (針對台灣大哥大或新辦情境) -->
+                <div class="target-brand-selection-box hidden space-y-3">
+                    <label class="label-text">想了解哪家電信？</label>
+                    <div class="flex gap-2">
+                        <button class="flex-1 py-3 rounded-xl text-[11px] font-bold btn-logic btn-target-cht" onclick="setTargetBrand('${id}', '中華')">中華電信</button>
+                        <button class="flex-1 py-3 rounded-xl text-[11px] font-bold btn-logic btn-target-fet" onclick="setTargetBrand('${id}', '遠傳')">遠傳電信</button>
+                    </div>
+                </div>
+
+                <!-- 了解方式：僅在攜碼且已選定目標電信後顯示 -->
+                <div class="np-method-container hidden space-y-3">
                     <label class="label-text">4. 選擇優惠了解方式</label>
                     <div class="flex gap-2">
                         <button class="flex-1 py-3 rounded-xl text-[10px] leading-tight font-bold btn-logic btn-logic-active btn-method-auto" onclick="setNpMethod('${id}', 'auto')">A. 比照我目前<br>的資費方案</button>
@@ -298,14 +308,8 @@
                     </div>
                 </div>
 
+                <!-- 手動方案選擇區塊 -->
                 <div class="manual-container hidden space-y-3">
-                    <div class="target-brand-selection">
-                        <label class="label-text">想了解哪家電信？</label>
-                        <div class="flex gap-2">
-                            <button class="flex-1 py-2 rounded-lg btn-logic btn-target-cht" onclick="setTargetBrand('${id}', '中華')">中華電信</button>
-                            <button class="flex-1 py-2 rounded-lg btn-logic btn-target-fet" onclick="setTargetBrand('${id}', '遠傳')">遠傳電信</button>
-                        </div>
-                    </div>
                     <div>
                         <label class="label-text">選擇資費方案</label>
                         <select class="tiffany-input w-full plan-select placeholder-style" onchange="handleSelectColor(event); calculateAll()">
@@ -344,9 +348,12 @@
         function setTargetBrand(id, brand) {
             const el = document.getElementById(id);
             el.dataset.targetBrand = brand;
+            
+            // 更新按鈕樣式
             el.querySelector('.btn-target-cht').classList.toggle('btn-logic-active', brand === '中華');
             el.querySelector('.btn-target-fet').classList.toggle('btn-logic-active', brand === '遠傳');
-            updatePlanOptions(id);
+
+            updatePhoneLogic(id);
         }
 
         function updatePhoneLogic(id, isInit = false) {
@@ -355,31 +362,54 @@
             const applyType = el.dataset.applyType;
             const npMethod = el.dataset.npMethod;
             
+            const targetBrandBox = el.querySelector('.target-brand-selection-box');
             const npContainer = el.querySelector('.np-method-container');
+            const autoInputBox = el.querySelector('.auto-input-box');
             const manualContainer = el.querySelector('.manual-container');
-            const brandBox = el.querySelector('.target-brand-selection');
 
+            // 1. 初始化所有顯示狀態
+            targetBrandBox.classList.add('hidden');
+            npContainer.classList.add('hidden');
+            manualContainer.classList.add('hidden');
+
+            // 2. 判斷辦理類別邏輯
             if (applyType === 'np') {
-                npContainer.classList.remove('hidden');
-                manualContainer.classList.toggle('hidden', npMethod === 'auto');
-                
+                // 攜碼情境
                 if (curTelco === 'cht') {
                     el.dataset.targetBrand = '遠傳';
-                    brandBox.classList.add('hidden');
                 } else if (curTelco === 'fet') {
                     el.dataset.targetBrand = '中華';
-                    brandBox.classList.add('hidden');
-                } else {
-                    brandBox.classList.remove('hidden');
-                    if (!isInit && curTelco !== el.dataset.lastTelco) {
-                        el.dataset.targetBrand = '';
-                        el.querySelectorAll('.target-brand-selection .btn-logic').forEach(b => b.classList.remove('btn-logic-active'));
+                } else if (curTelco === 'twn') {
+                    // 台哥大：必須先選擇目標電信
+                    targetBrandBox.classList.remove('hidden');
+                }
+
+                // 如果已經選定目標品牌，顯示後續項目
+                if (el.dataset.targetBrand === '中華' || el.dataset.targetBrand === '遠傳') {
+                    npContainer.classList.remove('hidden');
+                    
+                    if (npMethod === 'auto') {
+                        autoInputBox.classList.remove('hidden');
+                        manualContainer.classList.add('hidden');
+                    } else {
+                        autoInputBox.classList.add('hidden');
+                        manualContainer.classList.remove('hidden');
                     }
                 }
             } else {
-                npContainer.classList.add('hidden');
-                manualContainer.classList.remove('hidden');
-                brandBox.classList.remove('hidden');
+                // 新辦情境
+                targetBrandBox.classList.remove('hidden');
+                if (el.dataset.targetBrand === '中華' || el.dataset.targetBrand === '遠傳') {
+                    manualContainer.classList.remove('hidden');
+                }
+            }
+
+            // 切換電信商時，若是台哥大，則清除之前的目標品牌按鈕狀態
+            if (!isInit && curTelco !== el.dataset.lastTelco) {
+                if (curTelco === 'twn') {
+                    el.dataset.targetBrand = '';
+                    el.querySelectorAll('.btn-target-cht, .btn-target-fet').forEach(b => b.classList.remove('btn-logic-active'));
+                }
             }
 
             el.dataset.lastTelco = curTelco;
@@ -400,6 +430,7 @@
                 return;
             }
 
+            // 定義資費過濾邏輯
             let filterPrices = [399, 599, 699, 799, 999, 1399];
             if (brand === '中華' && applyType === 'new') filterPrices = [599, 799, 999, 1399];
 
@@ -445,6 +476,7 @@
                     const currentPrice = parseInt(item.querySelector('.current-price-input').value);
                     if (currentPrice && targetBrand) {
                         const plans = planData[status]['np'].filter(p => p.brand === targetBrand);
+                        // 自動尋找大於等於目前資費的方案
                         finalPlan = plans.sort((a,b) => a.price - b.price).find(p => p.price >= currentPrice) || plans[plans.length-1];
                     }
                 } else {
@@ -454,8 +486,6 @@
 
                 if (finalPlan) {
                     validCount++;
-                    
-                    // 正確判定是否為「贈送月數」
                     let isMonthType = finalPlan.isMonth === true;
                     
                     const itemRewardStr = isMonthType 
