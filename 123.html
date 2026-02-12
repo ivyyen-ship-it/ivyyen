@@ -120,6 +120,15 @@
             white-space: nowrap;
             letter-spacing: -0.3px;
         }
+        .over-limit-hint {
+            color: #00897b;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: block;
+            margin-top: 8px;
+            padding-left: 1.5rem;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body class="py-10 px-4">
@@ -213,7 +222,7 @@
                     { brand: '中華', price: 599, reward: 2500, extra: '', isMonth: false },
                     { brand: '中華', price: 699, reward: 1000, extra: '', isMonth: false },
                     { brand: '中華', price: 799, reward: 5000, extra: '', isMonth: false },
-                    { brand: '中華', price: 999, reward: 7000, extra: '', isMonth: false }, // 修正：新申裝中華999現折7000
+                    { brand: '中華', price: 999, reward: 7000, extra: '', isMonth: false },
                     { brand: '中華', price: 1399, reward: 30, extra: '', isMonth: true }
                 ]
             },
@@ -515,6 +524,7 @@
                     <div class="mb-2">
                         <span class="normal-text">網路資費現折</span>
                         <span class="highlight-red">${totalReward}元</span>
+                        ${totalReward > 8900 ? `<span class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</span>` : ''}
                     </div>
                 `;
             }
