@@ -192,52 +192,52 @@
         const planData = {
             'discount': { 
                 'np': [
-                    { brand: '遠傳', price: 399, reward: 1500, extra: '' },
-                    { brand: '遠傳', price: 599, reward: 3500, extra: '' },
-                    { brand: '遠傳', price: 799, reward: 6000, extra: '' },
-                    { brand: '遠傳', price: 999, reward: 24, extra: '', isMonth: true }, // 修正攜碼遠傳999為24個月
-                    { brand: '遠傳', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true }, // 修正攜碼遠傳1399為30個月+冷氣清洗
-                    { brand: '中華', price: 599, reward: 3000, extra: '' },
-                    { brand: '中華', price: 699, reward: 1500, extra: '' },
-                    { brand: '中華', price: 799, reward: 6000, extra: '' },
-                    { brand: '中華', price: 999, reward: 24, extra: '', isMonth: true }, // 修正攜碼中華999為24個月
-                    { brand: '中華', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true } // 修正攜碼中華1399為30個月+冷氣清洗
+                    { brand: '遠傳', price: 399, reward: 1500, extra: '', isMonth: false },
+                    { brand: '遠傳', price: 599, reward: 3500, extra: '', isMonth: false },
+                    { brand: '遠傳', price: 799, reward: 6000, extra: '', isMonth: false },
+                    { brand: '遠傳', price: 999, reward: 24, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true },
+                    { brand: '中華', price: 599, reward: 3000, extra: '', isMonth: false },
+                    { brand: '中華', price: 699, reward: 1500, extra: '', isMonth: false },
+                    { brand: '中華', price: 799, reward: 6000, extra: '', isMonth: false },
+                    { brand: '中華', price: 999, reward: 24, extra: '', isMonth: true },
+                    { brand: '中華', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true }
                 ],
                 'new': [
-                    { brand: '遠傳', price: 399, reward: 1000, extra: '' },
-                    { brand: '遠傳', price: 599, reward: 3000, extra: '' },
-                    { brand: '遠傳', price: 799, reward: 5000, extra: '' },
-                    { brand: '遠傳', price: 999, reward: 7000, extra: '' },
-                    { brand: '遠傳', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true }, // 修正新辦遠傳1399為30個月+冷氣清洗
-                    { brand: '中華', price: 599, reward: 2500, extra: '' },
-                    { brand: '中華', price: 699, reward: 1000, extra: '' },
-                    { brand: '中華', price: 799, reward: 5000, extra: '' },
-                    { brand: '中華', price: 999, reward: 7000, extra: '' },
-                    { brand: '中華', price: 1399, reward: 30, extra: '', isMonth: true } // 修正新辦中華1399為30個月
+                    { brand: '遠傳', price: 399, reward: 1000, extra: '', isMonth: false },
+                    { brand: '遠傳', price: 599, reward: 3000, extra: '', isMonth: false },
+                    { brand: '遠傳', price: 799, reward: 5000, extra: '', isMonth: false },
+                    { brand: '遠傳', price: 999, reward: 7000, extra: '', isMonth: false },
+                    { brand: '遠傳', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true },
+                    { brand: '中華', price: 599, reward: 2500, extra: '', isMonth: false },
+                    { brand: '中華', price: 699, reward: 1000, extra: '', isMonth: false },
+                    { brand: '中華', price: 799, reward: 5000, extra: '', isMonth: false },
+                    { brand: '中華', price: 999, reward: 19, extra: '', isMonth: true },
+                    { brand: '中華', price: 1399, reward: 30, extra: '', isMonth: true }
                 ]
             },
             'months': { 
                 'np': [
-                    { brand: '遠傳', price: 399, reward: 4, extra: '' },
-                    { brand: '遠傳', price: 599, reward: 9, extra: '' },
-                    { brand: '遠傳', price: 799, reward: 16, extra: '' },
-                    { brand: '遠傳', price: 999, reward: 24, extra: '' },
-                    { brand: '遠傳', price: 1399, reward: 24, extra: '+分離式冷氣清洗一台' },
-                    { brand: '中華', price: 599, reward: 8, extra: '' },
-                    { brand: '中華', price: 799, reward: 16, extra: '' },
-                    { brand: '中華', price: 999, reward: 24, extra: '' },
-                    { brand: '中華', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台' }
+                    { brand: '遠傳', price: 399, reward: 4, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 599, reward: 9, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 799, reward: 16, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 999, reward: 24, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 1399, reward: 24, extra: '+分離式冷氣清洗一台', isMonth: true },
+                    { brand: '中華', price: 599, reward: 8, extra: '', isMonth: true },
+                    { brand: '中華', price: 799, reward: 16, extra: '', isMonth: true },
+                    { brand: '中華', price: 999, reward: 24, extra: '', isMonth: true },
+                    { brand: '中華', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true }
                 ],
                 'new': [
-                    { brand: '遠傳', price: 399, reward: 3, extra: '' },
-                    { brand: '遠傳', price: 599, reward: 8, extra: '' },
-                    { brand: '遠傳', price: 799, reward: 13, extra: '' },
-                    { brand: '遠傳', price: 999, reward: 19, extra: '' },
-                    { brand: '遠傳', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台' },
-                    { brand: '中華', price: 599, reward: 6, extra: '' },
-                    { brand: '中華', price: 799, reward: 13, extra: '' },
-                    { brand: '中華', price: 999, reward: 19, extra: '' },
-                    { brand: '中華', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台' }
+                    { brand: '遠傳', price: 399, reward: 3, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 599, reward: 8, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 799, reward: 13, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 999, reward: 19, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true },
+                    { brand: '中華', price: 599, reward: 6, extra: '', isMonth: true },
+                    { brand: '中華', price: 799, reward: 13, extra: '', isMonth: true },
+                    { brand: '中華', price: 999, reward: 19, extra: '', isMonth: true },
+                    { brand: '中華', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true }
                 ]
             }
         };
@@ -400,7 +400,7 @@
             }
 
             let filterPrices = [399, 599, 699, 799, 999, 1399];
-            if (brand === '中華' && applyType === 'new') filterPrices = [599, 699, 799, 999, 1399];
+            if (brand === '中華' && applyType === 'new') filterPrices = [599, 799, 999, 1399];
 
             const plans = planData[status][applyType].filter(p => p.brand === brand && filterPrices.includes(p.price));
             
@@ -454,8 +454,8 @@
                 if (finalPlan) {
                     validCount++;
                     
-                    // 判斷是否為月數贈送類型 (包含修正後的 999 及 1399 方案)
-                    let isMonthType = (status === 'months' || finalPlan.isMonth || finalPlan.price === 1399);
+                    // 正確判定是否為「贈送月數」
+                    let isMonthType = finalPlan.isMonth === true;
                     
                     const itemRewardStr = isMonthType 
                         ? `贈網路${finalPlan.reward}個月` 
@@ -466,7 +466,10 @@
                     if (isMonthType) totalMonths += finalPlan.reward;
                     else totalReward += finalPlan.reward;
                     
-                    if (finalPlan.extra) finalExtras.push(finalPlan.extra.replace('+',''));
+                    if (finalPlan.extra) {
+                        const extraText = finalPlan.extra.replace('+', '');
+                        finalExtras.push(extraText);
+                    }
                     
                     const div = document.createElement('div');
                     div.className = 'summary-item';
@@ -509,10 +512,10 @@
             }
 
             if (finalExtras.length > 0) {
-                const extraCount = finalExtras.length;
+                const uniqueExtras = [...new Set(finalExtras)];
                 totalHtml += `
                     <div class="mt-2 pl-6">
-                        <span class="text-lg font-black text-[#00897b]">並加贈：分離式冷氣清洗 ${extraCount}台</span>
+                        <span class="text-lg font-black text-[#00897b]">並加贈：${uniqueExtras.join('、')}</span>
                     </div>
                 `;
             }
