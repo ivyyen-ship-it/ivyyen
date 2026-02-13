@@ -129,6 +129,13 @@
             padding-left: 1.5rem;
             line-height: 1.4;
         }
+        .phone-tip {
+            font-size: 13px; /* 調整文字大小更大一點 */
+            color: #4db6ac;
+            font-weight: 900;
+            margin-left: 8px;
+            letter-spacing: -0.2px;
+        }
     </style>
 </head>
 <body class="py-10 px-4">
@@ -265,6 +272,7 @@
         function addPhone() {
             const id = 'phone-' + Date.now();
             const container = document.getElementById('phone-list');
+            const phoneIdx = container.children.length + 1;
             
             const div = document.createElement('div');
             div.id = id;
@@ -274,9 +282,10 @@
             div.dataset.targetBrand = ''; 
             
             div.innerHTML = `
-                <div class="flex justify-between items-center mb-1">
-                    <span class="bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-xs font-black italic phone-idx-label">門號 #${container.children.length + 1}</span>
-                    ${container.children.length > 0 ? `<button onclick="removePhone('${id}')" class="text-gray-400 text-xs font-bold hover:text-red-500">移除 ×</button>` : ''}
+                <div class="flex flex-wrap items-center gap-y-1 mb-1">
+                    <span class="bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-xs font-black italic phone-idx-label">門號 #${phoneIdx}</span>
+                    <span class="phone-tip">✨雙網方案不限本人門號，朋友或家人都可以一起申辦！</span>
+                    ${container.children.length > 0 ? `<button onclick="removePhone('${id}')" class="ml-auto text-gray-400 text-xs font-bold hover:text-red-500">移除 ×</button>` : ''}
                 </div>
                 
                 <div>
@@ -431,7 +440,6 @@
             }
 
             let filterPrices = [399, 599, 699, 799, 999, 1399];
-            // 中華 699 現在在所有狀態下都應該可以被選擇
             if (brand === '中華' && applyType === 'new') filterPrices = [599, 699, 799, 999, 1399];
 
             const plans = planData[status][applyType].filter(p => p.brand === brand && filterPrices.includes(p.price));
