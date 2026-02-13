@@ -234,6 +234,7 @@
                     { brand: '遠傳', price: 999, reward: 24, extra: '', isMonth: true },
                     { brand: '遠傳', price: 1399, reward: 24, extra: '+分離式冷氣清洗一台', isMonth: true },
                     { brand: '中華', price: 599, reward: 8, extra: '', isMonth: true },
+                    { brand: '中華', price: 699, reward: 4, extra: '', isMonth: true },
                     { brand: '中華', price: 799, reward: 16, extra: '', isMonth: true },
                     { brand: '中華', price: 999, reward: 24, extra: '', isMonth: true },
                     { brand: '中華', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true }
@@ -245,6 +246,7 @@
                     { brand: '遠傳', price: 999, reward: 19, extra: '', isMonth: true },
                     { brand: '遠傳', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true },
                     { brand: '中華', price: 599, reward: 6, extra: '', isMonth: true },
+                    { brand: '中華', price: 699, reward: 3, extra: '', isMonth: true },
                     { brand: '中華', price: 799, reward: 13, extra: '', isMonth: true },
                     { brand: '中華', price: 999, reward: 19, extra: '', isMonth: true },
                     { brand: '中華', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true }
@@ -429,6 +431,7 @@
             }
 
             let filterPrices = [399, 599, 699, 799, 999, 1399];
+            // 中華 699 現在在所有狀態下都應該可以被選擇
             if (brand === '中華' && applyType === 'new') filterPrices = [599, 699, 799, 999, 1399];
 
             const plans = planData[status][applyType].filter(p => p.brand === brand && filterPrices.includes(p.price));
