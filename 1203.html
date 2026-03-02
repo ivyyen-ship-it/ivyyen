@@ -128,8 +128,8 @@
             letter-spacing: -0.3px;
         }
         .over-limit-hint {
-            color: #ef4444; /* 紅字 */
-            font-size: 1.25rem; /* 放大字體 (xl) */
+            color: #ef4444; 
+            font-size: 1.25rem; 
             font-weight: 900;
             display: block;
             margin-top: 12px;
@@ -147,7 +147,6 @@
             margin-left: 8px;
             letter-spacing: -0.2px;
         }
-        /* Modal Styles */
         #modal-overlay {
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(4px);
@@ -172,7 +171,7 @@
 </head>
 <body class="py-10 px-4">
 
-    <!-- Modal for Plan Details -->
+    <!-- 方案詳細內容彈窗 -->
     <div id="modal-overlay" class="fixed inset-0 hidden flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
             <div id="modal-header" class="p-4 text-white text-center font-black text-lg">
@@ -223,7 +222,7 @@
 
         <!-- 2. 門號清單 -->
         <div id="phone-list" class="space-y-4 mb-6">
-            <!-- 門號項目會動態生成於此 -->
+            <!-- 門號項目動態生成 -->
         </div>
 
         <!-- 新增門號按鈕 -->
@@ -231,7 +230,7 @@
             <span class="text-xl">+</span> 新增另一個門號
         </button>
 
-        <!-- Result -->
+        <!-- Result Result -->
         <div class="tiffany-card p-7 result-panel shadow-lg mb-10">
             <h2 class="text-xl font-bold mb-6 flex items-center text-[#00796b]"><span class="mr-2">✦</span> 總計試算結果</h2>
             <div class="space-y-6">
@@ -511,9 +510,8 @@
         function updatePlanOptions(id) {
             const el = document.getElementById(id);
             const userType = document.getElementById('user-type').value;
-            const expiryStatus = document.getElementById('expiry-status').value;
-            const applyType = el.dataset.applyType;
             const brand = el.dataset.targetBrand;
+            const applyType = el.dataset.applyType;
             const select = el.querySelector('.plan-select');
 
             if (!brand || !userType) return;
@@ -569,10 +567,16 @@
                     if (planB.isMonth) monthsB += planB.reward; else rewardB += planB.reward;
                     if (planB.extra) extrasB.push(planB.extra.replace('+', ''));
 
-                    // 修改明細文字
-                    let planDisplayName = `${applyType === 'np' ? '攜碼' : '新辦'}${targetBrand}${planA.price}`;
-                    if (targetBrand === '中華' && planA.price === 699) {
-                        planDisplayName += ' (4G方案)';
+                    // 修改各門號優惠明細顯示邏輯
+                    let typePrefix = (applyType === 'np' ? '攜碼' : '新辦');
+                    let planName = `${typePrefix}${targetBrand}${planA.price}`;
+                    let specSuffix = "";
+                    
+                    // 檢查 4G/5G 標註邏輯
+                    if ((targetBrand === '中華' && planA.price === 699) || (targetBrand === '遠傳' && planA.price === 399)) {
+                        specSuffix = " (4G方案)";
+                    } else {
+                        specSuffix = " (5G方案)";
                     }
 
                     const div = document.createElement('div');
@@ -581,7 +585,7 @@
                     div.innerHTML = `
                         <div class="summary-label text-[13px]">
                             <span class="font-black text-[#00796b]">#${i+1}</span>
-                            <span class="font-bold text-gray-700 ml-1">${planDisplayName}</span>
+                            <span class="font-bold text-gray-700 ml-1">${planName}${specSuffix}</span>
                             ${hasInfo ? `<button onclick="showPlanDetails('${targetBrand}', ${planA.price})" class="btn-info">此方案了解更多</button>` : ''}
                         </div>
                         <div class="summary-value text-[11px] font-black text-[#e53935]">${(userType === 'old_customer' && expiryStatus === 'long') ? '方案 A/B 擇一' : (planA.isMonth ? `贈${planA.reward}個月` : `折${planA.reward}元`)}</div>
