@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雙網專案戰略優化報告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; }
+        .hero-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); }
+        .item-dot { @apply w-1.5 h-1.5 rounded-full bg-blue-500 mr-2 shrink-0; }
+        .status-tag { @apply text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider; }
+        .strategy-section { @apply bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8 transition-all hover:shadow-md; }
+        .member-badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 ml-2; }
+        .role-jieyu { @apply bg-blue-50 text-blue-700 border-blue-200; }
+        .role-peiyu { @apply bg-teal-50 text-teal-700 border-teal-200; }
+        .action-link { @apply inline-flex items-center gap-1.5 bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all hover:bg-blue-700 hover:shadow-lg mt-2; }
+        .text-link { @apply inline-flex items-center gap-1 text-blue-600 font-bold hover:text-blue-800 underline decoration-1 underline-offset-2; }
+        .download-btn { @apply inline-flex items-center gap-1.5 bg-yellow-400 text-teal-900 px-3 py-1.5 rounded-lg text-[11px] font-black transition-all hover:bg-yellow-300 hover:shadow-md mt-2 border border-yellow-500/20; }
+    </style>
+</head>
+<body class="text-slate-800 leading-relaxed">
+
+    <!-- Header -->
+    <header class="hero-gradient text-white py-12 px-6">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-2 mb-2">
+                    <span class="bg-blue-500 text-white text-[10px] px-2 py-1 rounded font-black">CONFIDENTIAL</span>
+                    <p class="text-blue-300 font-bold tracking-[0.2em] text-xs">STRATEGIC OPTIMIZATION REPORT</p>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-extrabold mb-3">雙網專案：全方位營運效率優化歷程</h1>
+                <p class="text-lg opacity-80 font-light italic">「培訓賦能 × 數位自動化 × 行政穩定力：打造標準、高效、數據化的支撐體系」</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md p-5 rounded-xl border border-white/20 text-center min-w-[180px]">
+                <p class="text-[10px] opacity-60 mb-1 uppercase tracking-widest font-bold">行政工項月處理負荷</p>
+                <p class="text-3xl font-black">1,000<span class="text-sm font-normal ml-1">件+</span></p>
+                <p class="text-[9px] opacity-50 mt-1 italic">(含跨月處理案件)</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 py-10">
+        
+        <!-- 一、標準化基石 -->
+        <section class="strategy-section">
+            <div class="bg-slate-50 border-b border-slate-200 px-8 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-book-open text-blue-600"></i> 一、標準化基石：建構團隊知識資產
+                </h2>
+                <span class="status-tag bg-green-100 text-green-700">已全面落地</span>
+            </div>
+            <div class="p-8">
+                <div class="flex items-center mb-6">
+                    <p class="text-slate-600 font-medium">解決過去專業知識高度仰賴個人記憶的風險，落實可複製、可傳承的作業體系。</p>
+                    <span class="member-badge role-jieyu"><i class="fas fa-pen-nib mr-1.5"></i> 婕瑜：核心規劃與編撰</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-start">
+                        <div class="item-dot mt-2"></div>
+                        <div>
+                            <p class="font-bold text-slate-800">標準化教材編撰</p>
+                            <p class="text-sm text-slate-500 italic">由婕瑜完成通識與門號組專業教材，確保新人訓期縮短 30%。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="item-dot mt-2"></div>
+                        <div>
+                            <p class="font-bold text-slate-800">教學流程 SOP 化</p>
+                            <p class="text-sm text-slate-500 italic">作業規範明文化，降低溝通成本與操作錯誤率。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="item-dot mt-2"></div>
+                        <div>
+                            <p class="font-bold text-slate-800">視覺化溝通工具設計</p>
+                            <p class="text-sm text-slate-500 italic">婕瑜設計「退費、攜碼、雙網流程圖」，透過圖文降低一線理解門檻。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 二、產能自動化 -->
+        <section class="strategy-section">
+            <div class="bg-slate-50 border-b border-slate-200 px-8 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-robot text-indigo-600"></i> 二、產能自動化：技術驅動流程革命
+                </h2>
+                <span class="status-tag bg-blue-100 text-blue-700">關鍵里程碑</span>
+            </div>
+            <div class="p-8">
+                <div class="bg-indigo-900 text-white p-5 rounded-xl mb-10 shadow-inner relative overflow-hidden text-center md:text-left">
+                    <div class="relative z-10">
+                        <p class="text-xs uppercase tracking-widest text-indigo-300 font-bold mb-2">核心產出邏輯</p>
+                        <p class="text-lg leading-relaxed">
+                            由培訓師 <span class="text-yellow-400 font-black underline decoration-2">婕瑜</span> 針對現行 <span class="text-yellow-400 font-black">15 項</span> 核心工項進行深度調校與開發，透過管理師 <span class="text-yellow-400 font-black underline decoration-2">姵妤</span> 主動以數位賦能支撐業務助理 <span class="text-yellow-400 font-black underline decoration-2">宜庭</span> 在月均處理 <span class="text-yellow-400 font-black">1,000+ 件</span> 行政工項的高壓負荷下，實現極致穩定的作業產出。
+                        </p>
+                    </div>
+                    <i class="fas fa-microchip opacity-10 text-8xl absolute -right-4 -bottom-4"></i>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+                    
+                    <!-- 左側：婕瑜 (系統開發) -->
+                    <div class="flex flex-col gap-6">
+                        <div class="bg-white border border-indigo-100 rounded-2xl p-6 shadow-sm h-full flex flex-col">
+                            <h4 class="text-indigo-700 font-black text-lg mb-6 flex items-center gap-2">
+                                <i class="fas fa-laptop-code"></i> 婕瑜：系統工具開發成果
+                            </h4>
+                            
+                            <div class="space-y-6 flex-grow">
+                                <div class="relative pl-6 border-l-2 border-indigo-100">
+                                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-4 border-indigo-400"></div>
+                                    <span class="text-sm font-bold text-slate-700 block mb-1">複雜工項產出工具</span>
+                                    <p class="text-xs text-slate-500 italic mb-3">婕瑜主導邏輯梳理與工具製作，大幅降低人工判斷複雜度。</p>
+                                    <a href="https://ivyyen-ship-it.github.io/ivyyen01/final.html" target="_blank" class="action-link">
+                                        <i class="fas fa-external-link-alt"></i> 點此開啟工具連結
+                                    </a>
+                                </div>
+
+                                <div class="relative pl-6 border-l-2 border-indigo-100">
+                                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-4 border-indigo-400"></div>
+                                    <span class="text-sm font-bold text-slate-700 block mb-1">AI 質檢評分機制</span>
+                                    <p class="text-xs text-slate-500 italic leading-relaxed mb-3">婕瑜規劃話稿檢核邏輯，將繁瑣質檢轉化為自動化數據反饋。</p>
+                                    <a href="https://notebooklm.google.com/notebook/ec79a74e-fe10-4739-a350-36def6e55263" target="_blank" class="action-link">
+                                        <i class="fas fa-external-link-alt"></i> 點此開啟工具連結
+                                    </a>
+                                </div>
+
+                                <div class="relative pl-6 border-l-2 border-orange-100">
+                                    <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-white border-4 border-orange-400"></div>
+                                    <div class="bg-orange-50 p-4 rounded-xl border border-orange-100">
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="text-sm font-bold text-orange-700">服務規則系統卡控 (婕瑜主導)</span>
+                                            <span class="text-[9px] bg-orange-200 text-orange-800 px-1.5 py-0.5 rounded font-black">IN REVIEW</span>
+                                        </div>
+                                        <p class="text-[11px] text-slate-600 leading-normal mb-3">
+                                            <span class="font-bold">取代 Line 冗長訊息：</span>以系統化彈窗確保客戶「必讀與保障宣告」，提升體驗並作為宣告證明。
+                                        </p>
+                                        <div class="flex flex-col gap-2">
+                                            <div class="flex items-start gap-1.5">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse mt-1 shrink-0"></span>
+                                                <p class="text-[10px] text-orange-600 font-bold leading-tight">2/26(四)已產出初稿，待Vivian協助交給法務確認內容</p>
+                                            </div>
+                                            <a href="https://docs.google.com/document/d/1z0rV9au59e71HKO3P43Mn6RhGaIM4-8h0Exe5bb6kGk/edit?tab=t.0" target="_blank" class="text-link text-sm">
+                                                <i class="fas fa-file-alt"></i> 點此開啟文檔連結
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右側：姵妤 (賦能與通知) -->
+                    <div class="flex flex-col gap-6">
+                        <div class="bg-white border border-teal-100 rounded-2xl p-6 shadow-sm h-full flex flex-col">
+                            <h4 class="text-teal-700 font-black text-lg mb-6 flex items-center gap-2">
+                                <i class="fas fa-wand-magic-sparkles"></i> 姵妤：主動賦能與流程優化
+                            </h4>
+
+                            <div class="space-y-4">
+                                <div class="bg-teal-600 text-white p-4 rounded-xl shadow-md border-l-4 border-yellow-400">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <p class="text-sm font-black flex items-center gap-2"><i class="fas fa-rocket"></i> 電銷門號組模板系統</p>
+                                        <span class="text-[9px] bg-white/20 px-2 py-0.5 rounded border border-white/20 uppercase font-black">已上線</span>
+                                    </div>
+                                    <p class="text-[11px] opacity-90 leading-relaxed">
+                                        囊括 <span class="text-yellow-300 font-bold">7 個派案模板</span> 與 <span class="text-yellow-300 font-bold">2 個帳務模板</span>。取代人工複製，杜絕資訊錯誤。
+                                    </p>
+                                </div>
+
+                                <div class="bg-teal-50 p-4 rounded-xl border border-teal-200">
+                                    <p class="text-xs font-bold text-teal-800 mb-3 flex items-center gap-2">
+                                        <i class="fas fa-bell text-teal-500"></i> 已落地自動化通知設計
+                                    </p>
+                                    <div class="space-y-2">
+                                        <div class="flex items-start gap-2 bg-white p-3 rounded border border-teal-100 shadow-sm">
+                                            <i class="fas fa-check-circle text-teal-500 mt-1 text-[10px]"></i>
+                                            <div>
+                                                <p class="text-[11px] font-black text-slate-800">門號問題件通知</p>
+                                                <p class="text-[10px] text-slate-500">問題件可及時補件，避免客戶門號不通過</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-2 bg-white p-3 rounded border border-teal-100 shadow-sm">
+                                            <i class="fas fa-check-circle text-teal-500 mt-1 text-[10px]"></i>
+                                            <div>
+                                                <p class="text-[11px] font-black text-slate-800">雙網用戶ISP即將到期通知</p>
+                                                <p class="text-[10px] text-slate-500">ISP續約用戶如果申辦雙網尚未繳費導致網路到期恐會有斷網疑慮，確保客戶流程順暢避免客訴</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-2 bg-white p-3 rounded border border-teal-100 shadow-sm">
+                                            <i class="fas fa-check-circle text-teal-500 mt-1 text-[10px]"></i>
+                                            <div>
+                                                <p class="text-[11px] font-black text-slate-800">門號組取卡表資料未齊通知</p>
+                                                <p class="text-[10px] text-slate-500">解決資料未齊無法印出貨單問題，大大減少行政卡關</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-2 bg-white p-3 rounded border border-teal-100 shadow-sm">
+                                            <i class="fas fa-check-circle text-teal-500 mt-1 text-[10px]"></i>
+                                            <div>
+                                                <p class="text-[11px] font-black text-slate-800">中華客戶拍照通知</p>
+                                                <p class="text-[10px] text-slate-500">提醒門號組同步聯繫各區協助人員，確保客戶拍照流程不被遺漏</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-2 bg-white p-3 rounded border border-teal-100 shadow-sm">
+                                            <i class="fas fa-check-circle text-teal-500 mt-1 text-[10px]"></i>
+                                            <div>
+                                                <p class="text-[11px] font-black text-slate-800">會辦退費通知</p>
+                                                <p class="text-[10px] text-slate-500">避免管理師遺漏處理客戶退費造成客訴</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 三、數據決策 -->
+        <section class="strategy-section">
+            <div class="bg-slate-50 border-b border-slate-200 px-8 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-black text-slate-900 flex items-center gap-2">
+                    <i class="fas fa-chart-pie text-slate-700"></i> 三、數據決策：宜庭行政執行觀測
+                </h2>
+                <span class="status-tag bg-slate-200 text-slate-600">執行效能監控</span>
+            </div>
+            <div class="p-8">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-4">
+                            <p class="text-slate-600 font-bold underline decoration-indigo-300">宜庭：雙網行政核心執行人</p>
+                            <span class="text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded font-bold">全能補位者</span>
+                        </div>
+                        <ul class="space-y-4 text-sm">
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-clipboard-check text-blue-500 mt-1"></i>
+                                <div>
+                                    <p class="font-bold text-slate-800">行政執行效率觀測</p>
+                                    <p class="text-xs text-slate-500 italic">婕瑜每日監控產能與異常點，目前宜庭有效執行率達 95.2%。</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <i class="fas fa-shield-alt text-green-500 mt-1"></i>
+                                <div>
+                                    <p class="font-bold text-slate-800">多維度彈性補位機制</p>
+                                    <ul class="list-disc list-inside text-[11px] text-slate-500 mt-1">
+                                        <li>門號組同仁休假期間之全責支撐</li>
+                                        <li>多位客戶併發服務時之即時分流</li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-64 bg-slate-900 text-white p-5 rounded-xl flex flex-col justify-center text-center shadow-lg">
+                        <p class="text-[10px] text-indigo-400 font-black mb-2 uppercase tracking-widest">宜庭行政執行率</p>
+                        <p class="text-4xl font-black mb-1">95.2%</p>
+                        <div class="h-1 w-full bg-slate-700 rounded-full overflow-hidden mb-2">
+                            <div class="bg-indigo-500 h-full" style="width: 95.2%"></div>
+                        </div>
+                        <p class="text-[9px] opacity-40 italic">行政工項品質觀測指標</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 四、增益藍圖 -->
+        <section class="strategy-section border-l-4 border-l-orange-500">
+            <div class="bg-orange-50 border-b border-orange-100 px-8 py-4 flex justify-between items-center">
+                <h2 class="text-xl font-black text-orange-900 flex items-center gap-2">
+                    <i class="fas fa-bullseye"></i> 四、增益藍圖：轉化一線締結戰鬥力
+                </h2>
+                <span class="status-tag bg-orange-200 text-orange-800">增收轉化方案</span>
+            </div>
+            <div class="p-8">
+                <p class="text-slate-600 mb-6 font-medium">從「後勤優化」轉向「前端增收」，由婕瑜主導設計，宜庭與姵妤提供後勤支持。</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase">婕瑜：締結強化</span>
+                        </div>
+                        <h4 class="text-lg font-extrabold text-slate-900 mb-2">雙網客戶輪廓應對腳本設計</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed mb-4">規劃精準話術與異議處理，有效提升第一線締結力。</p>
+                        <div class="text-[10px] text-slate-400 italic font-bold">● 狀態：細節規劃中</div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded font-bold uppercase">婕瑜：轉化加速</span>
+                        </div>
+                        <h4 class="text-lg font-extrabold text-blue-700 mb-2 underline">
+                            <a href="https://ivyyen-ship-it.github.io/ivyyen/1203.html" target="_blank">雙網優惠試算工具 (婕瑜製作)</a>
+                        </h4>
+                        <p class="text-sm text-slate-500 leading-relaxed mb-4">將複雜資費「一鍵可視化」，讓客戶對優惠一目了然。</p>
+                        <div class="text-[10px] text-blue-400 italic font-bold">● 狀態：持續優化中</div>
+                    </div>
+                </div>
+
+                <div class="border border-slate-200 rounded-xl p-6 bg-slate-50/50">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600 shadow-sm">
+                                <i class="fas fa-list-ul"></i>
+                            </div>
+                            <h4 class="text-slate-900 font-black text-lg">名單列表顯示調整</h4>
+                        </div>
+                        <span class="bg-orange-500 text-white text-[10px] px-2 py-0.5 rounded font-black">已提交申請</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white border border-slate-200 p-4 rounded-lg shadow-sm">
+                            <p class="text-slate-800 font-bold text-sm mb-1">「指定時段」直接顯現</p>
+                            <p class="text-slate-500 text-xs leading-relaxed">派單瞬間掌握客戶黃金接觸時機。</p>
+                        </div>
+                        <div class="bg-white border border-slate-200 p-4 rounded-lg shadow-sm">
+                            <p class="text-slate-800 font-bold text-sm mb-1">「備註資訊」前端化</p>
+                            <p class="text-slate-500 text-xs leading-relaxed">直接外顯特定需求，精準應對痛點。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 text-white py-12 text-center">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="w-16 h-1 bg-blue-500 mx-auto mb-6"></div>
+            <div class="flex justify-center flex-wrap gap-8 mb-6">
+                <div class="text-left border-l-2 border-blue-500 pl-4">
+                    <p class="text-[10px] text-blue-400 font-black uppercase tracking-widest">專案設計與培訓賦能</p>
+                    <p class="text-sm font-bold text-white">婕瑜 (資深管理師)</p>
+                </div>
+                <div class="text-left border-l-2 border-indigo-500 pl-4">
+                    <p class="text-[10px] text-indigo-400 font-black uppercase tracking-widest">後勤行政執行核心</p>
+                    <p class="text-sm font-bold text-white">宜庭 (業務助理)</p>
+                </div>
+                <div class="text-left border-l-2 border-teal-500 pl-4">
+                    <p class="text-[10px] text-teal-400 font-black uppercase tracking-widest">數位賦能神助手</p>
+                    <p class="text-sm font-bold text-white">姵妤 (管理師)</p>
+                </div>
+            </div>
+            <p class="text-[9px] opacity-30 uppercase tracking-[0.4em]">Integrated Strategy • Digital Transformation • Efficiency Excellence</p>
+        </div>
+    </footer>
+
+</body>
+</html>
