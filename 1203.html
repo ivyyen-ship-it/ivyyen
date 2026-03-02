@@ -663,7 +663,7 @@
             
             if (userType === 'old_customer' && expiryStatus === 'long') {
                 totalHtml += `<div class="mb-4 pb-4 border-b border-teal-100">
-                    <span class="compare-badge bg-orange-100 text-orange-600">方案 A：提前續約現折</span>`;
+                    <span class="compare-badge bg-orange-100 text-orange-600">方案 A：提前續約現折網路費</span>`;
                 if (rewardA > 0) totalHtml += `<span class="normal-text">網路費現折 <span class="text-[#e53935]">${rewardA}元</span></span>`;
                 if (monthsA > 0) totalHtml += `<span class="normal-text">直接贈送網路 <span class="text-[#e53935]">${monthsA}個月</span></span>`;
                 if (extrasA.length > 0) totalHtml += `<p class="text-sm font-bold text-[#00897b] mt-1">加贈：${[...new Set(extrasA)].join('、')}</p>`;
