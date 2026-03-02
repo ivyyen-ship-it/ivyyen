@@ -331,7 +331,7 @@
                     { brand: '遠傳', price: 599, reward: 8, extra: '', isMonth: true },
                     { brand: '遠傳', price: 799, reward: 13, extra: '', isMonth: true },
                     { brand: '遠傳', price: 999, reward: 19, extra: '', isMonth: true },
-                    { brand: '遠傳', price: 1399, reward: 30, extra: '', isMonth: true }, // 修正在此: 遠傳新辦1399 為 30個月
+                    { brand: '遠傳', price: 1399, reward: 30, extra: '', isMonth: true },
                     { brand: '中華', price: 599, reward: 6, extra: '', isMonth: true },
                     { brand: '中華', price: 699, reward: 3, extra: '', isMonth: true },
                     { brand: '中華', price: 799, reward: 13, extra: '', isMonth: true },
@@ -673,7 +673,7 @@
                 totalHtml += `</div>`;
 
                 totalHtml += `<div>
-                    <span class="compare-badge bg-blue-100 text-blue-600">方案 B：免付款贈月</span>`;
+                    <span class="compare-badge bg-blue-100 text-blue-600">方案 B：免付網路費直接延長網路月份</span>`;
                 if (rewardB > 0) totalHtml += `<span class="normal-text">網路費現折 <span class="text-[#e53935]">${rewardB}元</span></span>`;
                 if (monthsB > 0) totalHtml += `<span class="normal-text">直接贈送網路 <span class="text-[#e53935]">${monthsB}個月</span></span>`;
                 if (extrasB.length > 0) totalHtml += `<p class="text-sm font-bold text-[#00897b] mt-1">加贈：${[...new Set(extrasB)].join('、')}</p>`;
