@@ -32,6 +32,10 @@
             transition: all 0.3s ease;
             font-size: 0.95rem;
         }
+        .tiffany-input::placeholder {
+            color: #ef4444 !important; /* 紅字顯示提示文字 */
+            opacity: 1;
+        }
         .placeholder-style {
             color: #9ca3af !important;
         }
@@ -79,14 +83,13 @@
         }
         .hidden { display: none; }
         
-        .highlight-red {
+        /* 醒目最大字體樣式 */
+        .highlight-super-large {
             color: #e53935;
-            font-size: 2.2rem;
+            font-size: 2.25rem;
             font-weight: 900;
-            line-height: 1.1;
+            line-height: 1.2;
             display: block;
-            text-align: left;
-            padding-left: 1.5rem;
             margin-top: 4px;
         }
         .normal-text {
@@ -94,7 +97,13 @@
             font-weight: 800;
             color: #37474f;
             display: block;
-            text-align: left;
+        }
+        .price-strike {
+            text-decoration: line-through;
+            color: #94a3b8;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-right: 8px;
         }
         .phone-item {
             border-left: 4px solid #4db6ac;
@@ -131,20 +140,12 @@
             line-height: 1.5;
             border-left: 4px solid #00897b;
         }
-        .phone-tip {
+        .phone-tip-red {
             font-size: 13px;
-            color: #4db6ac;
+            color: #ef4444; /* 紅字顯示 */
             font-weight: 900;
             margin-left: 8px;
             letter-spacing: -0.2px;
-        }
-        .compare-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 900;
-            margin-right: 4px;
         }
         /* Modal Styles */
         #modal-overlay {
@@ -166,9 +167,6 @@
             font-weight: 900;
             cursor: pointer;
             margin-left: 4px;
-        }
-        .btn-info:hover {
-            background: #b2dfdb;
         }
     </style>
 </head>
@@ -239,9 +237,7 @@
             <div class="space-y-6">
                 <div class="py-4 border-b border-[#e0f2f1]">
                     <p class="text-[11px] text-[#4db6ac] font-bold uppercase mb-3 tracking-widest">各門號優惠明細</p>
-                    <div id="res-summary-list" class="space-y-3">
-                        <!-- 門號獨立顯示 -->
-                    </div>
+                    <div id="res-summary-list" class="space-y-3"></div>
                 </div>
                 
                 <div>
@@ -344,17 +340,14 @@
         function showPlanDetails(brand, price) {
             const data = assetInfo[brand]?.[price];
             if (!data) return;
-            
             const overlay = document.getElementById('modal-overlay');
             const header = document.getElementById('modal-header');
             const netDesc = document.getElementById('modal-net-desc');
             const voiceDesc = document.getElementById('modal-voice-desc');
-            
             header.textContent = `${brand} ${price}型 方案詳情`;
             header.style.backgroundColor = brand === '中華' ? '#673ab7' : '#e53935';
             netDesc.innerText = data.net;
             voiceDesc.innerText = data.voice;
-            
             overlay.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
@@ -365,19 +358,15 @@
         }
 
         function handleSelectColor(e) {
-            if (e.target.value) {
-                e.target.classList.remove('placeholder-style');
-            } else {
-                e.target.classList.add('placeholder-style');
-            }
+            if (e.target.value) e.target.classList.remove('placeholder-style');
+            else e.target.classList.add('placeholder-style');
         }
 
         function handleUserTypeChange() {
             const userType = document.getElementById('user-type').value;
             const expiryBox = document.getElementById('expiry-box');
-            if (userType === 'old_customer') {
-                expiryBox.classList.remove('hidden');
-            } else {
+            if (userType === 'old_customer') expiryBox.classList.remove('hidden');
+            else {
                 expiryBox.classList.add('hidden');
                 document.getElementById('expiry-status').value = "";
             }
@@ -389,7 +378,6 @@
             const id = 'phone-' + Date.now();
             const container = document.getElementById('phone-list');
             const phoneIdx = container.children.length + 1;
-            
             const div = document.createElement('div');
             div.id = id;
             div.className = 'phone-item p-5 rounded-2xl shadow-sm space-y-4 relative';
@@ -399,8 +387,8 @@
             
             div.innerHTML = `
                 <div class="flex flex-wrap items-center gap-y-1 mb-1">
-                    <span class="bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-xs font-black italic phone-idx-label">門號 #${phoneIdx}</span>
-                    <span class="phone-tip">✨雙網方案不限本人門號，朋友或家人都可以一起申辦！</span>
+                    <span class="bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-xs font-black italic">門號 #${phoneIdx}</span>
+                    <span class="phone-tip-red">✨雙網方案不限本人門號，朋友或家人都可以一起申辦！</span>
                     ${container.children.length > 0 ? `<button onclick="removePhone('${id}')" class="ml-auto text-gray-400 text-xs font-bold hover:text-red-500">移除 ×</button>` : ''}
                 </div>
                 
@@ -438,7 +426,7 @@
                     </div>
                     <div class="auto-input-box p-3 bg-teal-50 rounded-lg">
                         <label class="text-[10px] font-bold text-teal-600 mb-1 block">輸入目前門號月資費</label>
-                        <input type="number" class="tiffany-input w-full current-price-input" placeholder="例: 599" oninput="calculateAll()">
+                        <input type="number" class="tiffany-input w-full current-price-input" placeholder="請填入目前資費金額，例如：599" oninput="calculateAll()">
                     </div>
                 </div>
 
@@ -457,8 +445,6 @@
 
         function removePhone(id) {
             document.getElementById(id).remove();
-            const labels = document.querySelectorAll('.phone-idx-label');
-            labels.forEach((l, i) => l.textContent = `門號 #${i + 1}`);
             calculateAll();
         }
 
@@ -491,7 +477,6 @@
             const curTelco = el.querySelector('.current-telco').value;
             const applyType = el.dataset.applyType;
             const npMethod = el.dataset.npMethod;
-            
             const targetBrandBox = el.querySelector('.target-brand-selection-box');
             const npContainer = el.querySelector('.np-method-container');
             const autoInputBox = el.querySelector('.auto-input-box');
@@ -502,32 +487,19 @@
             manualContainer.classList.add('hidden');
 
             if (applyType === 'np') {
-                if (curTelco === 'cht') {
-                    el.dataset.targetBrand = '遠傳';
-                } else if (curTelco === 'fet') {
-                    el.dataset.targetBrand = '中華';
-                } else if (curTelco === 'twn') {
-                    targetBrandBox.classList.remove('hidden');
-                }
+                if (curTelco === 'cht') el.dataset.targetBrand = '遠傳';
+                else if (curTelco === 'fet') el.dataset.targetBrand = '中華';
+                else if (curTelco === 'twn') targetBrandBox.classList.remove('hidden');
 
-                if (el.dataset.targetBrand === '中華' || el.dataset.targetBrand === '遠傳') {
+                if (el.dataset.targetBrand) {
                     npContainer.classList.remove('hidden');
-                    if (npMethod === 'auto') {
-                        autoInputBox.classList.remove('hidden');
-                        manualContainer.classList.add('hidden');
-                    } else {
-                        autoInputBox.classList.add('hidden');
-                        manualContainer.classList.remove('hidden');
-                    }
+                    if (npMethod === 'auto') autoInputBox.classList.remove('hidden');
+                    else manualContainer.classList.remove('hidden');
                 }
             } else {
                 targetBrandBox.classList.remove('hidden');
-                if (el.dataset.targetBrand === '中華' || el.dataset.targetBrand === '遠傳') {
-                    manualContainer.classList.remove('hidden');
-                }
+                if (el.dataset.targetBrand) manualContainer.classList.remove('hidden');
             }
-
-            el.dataset.lastTelco = curTelco;
             updatePlanOptions(id);
             calculateAll();
         }
@@ -544,29 +516,11 @@
             const brand = el.dataset.targetBrand;
             const select = el.querySelector('.plan-select');
 
-            let logicKey = "";
-            if (userType === 'new_customer') {
-                logicKey = 'discount';
-            } else if (userType === 'old_customer') {
-                if (expiryStatus === 'short' || expiryStatus === 'long') {
-                    logicKey = 'discount'; 
-                }
-            }
-
-            if (!logicKey || !brand) {
-                select.innerHTML = '<option value="" disabled selected>請選擇...</option>';
-                select.classList.add('placeholder-style');
-                return;
-            }
-
-            let filterPrices = [399, 599, 699, 799, 999, 1399];
-            if (brand === '中華' && applyType === 'new') filterPrices = [599, 699, 799, 999, 1399];
-
-            const plans = planData[logicKey][applyType].filter(p => p.brand === brand && filterPrices.includes(p.price));
+            if (!brand || !userType) return;
+            let filterPrices = (brand === '中華' && applyType === 'new') ? [599, 699, 799, 999, 1399] : [399, 599, 699, 799, 999, 1399];
+            const plans = planData['discount'][applyType].filter(p => p.brand === brand && filterPrices.includes(p.price));
             
             select.innerHTML = '<option value="" disabled selected>請選擇...</option>';
-            select.classList.add('placeholder-style');
-            
             plans.forEach(p => {
                 const opt = document.createElement('option');
                 opt.value = JSON.stringify(p);
@@ -583,124 +537,101 @@
             const totalContainer = document.getElementById('res-total-discount');
             
             summaryList.innerHTML = '';
-            
             if (!userType || (userType === 'old_customer' && !expiryStatus)) {
-                totalContainer.innerHTML = '<p class="text-gray-400 font-bold italic">請完整選擇上方網路狀態</p>';
+                totalContainer.innerHTML = '<p class="text-gray-400 font-bold italic">請選擇寬頻合約狀態</p>';
                 return;
             }
 
-            let rewardA = 0; 
-            let monthsA = 0;
-            let extrasA = [];
-
-            let rewardB = 0; 
-            let monthsB = 0;
-            let extrasB = [];
-
+            let rewardA = 0; let monthsA = 0; let extrasA = [];
+            let rewardB = 0; let monthsB = 0; let extrasB = [];
             let validCount = 0;
 
             phoneItems.forEach((item, i) => {
                 const applyType = item.dataset.applyType;
-                const npMethod = item.dataset.npMethod;
                 const targetBrand = item.dataset.targetBrand;
-                const typeText = (applyType === 'np') ? '攜碼' : '新辦';
-                
-                let selectedPrice = 0;
-
-                if (applyType === 'np' && npMethod === 'auto') {
-                    selectedPrice = parseInt(item.querySelector('.current-price-input').value) || 0;
-                } else {
+                const npMethod = item.dataset.npMethod;
+                let selectedPrice = (applyType === 'np' && npMethod === 'auto') ? (parseInt(item.querySelector('.current-price-input').value) || 0) : 0;
+                if (!selectedPrice) {
                     const selectVal = item.querySelector('.plan-select').value;
                     if (selectVal) selectedPrice = JSON.parse(selectVal).price;
                 }
 
                 if (selectedPrice && targetBrand) {
                     validCount++;
-                    
-                    const plansA = planData['discount'][applyType].filter(p => p.brand === targetBrand);
-                    const planA = plansA.sort((a,b) => a.price - b.price).find(p => p.price >= selectedPrice) || plansA[plansA.length-1];
-                    
+                    const plansA = planData['discount'][applyType].filter(p => p.brand === targetBrand).sort((a,b) => a.price - b.price);
+                    const planA = plansA.find(p => p.price >= selectedPrice) || plansA[plansA.length-1];
                     if (planA.isMonth) monthsA += planA.reward; else rewardA += planA.reward;
                     if (planA.extra) extrasA.push(planA.extra.replace('+', ''));
 
-                    const plansB = planData['months'][applyType].filter(p => p.brand === targetBrand);
-                    const planB = plansB.sort((a,b) => a.price - b.price).find(p => p.price >= selectedPrice) || plansB[plansB.length-1];
-                    
+                    const plansB = planData['months'][applyType].filter(p => p.brand === targetBrand).sort((a,b) => a.price - b.price);
+                    const planB = plansB.find(p => p.price >= selectedPrice) || plansB[plansB.length-1];
                     if (planB.isMonth) monthsB += planB.reward; else rewardB += planB.reward;
                     if (planB.extra) extrasB.push(planB.extra.replace('+', ''));
 
                     const div = document.createElement('div');
                     div.className = 'summary-item';
-                    let detailText = "";
-                    if (userType === 'old_customer' && expiryStatus === 'long') {
-                        detailText = "方案 A/B 擇一";
-                    } else {
-                        detailText = planA.isMonth ? `贈${planA.reward}個月` : `折${planA.reward}元`;
-                        if (planA.extra) detailText += planA.extra;
-                    }
-
                     const hasInfo = assetInfo[targetBrand]?.[planA.price];
-                    const infoBtn = hasInfo ? `<button onclick="showPlanDetails('${targetBrand}', ${planA.price})" class="btn-info">此方案了解更多</button>` : '';
-
                     div.innerHTML = `
                         <div class="summary-label text-[13px]">
                             <span class="font-black text-[#00796b]">#${i+1}</span>
-                            <span class="font-bold text-gray-700 ml-1">${typeText}${targetBrand}${planA.price}</span>
-                            ${infoBtn}
+                            <span class="font-bold text-gray-700 ml-1">${applyType === 'np' ? '攜碼' : '新辦'}${targetBrand}${planA.price}</span>
+                            ${hasInfo ? `<button onclick="showPlanDetails('${targetBrand}', ${planA.price})" class="btn-info">詳情</button>` : ''}
                         </div>
-                        <div class="summary-value text-[11px] font-black text-[#e53935]">${detailText}</div>
+                        <div class="summary-value text-[11px] font-black text-[#e53935]">${(userType === 'old_customer' && expiryStatus === 'long') ? '方案 A/B 擇一' : (planA.isMonth ? `贈${planA.reward}個月` : `折${planA.reward}元`)}</div>
                     `;
                     summaryList.appendChild(div);
                 }
             });
 
             if (validCount === 0) {
-                totalContainer.innerHTML = '<p class="text-gray-400 font-bold italic">請完整填寫門號資訊</p>';
+                totalContainer.innerHTML = '<p class="text-gray-400 font-bold italic">請填寫門號資訊以計算優惠</p>';
                 return;
             }
 
-            let totalHtml = '';
-            
+            let html = '';
             if (userType === 'old_customer' && expiryStatus === 'long') {
-                totalHtml += `<div class="mb-4 pb-4 border-b border-teal-100">
-                    <span class="compare-badge bg-orange-100 text-orange-600">方案 A：提前續約現折網路費</span>`;
-                if (rewardA > 0) totalHtml += `<span class="normal-text">網路費現折 <span class="text-[#e53935]">${rewardA}元</span></span>`;
-                if (monthsA > 0) totalHtml += `<span class="normal-text">直接贈送網路 <span class="text-[#e53935]">${monthsA}個月</span></span>`;
-                if (extrasA.length > 0) totalHtml += `<p class="text-sm font-bold text-[#00897b] mt-1">加贈：${[...new Set(extrasA)].join('、')}</p>`;
-                if (rewardA > 8900) {
-                    totalHtml += `<span class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</span>`;
+                // 方案 A 顯示
+                html += `<div class="mb-6 p-4 bg-white/50 rounded-2xl border border-teal-100">
+                            <span class="inline-block px-3 py-1 bg-orange-100 text-orange-600 rounded-lg text-xs font-black mb-3">方案 A：提前續約現折網路費</span>`;
+                if (rewardA > 0) {
+                    html += `<div class="mb-1 flex items-center gap-2"><span class="normal-text">網路資費現折 ${rewardA}元</span> <span class="price-strike">原價8900元</span></div>
+                             <div class="mt-2"><span class="normal-text">24個月網路</span> <span class="highlight-super-large">只需${8900 - rewardA}元</span></div>`;
                 }
-                totalHtml += `</div>`;
-
-                totalHtml += `<div>
-                    <span class="compare-badge bg-blue-100 text-blue-600">方案 B：免付網路費直接延長網路月份</span>`;
-                if (rewardB > 0) totalHtml += `<span class="normal-text">網路費現折 <span class="text-[#e53935]">${rewardB}元</span></span>`;
-                if (monthsB > 0) totalHtml += `<span class="normal-text">直接贈送網路 <span class="text-[#e53935]">${monthsB}個月</span></span>`;
-                if (extrasB.length > 0) totalHtml += `<p class="text-sm font-bold text-[#00897b] mt-1">加贈：${[...new Set(extrasB)].join('、')}</p>`;
-                if (rewardB > 8900) {
-                    totalHtml += `<span class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</span>`;
-                }
-                totalHtml += `<p class="text-[10px] text-gray-400 mt-2 font-bold italic">💡 您可根據剩餘合約長短，選擇最划算的方案！</p></div>`;
+                if (monthsA > 0) html += `<div class="mt-2"><span class="normal-text">加碼贈送網路 <span class="text-[#e53935]">${monthsA}個月</span></span></div>`;
+                if (extrasA.length > 0) html += `<p class="text-sm font-bold text-[#00897b] mt-1">加贈：${[...new Set(extrasA)].join('、')}</p>`;
+                html += `</div>`;
+                
+                // 方案 B 顯示
+                html += `<div class="p-4 bg-white/50 rounded-2xl border border-teal-100">
+                            <span class="inline-block px-3 py-1 bg-blue-100 text-blue-600 rounded-lg text-xs font-black mb-3">方案 B：免付網路費直接延長網路月份</span>`;
+                if (rewardB > 0) html += `<span class="normal-text">網路費現折 <span class="text-[#e53935]">${rewardB}元</span></span>`;
+                if (monthsB > 0) html += `<span class="normal-text">直接贈送網路 <span class="text-[#e53935]">${monthsB}個月</span></span>`;
+                if (extrasB.length > 0) html += `<p class="text-sm font-bold text-[#00897b] mt-1">加贈：${[...new Set(extrasB)].join('、')}</p>`;
+                html += `<p class="text-[10px] text-gray-400 mt-2 font-bold italic">💡 您可根據剩餘合約長短，選擇最划算的方案！</p></div>`;
             } else {
                 if (rewardA > 0) {
-                    totalHtml += `<div class="mb-2">
-                        <span class="normal-text">網路資費現折</span>
-                        <span class="highlight-red">${rewardA}元</span>
-                        ${rewardA > 8900 ? `<span class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</span>` : ''}
-                    </div>`;
+                    html += `<div class="mb-4">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="normal-text">網路資費現折 ${rewardA}元</span>
+                                    <span class="price-strike">原價8900元</span>
+                                </div>
+                                <div class="mt-2">
+                                    <span class="normal-text">24個月網路</span>
+                                    <span class="highlight-super-large">只需${8900 - rewardA}元</span>
+                                </div>
+                             </div>`;
                 }
                 if (monthsA > 0) {
-                    totalHtml += `<div>
-                        <span class="normal-text">直接贈送網路</span>
-                        <span class="highlight-red">${monthsA}個月</span>
-                    </div>`;
+                    html += `<div><span class="normal-text">直接贈送網路</span><span class="highlight-super-large">${monthsA}個月</span></div>`;
                 }
                 if (extrasA.length > 0) {
-                    totalHtml += `<div class="mt-2 pl-6"><span class="text-lg font-black text-[#00897b]">並加贈：${[...new Set(extrasA)].join('、')}</span></div>`;
+                    html += `<div class="mt-3 p-3 bg-teal-50 rounded-xl"><span class="text-lg font-black text-[#00897b]">並加贈：${[...new Set(extrasA)].join('、')}</span></div>`;
+                }
+                if (rewardA > 8900) {
+                    html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
                 }
             }
-            
-            totalContainer.innerHTML = totalHtml;
+            totalContainer.innerHTML = html;
         }
 
         window.onload = addPhone;
