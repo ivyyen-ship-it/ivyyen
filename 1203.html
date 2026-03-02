@@ -33,7 +33,7 @@
             font-size: 0.95rem;
         }
         .tiffany-input::placeholder {
-            color: #ef4444 !important; /* 紅字顯示提示文字 */
+            color: #ef4444 !important;
             opacity: 1;
         }
         .placeholder-style {
@@ -83,7 +83,6 @@
         }
         .hidden { display: none; }
         
-        /* 醒目最大字體樣式 */
         .highlight-super-large {
             color: #e53935;
             font-size: 2.25rem;
@@ -129,20 +128,21 @@
             letter-spacing: -0.3px;
         }
         .over-limit-hint {
-            color: #00897b;
-            font-size: 0.85rem;
+            color: #ef4444; /* 紅字 */
+            font-size: 1.25rem; /* 放大字體 (xl) */
             font-weight: 900;
             display: block;
             margin-top: 12px;
-            padding: 12px;
-            background-color: #e0f2f1;
+            padding: 16px;
+            background-color: #fff5f5;
             border-radius: 12px;
-            line-height: 1.5;
-            border-left: 4px solid #00897b;
+            line-height: 1.4;
+            border: 2px solid #feb2b2;
+            text-align: center;
         }
         .phone-tip-red {
             font-size: 13px;
-            color: #ef4444; /* 紅字顯示 */
+            color: #ef4444; 
             font-weight: 900;
             margin-left: 8px;
             letter-spacing: -0.2px;
@@ -535,6 +535,7 @@
             const phoneItems = document.querySelectorAll('.phone-item');
             const summaryList = document.getElementById('res-summary-list');
             const totalContainer = document.getElementById('res-total-discount');
+            const threshold = 8900;
             
             summaryList.innerHTML = '';
             if (!userType || (userType === 'old_customer' && !expiryStatus)) {
@@ -590,18 +591,31 @@
 
             let html = '';
             if (userType === 'old_customer' && expiryStatus === 'long') {
-                // 方案 A 顯示
                 html += `<div class="mb-6 p-4 bg-white/50 rounded-2xl border border-teal-100">
                             <span class="inline-block px-3 py-1 bg-orange-100 text-orange-600 rounded-lg text-xs font-black mb-3">方案 A：提前續約現折網路費</span>`;
+                
                 if (rewardA > 0) {
-                    html += `<div class="mb-1 flex items-center gap-2"><span class="normal-text">網路資費現折 ${rewardA}元</span> <span class="price-strike">原價8900元</span></div>
-                             <div class="mt-2"><span class="normal-text">24個月網路</span> <span class="highlight-super-large">只需${8900 - rewardA}元</span></div>`;
+                    html += `<div class="mb-1 flex flex-col gap-1">
+                                <span class="normal-text">網路資費現折 ${rewardA}元</span>`;
+                    
+                    if (rewardA <= threshold) {
+                        html += `<div class="flex items-center gap-2">
+                                    <span class="price-strike">原價8900元</span>
+                                 </div>
+                                 <div class="mt-2">
+                                    <span class="normal-text">24個月網路</span>
+                                    <span class="highlight-super-large">只需${threshold - rewardA}元</span>
+                                 </div>`;
+                    } else {
+                        html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
+                    }
+                    html += `</div>`;
                 }
+
                 if (monthsA > 0) html += `<div class="mt-2"><span class="normal-text">加碼贈送網路 <span class="text-[#e53935]">${monthsA}個月</span></span></div>`;
                 if (extrasA.length > 0) html += `<p class="text-sm font-bold text-[#00897b] mt-1">加贈：${[...new Set(extrasA)].join('、')}</p>`;
                 html += `</div>`;
                 
-                // 方案 B 顯示
                 html += `<div class="p-4 bg-white/50 rounded-2xl border border-teal-100">
                             <span class="inline-block px-3 py-1 bg-blue-100 text-blue-600 rounded-lg text-xs font-black mb-3">方案 B：免付網路費直接延長網路月份</span>`;
                 if (rewardB > 0) html += `<span class="normal-text">網路費現折 <span class="text-[#e53935]">${rewardB}元</span></span>`;
@@ -611,24 +625,26 @@
             } else {
                 if (rewardA > 0) {
                     html += `<div class="mb-4">
-                                <div class="flex items-center gap-2 mb-1">
-                                    <span class="normal-text">網路資費現折 ${rewardA}元</span>
+                                <span class="normal-text">網路資費現折 ${rewardA}元</span>`;
+                    
+                    if (rewardA <= threshold) {
+                        html += `<div class="flex items-center gap-2 mt-1">
                                     <span class="price-strike">原價8900元</span>
                                 </div>
                                 <div class="mt-2">
                                     <span class="normal-text">24個月網路</span>
-                                    <span class="highlight-super-large">只需${8900 - rewardA}元</span>
-                                </div>
-                             </div>`;
+                                    <span class="highlight-super-large">只需${threshold - rewardA}元</span>
+                                </div>`;
+                    } else {
+                        html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
+                    }
+                    html += `</div>`;
                 }
                 if (monthsA > 0) {
                     html += `<div><span class="normal-text">直接贈送網路</span><span class="highlight-super-large">${monthsA}個月</span></div>`;
                 }
                 if (extrasA.length > 0) {
                     html += `<div class="mt-3 p-3 bg-teal-50 rounded-xl"><span class="text-lg font-black text-[#00897b]">並加贈：${[...new Set(extrasA)].join('、')}</span></div>`;
-                }
-                if (rewardA > 8900) {
-                    html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
                 }
             }
             totalContainer.innerHTML = html;
