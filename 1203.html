@@ -320,7 +320,7 @@
                     { brand: '遠傳', price: 599, reward: 9, extra: '', isMonth: true },
                     { brand: '遠傳', price: 799, reward: 16, extra: '', isMonth: true },
                     { brand: '遠傳', price: 999, reward: 24, extra: '', isMonth: true },
-                    { brand: '遠傳', price: 1399, reward: 24, extra: '+分離式冷氣清洗一台', isMonth: true },
+                    { brand: '遠傳', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true }, // 修正在此: 遠傳攜碼1399 為 30個月
                     { brand: '中華', price: 599, reward: 8, extra: '', isMonth: true },
                     { brand: '中華', price: 699, reward: 4, extra: '', isMonth: true },
                     { brand: '中華', price: 799, reward: 16, extra: '', isMonth: true },
@@ -331,7 +331,8 @@
                     { brand: '遠傳', price: 399, reward: 3, extra: '', isMonth: true },
                     { brand: '遠傳', price: 599, reward: 8, extra: '', isMonth: true },
                     { brand: '遠傳', price: 799, reward: 13, extra: '', isMonth: true },
-                    { brand: '遠傳', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true },
+                    { brand: '遠傳', price: 999, reward: 19, extra: '', isMonth: true }, // 修正在此: 遠傳新辦999 為 19個月
+                    { brand: '遠傳', price: 1399, reward: 24, extra: '', isMonth: true }, // 修正在此: 遠傳新辦1399 為 24個月
                     { brand: '中華', price: 599, reward: 6, extra: '', isMonth: true },
                     { brand: '中華', price: 699, reward: 3, extra: '', isMonth: true },
                     { brand: '中華', price: 799, reward: 13, extra: '', isMonth: true },
@@ -639,7 +640,6 @@
                         if (planA.extra) detailText += planA.extra;
                     }
 
-                    // 方案詳情按鈕只在有對應資料時顯示
                     const hasInfo = assetInfo[targetBrand]?.[planA.price];
                     const infoBtn = hasInfo ? `<button onclick="showPlanDetails('${targetBrand}', ${planA.price})" class="btn-info">此方案了解更多</button>` : '';
 
