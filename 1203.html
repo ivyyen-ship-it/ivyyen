@@ -575,7 +575,7 @@
                         <div class="summary-label text-[13px]">
                             <span class="font-black text-[#00796b]">#${i+1}</span>
                             <span class="font-bold text-gray-700 ml-1">${applyType === 'np' ? '攜碼' : '新辦'}${targetBrand}${planA.price}</span>
-                            ${hasInfo ? `<button onclick="showPlanDetails('${targetBrand}', ${planA.price})" class="btn-info">詳情</button>` : ''}
+                            ${hasInfo ? `<button onclick="showPlanDetails('${targetBrand}', ${planA.price})" class="btn-info">此方案了解更多</button>` : ''}
                         </div>
                         <div class="summary-value text-[11px] font-black text-[#e53935]">${(userType === 'old_customer' && expiryStatus === 'long') ? '方案 A/B 擇一' : (planA.isMonth ? `贈${planA.reward}個月` : `折${planA.reward}元`)}</div>
                     `;
