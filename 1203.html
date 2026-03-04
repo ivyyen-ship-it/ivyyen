@@ -156,13 +156,12 @@
             max-width: 90%;
             width: 360px;
         }
-        /* 微調「此方案了解更多」按鈕樣式：字體加大一點點 */
         .btn-info {
             background: #e0f2f1;
             color: #00796b;
             border: 1px solid #b2dfdb;
-            font-size: 12px; /* 從 10px 調整為 12px */
-            padding: 3px 8px; /* 增加一點點內距 */
+            font-size: 12px;
+            padding: 3px 8px;
             border-radius: 4px;
             font-weight: 900;
             cursor: pointer;
@@ -175,7 +174,7 @@
 
     <!-- 方案詳細內容彈窗 -->
     <div id="modal-overlay" class="fixed inset-0 hidden flex items-center justify-center p-4">
-        <div class="modal-content bg-white rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+        <div class="modal-content bg-white rounded-3xl shadow-2xl overflow-hidden">
             <div id="modal-header" class="p-4 text-white text-center font-black text-lg">
                 方案詳細內容
             </div>
@@ -187,6 +186,11 @@
                 <div>
                     <div class="text-[11px] font-black text-gray-400 mb-1">免費語音通話</div>
                     <div id="modal-voice-desc" class="text-sm font-bold text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100 whitespace-pre-line"></div>
+                </div>
+                <!-- 預繳金區塊 -->
+                <div id="modal-prepay-container">
+                    <div class="text-[11px] font-black text-gray-400 mb-1">預繳金</div>
+                    <div id="modal-prepay-desc" class="text-sm font-bold text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100"></div>
                 </div>
                 <button onclick="closeModal()" class="w-full py-3 bg-gray-100 text-gray-600 font-black rounded-xl hover:bg-gray-200 transition-colors">關閉視窗</button>
             </div>
@@ -232,7 +236,7 @@
             <span class="text-xl">+</span> 新增另一個門號
         </button>
 
-        <!-- Result Result -->
+        <!-- Result -->
         <div class="tiffany-card p-7 result-panel shadow-lg mb-10">
             <h2 class="text-xl font-bold mb-6 flex items-center text-[#00796b]"><span class="mr-2">✦</span> 總計試算結果</h2>
             <div class="space-y-6">
@@ -268,11 +272,11 @@
     <script>
         const assetInfo = {
             '中華': {
-                599: { net: '5G行動 24GB\n到量後4G 12M吃到飽', voice: '網內每通前5分鐘\n網外30分鐘\n市話40分鐘' },
-                699: { net: '4G行動 吃到飽', voice: '網內每通前10分鐘/網內45分鐘\n網外40分鐘\n市話15分鐘' },
-                799: { net: '5G行動 36GB\n到量後4G 21M吃到飽', voice: '網內每通前10分鐘\n網外45分鐘\n市話60分鐘' },
-                999: { net: '5G行動 60GB\n到量後4G 上傳20M/下載50M', voice: '網內免費\n網外60分鐘\n市話75分鐘' },
-                1399: { net: '5G行動 吃到飽', voice: '網內免費\n網外110分鐘\n市話140分鐘' }
+                599: { net: '5G行動 24GB\n到量後4G 12M吃到飽', voice: '網內每通前5分鐘\n網外30分鐘\n市話40分鐘', prepay: { new: '$3,500', np: '$3,500' } },
+                699: { net: '4G行動 吃到飽', voice: '網內每通前10分鐘/網內45分鐘\n網外40分鐘\n市話15分鐘', prepay: { new: '$3,500', np: '$3,500' } },
+                799: { net: '5G行動 36GB\n到量後4G 21M吃到飽', voice: '網內每通前10分鐘\n網外45分鐘\n市話60分鐘', prepay: { new: '$6,000', np: '$6,000' } },
+                999: { net: '5G行動 60GB\n到量後4G 上傳20M/下載50M', voice: '網內免費\n網外60分鐘\n市話75分鐘', prepay: { new: '$8,500', np: '$8,500' } },
+                1399: { net: '5G行動 吃到飽', voice: '網內免費\n網外110分鐘\n市話140分鐘', prepay: { new: '$13,000', np: '$13,000' } }
             },
             '遠傳': {
                 399: { net: '4G行動 6.3GB\n到量後網速128kbs', voice: '網內免費\n網外20分鐘' },
@@ -338,17 +342,30 @@
             }
         };
 
-        function showPlanDetails(brand, price) {
+        function showPlanDetails(brand, price, applyType) {
             const data = assetInfo[brand]?.[price];
             if (!data) return;
             const overlay = document.getElementById('modal-overlay');
             const header = document.getElementById('modal-header');
             const netDesc = document.getElementById('modal-net-desc');
             const voiceDesc = document.getElementById('modal-voice-desc');
+            const prepayContainer = document.getElementById('modal-prepay-container');
+            const prepayDesc = document.getElementById('modal-prepay-desc');
+
             header.textContent = `${brand} ${price}型 方案詳情`;
             header.style.backgroundColor = brand === '中華' ? '#673ab7' : '#e53935';
             netDesc.innerText = data.net;
             voiceDesc.innerText = data.voice;
+
+            // 處理中華電信預繳金邏輯
+            if (brand === '中華' && data.prepay) {
+                prepayContainer.classList.remove('hidden');
+                const amount = applyType === 'np' ? data.prepay.np : data.prepay.new;
+                prepayDesc.innerText = `${amount} (抵扣每月月租費扣到完)`;
+            } else {
+                prepayContainer.classList.add('hidden');
+            }
+
             overlay.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
@@ -571,13 +588,7 @@
 
                     let typePrefix = (applyType === 'np' ? '攜碼' : '新辦');
                     let planName = `${typePrefix}${targetBrand}${planA.price}`;
-                    let specSuffix = "";
-                    
-                    if ((targetBrand === '中華' && planA.price === 699) || (targetBrand === '遠傳' && planA.price === 399)) {
-                        specSuffix = " (4G方案)";
-                    } else {
-                        specSuffix = " (5G方案)";
-                    }
+                    let specSuffix = ((targetBrand === '中華' && planA.price === 699) || (targetBrand === '遠傳' && planA.price === 399)) ? " (4G方案)" : " (5G方案)";
 
                     const div = document.createElement('div');
                     div.className = 'summary-item';
@@ -586,7 +597,7 @@
                         <div class="summary-label text-[13px]">
                             <span class="font-black text-[#00796b]">#${i+1}</span>
                             <span class="font-bold text-gray-700 ml-1">${planName}${specSuffix}</span>
-                            ${hasInfo ? `<button onclick="showPlanDetails('${targetBrand}', ${planA.price})" class="btn-info">此方案了解更多</button>` : ''}
+                            ${hasInfo ? `<button onclick="showPlanDetails('${targetBrand}', ${planA.price}, '${applyType}')" class="btn-info">此方案了解更多</button>` : ''}
                         </div>
                         <div class="summary-value text-[11px] font-black text-[#e53935]">${(userType === 'old_customer' && expiryStatus === 'long') ? '方案 A/B 擇一' : (planA.isMonth ? `贈${planA.reward}個月` : `折${planA.reward}元`)}</div>
                     `;
@@ -603,25 +614,16 @@
             if (userType === 'old_customer' && expiryStatus === 'long') {
                 html += `<div class="mb-6 p-4 bg-white/50 rounded-2xl border border-teal-100">
                             <span class="inline-block px-3 py-1 bg-orange-100 text-orange-600 rounded-lg text-xs font-black mb-3">方案 A：提前續約現折網路費</span>`;
-                
                 if (rewardA > 0) {
-                    html += `<div class="mb-1 flex flex-col gap-1">
-                                <span class="normal-text">網路資費現折 ${rewardA}元</span>`;
-                    
+                    html += `<div class="mb-1 flex flex-col gap-1"><span class="normal-text">網路資費現折 ${rewardA}元</span>`;
                     if (rewardA <= threshold) {
-                        html += `<div class="flex items-center gap-2">
-                                    <span class="price-strike">原價8900元</span>
-                                 </div>
-                                 <div class="mt-2">
-                                    <span class="normal-text">24個月網路</span>
-                                    <span class="highlight-super-large">只需${threshold - rewardA}元</span>
-                                 </div>`;
+                        html += `<div class="flex items-center gap-2"><span class="price-strike">原價8900元</span></div>
+                                 <div class="mt-2"><span class="normal-text">24個月網路</span><span class="highlight-super-large">只需${threshold - rewardA}元</span></div>`;
                     } else {
                         html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
                     }
                     html += `</div>`;
                 }
-
                 if (monthsA > 0) html += `<div class="mt-2"><span class="normal-text">加碼贈送網路 <span class="text-[#e53935]">${monthsA}個月</span></span></div>`;
                 if (extrasA.length > 0) html += `<p class="text-sm font-bold text-[#00897b] mt-1">加贈：${[...new Set(extrasA)].join('、')}</p>`;
                 html += `</div>`;
@@ -634,28 +636,17 @@
                 html += `<p class="text-[10px] text-gray-400 mt-2 font-bold italic">💡 您可根據剩餘合約長短，選擇最划算的方案！</p></div>`;
             } else {
                 if (rewardA > 0) {
-                    html += `<div class="mb-4">
-                                <span class="normal-text">網路資費現折 ${rewardA}元</span>`;
-                    
+                    html += `<div class="mb-4"><span class="normal-text">網路資費現折 ${rewardA}元</span>`;
                     if (rewardA <= threshold) {
-                        html += `<div class="flex items-center gap-2 mt-1">
-                                    <span class="price-strike">原價8900元</span>
-                                </div>
-                                <div class="mt-2">
-                                    <span class="normal-text">24個月網路</span>
-                                    <span class="highlight-super-large">只需${threshold - rewardA}元</span>
-                                </div>`;
+                        html += `<div class="flex items-center gap-2 mt-1"><span class="price-strike">原價8900元</span></div>
+                                <div class="mt-2"><span class="normal-text">24個月網路</span><span class="highlight-super-large">只需${threshold - rewardA}元</span></div>`;
                     } else {
                         html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
                     }
                     html += `</div>`;
                 }
-                if (monthsA > 0) {
-                    html += `<div><span class="normal-text">直接贈送網路</span><span class="highlight-super-large">${monthsA}個月</span></div>`;
-                }
-                if (extrasA.length > 0) {
-                    html += `<div class="mt-3 p-3 bg-teal-50 rounded-xl"><span class="text-lg font-black text-[#00897b]">並加贈：${[...new Set(extrasA)].join('、')}</span></div>`;
-                }
+                if (monthsA > 0) html += `<div><span class="normal-text">直接贈送網路</span><span class="highlight-super-large">${monthsA}個月</span></div>`;
+                if (extrasA.length > 0) html += `<div class="mt-3 p-3 bg-teal-50 rounded-xl"><span class="text-lg font-black text-[#00897b]">並加贈：${[...new Set(extrasA)].join('、')}</span></div>`;
             }
             totalContainer.innerHTML = html;
         }
