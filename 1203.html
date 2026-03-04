@@ -39,9 +39,6 @@
         .placeholder-style {
             color: #9ca3af !important;
         }
-        .tiffany-input option {
-            color: #263238;
-        }
         .tiffany-input:focus {
             border-color: #4db6ac;
             outline: none;
@@ -82,7 +79,6 @@
             border-radius: 16px;
         }
         .hidden { display: none; }
-        
         .highlight-super-large {
             color: #e53935;
             font-size: 2.25rem;
@@ -118,15 +114,6 @@
             align-items: center;
             gap: 4px;
         }
-        .summary-label {
-            flex-grow: 1;
-        }
-        .summary-value {
-            flex-shrink: 0;
-            text-align: right;
-            white-space: nowrap;
-            letter-spacing: -0.3px;
-        }
         .over-limit-hint {
             color: #ef4444; 
             font-size: 1.25rem; 
@@ -140,13 +127,6 @@
             border: 2px solid #feb2b2;
             text-align: center;
         }
-        .phone-tip-red {
-            font-size: 13px;
-            color: #ef4444; 
-            font-weight: 900;
-            margin-left: 8px;
-            letter-spacing: -0.2px;
-        }
         #modal-overlay {
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(4px);
@@ -156,18 +136,18 @@
             max-width: 90%;
             width: 360px;
         }
-        /* 微調「此方案了解更多」按鈕樣式：字體加大一點點 */
         .btn-info {
             background: #e0f2f1;
             color: #00796b;
             border: 1px solid #b2dfdb;
-            font-size: 12px; /* 從 10px 調整為 12px */
-            padding: 3px 8px; /* 增加一點點內距 */
+            font-size: 11px;
+            padding: 3px 6px;
             border-radius: 4px;
             font-weight: 900;
             cursor: pointer;
             margin-left: 4px;
             display: inline-block;
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -188,20 +168,22 @@
                     <div class="text-[11px] font-black text-gray-400 mb-1">免費語音通話</div>
                     <div id="modal-voice-desc" class="text-sm font-bold text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100 whitespace-pre-line"></div>
                 </div>
+                <div id="modal-prepay-container" class="hidden">
+                    <div class="text-[11px] font-black text-gray-400 mb-1">預繳金</div>
+                    <div id="modal-prepay-desc" class="text-sm font-bold text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100 whitespace-pre-line"></div>
+                </div>
                 <button onclick="closeModal()" class="w-full py-3 bg-gray-100 text-gray-600 font-black rounded-xl hover:bg-gray-200 transition-colors">關閉視窗</button>
             </div>
         </div>
     </div>
 
     <div class="max-w-md mx-auto relative z-10">
-        <!-- Header -->
         <div class="text-center mb-8 pt-4">
             <h1 class="text-3xl font-black tracking-tighter mb-2 text-[#00796b]">智生活今網寬頻</h1>
             <p class="text-lg font-bold text-[#4db6ac]">雙網方案優惠試算</p>
             <div class="h-1.5 w-16 bg-[#81cbd4] mx-auto rounded-full mt-4"></div>
         </div>
 
-        <!-- 1. 寬頻狀態 -->
         <div class="tiffany-card p-6 mb-6 space-y-4">
             <div>
                 <label class="label-text">1. 今網寬頻網路合約狀態</label>
@@ -211,7 +193,6 @@
                     <option value="old_customer">已經是今網用戶</option>
                 </select>
             </div>
-
             <div id="expiry-box" class="hidden">
                 <label class="label-text">1-2. 合約到期狀態</label>
                 <select id="expiry-status" class="tiffany-input w-full appearance-none placeholder-style" onchange="handleSelectColor(event); calculateAll()">
@@ -222,17 +203,12 @@
             </div>
         </div>
 
-        <!-- 2. 門號清單 -->
-        <div id="phone-list" class="space-y-4 mb-6">
-            <!-- 門號項目動態生成 -->
-        </div>
+        <div id="phone-list" class="space-y-4 mb-6"></div>
 
-        <!-- 新增門號按鈕 -->
         <button onclick="addPhone()" class="w-full py-4 mb-8 border-2 border-dashed border-[#4db6ac] rounded-2xl text-[#00796b] font-bold flex items-center justify-center gap-2 bg-white/50 hover:bg-teal-50 transition-colors">
             <span class="text-xl">+</span> 新增另一個門號
         </button>
 
-        <!-- Result Result -->
         <div class="tiffany-card p-7 result-panel shadow-lg mb-10">
             <h2 class="text-xl font-bold mb-6 flex items-center text-[#00796b]"><span class="mr-2">✦</span> 總計試算結果</h2>
             <div class="space-y-6">
@@ -240,23 +216,14 @@
                     <p class="text-[11px] text-[#4db6ac] font-bold uppercase mb-3 tracking-widest">各門號優惠明細</p>
                     <div id="res-summary-list" class="space-y-3"></div>
                 </div>
-                
                 <div>
                     <p class="text-[11px] text-[#4db6ac] font-bold uppercase mb-2 tracking-widest">總計專屬優惠內容</p>
-                    <div id="res-total-discount" class="leading-relaxed min-h-[80px]">
-                        <!-- 總計結果 -->
-                    </div>
+                    <div id="res-total-discount" class="leading-relaxed min-h-[80px]"></div>
                 </div>
-
                 <div class="warning-box p-4 space-y-2">
-                    <p class="text-[13px] text-[#c05621] font-bold leading-relaxed">
-                        ※ 說明1：多門號優惠可完全疊加！各門號優惠內容將於試算結果中詳列。
-                    </p>
-                    <p class="text-[13px] text-[#c05621] font-bold leading-relaxed">
-                        ※ 說明2：因雙網方案情境不同優惠可能有所變化，完整優惠仍需由電信專員說明最準確喔！
-                    </p>
+                    <p class="text-[13px] text-[#c05621] font-bold leading-relaxed">※ 說明1：多門號優惠可完全疊加！各門號優惠內容將於試算結果中詳列。</p>
+                    <p class="text-[13px] text-[#c05621] font-bold leading-relaxed">※ 說明2：因雙網方案情境不同優惠可能有所變化，完整優惠仍需由電信專員說明最準確喔！</p>
                 </div>
-
                 <a href="https://lin.ee/CPfNPRt" target="_blank" class="btn-line w-full flex flex-col items-center justify-center py-5 rounded-2xl text-white no-underline px-4 text-center">
                     <span class="text-xl font-black mb-1">立即加line找服務專員</span>
                     <span class="text-xs font-bold opacity-90">智生活專屬服務，立即領取隱藏福利</span>
@@ -268,11 +235,11 @@
     <script>
         const assetInfo = {
             '中華': {
-                599: { net: '5G行動 24GB\n到量後4G 12M吃到飽', voice: '網內每通前5分鐘\n網外30分鐘\n市話40分鐘' },
-                699: { net: '4G行動 吃到飽', voice: '網內每通前10分鐘/網內45分鐘\n網外40分鐘\n市話15分鐘' },
-                799: { net: '5G行動 36GB\n到量後4G 21M吃到飽', voice: '網內每通前10分鐘\n網外45分鐘\n市話60分鐘' },
-                999: { net: '5G行動 60GB\n到量後4G 上傳20M/下載50M', voice: '網內免費\n網外60分鐘\n市話75分鐘' },
-                1399: { net: '5G行動 吃到飽', voice: '網內免費\n網外110分鐘\n市話140分鐘' }
+                599: { net: '5G行動 24GB\n到量後4G 12M吃到飽', voice: '網內每通前5分鐘\n網外30分鐘\n市話40分鐘', prepay: '$3,500 (抵扣每月月租費扣到完)' },
+                699: { net: '4G行動 吃到飽', voice: '網內每通前10分鐘/網內45分鐘\n網外40分鐘\n市話15分鐘', prepay: '$3,500 (抵扣每月月租費扣到完)' },
+                799: { net: '5G行動 36GB\n到量後4G 21M吃到飽', voice: '網內每通前10分鐘\n網外45分鐘\n市話60分鐘', prepay: '$6,000 (抵扣每月月租費扣到完)' },
+                999: { net: '5G行動 60GB\n到量後4G 上傳20M/下載50M', voice: '網內免費\n網外60分鐘\n市話75分鐘', prepay: '$8,500 (抵扣每月月租費扣到完)' },
+                1399: { net: '5G行動 吃到飽', voice: '網內免費\n網外110分鐘\n市話140分鐘', prepay: '$13,000 (抵扣每月月租費扣到完)' }
             },
             '遠傳': {
                 399: { net: '4G行動 6.3GB\n到量後網速128kbs', voice: '網內免費\n網外20分鐘' },
@@ -286,53 +253,53 @@
         const planData = {
             'discount': { 
                 'np': [
-                    { brand: '遠傳', price: 399, reward: 1500, extra: '', isMonth: false },
-                    { brand: '遠傳', price: 599, reward: 3500, extra: '', isMonth: false },
-                    { brand: '遠傳', price: 799, reward: 6000, extra: '', isMonth: false },
-                    { brand: '遠傳', price: 999, reward: 24, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 399, reward: 1500, isMonth: false },
+                    { brand: '遠傳', price: 599, reward: 3500, isMonth: false },
+                    { brand: '遠傳', price: 799, reward: 6000, isMonth: false },
+                    { brand: '遠傳', price: 999, reward: 24, isMonth: true },
                     { brand: '遠傳', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true },
-                    { brand: '中華', price: 599, reward: 3000, extra: '', isMonth: false },
-                    { brand: '中華', price: 699, reward: 1500, extra: '', isMonth: false },
-                    { brand: '中華', price: 799, reward: 6000, extra: '', isMonth: false },
-                    { brand: '中華', price: 999, reward: 24, extra: '', isMonth: true },
+                    { brand: '中華', price: 599, reward: 3000, isMonth: false },
+                    { brand: '中華', price: 699, reward: 1500, isMonth: false },
+                    { brand: '中華', price: 799, reward: 6000, isMonth: false },
+                    { brand: '中華', price: 999, reward: 24, isMonth: true },
                     { brand: '中華', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true }
                 ],
                 'new': [
-                    { brand: '遠傳', price: 399, reward: 1000, extra: '', isMonth: false },
-                    { brand: '遠傳', price: 599, reward: 3000, extra: '', isMonth: false },
-                    { brand: '遠傳', price: 799, reward: 5000, extra: '', isMonth: false },
-                    { brand: '遠傳', price: 999, reward: 7000, extra: '', isMonth: false },
+                    { brand: '遠傳', price: 399, reward: 1000, isMonth: false },
+                    { brand: '遠傳', price: 599, reward: 3000, isMonth: false },
+                    { brand: '遠傳', price: 799, reward: 5000, isMonth: false },
+                    { brand: '遠傳', price: 999, reward: 7000, isMonth: false },
                     { brand: '遠傳', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true },
-                    { brand: '中華', price: 599, reward: 2500, extra: '', isMonth: false },
-                    { brand: '中華', price: 699, reward: 1000, extra: '', isMonth: false },
-                    { brand: '中華', price: 799, reward: 5000, extra: '', isMonth: false },
-                    { brand: '中華', price: 999, reward: 7000, extra: '', isMonth: false },
-                    { brand: '中華', price: 1399, reward: 30, extra: '', isMonth: true }
+                    { brand: '中華', price: 599, reward: 2500, isMonth: false },
+                    { brand: '中華', price: 699, reward: 1000, isMonth: false },
+                    { brand: '中華', price: 799, reward: 5000, isMonth: false },
+                    { brand: '中華', price: 999, reward: 7000, isMonth: false },
+                    { brand: '中華', price: 1399, reward: 30, isMonth: true }
                 ]
             },
             'months': { 
                 'np': [
-                    { brand: '遠傳', price: 399, reward: 4, extra: '', isMonth: true },
-                    { brand: '遠傳', price: 599, reward: 9, extra: '', isMonth: true },
-                    { brand: '遠傳', price: 799, reward: 16, extra: '', isMonth: true },
-                    { brand: '遠傳', price: 999, reward: 24, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 399, reward: 4, isMonth: true },
+                    { brand: '遠傳', price: 599, reward: 9, isMonth: true },
+                    { brand: '遠傳', price: 799, reward: 16, isMonth: true },
+                    { brand: '遠傳', price: 999, reward: 24, isMonth: true },
                     { brand: '遠傳', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true },
-                    { brand: '中華', price: 599, reward: 8, extra: '', isMonth: true },
-                    { brand: '中華', price: 699, reward: 4, extra: '', isMonth: true },
-                    { brand: '中華', price: 799, reward: 16, extra: '', isMonth: true },
-                    { brand: '中華', price: 999, reward: 24, extra: '', isMonth: true },
+                    { brand: '中華', price: 599, reward: 8, isMonth: true },
+                    { brand: '中華', price: 699, reward: 4, isMonth: true },
+                    { brand: '中華', price: 799, reward: 16, isMonth: true },
+                    { brand: '中華', price: 999, reward: 24, isMonth: true },
                     { brand: '中華', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true }
                 ],
                 'new': [
-                    { brand: '遠傳', price: 399, reward: 3, extra: '', isMonth: true },
-                    { brand: '遠傳', price: 599, reward: 8, extra: '', isMonth: true },
-                    { brand: '遠傳', price: 799, reward: 13, extra: '', isMonth: true },
-                    { brand: '遠傳', price: 999, reward: 19, extra: '', isMonth: true },
-                    { brand: '遠傳', price: 1399, reward: 30, extra: '', isMonth: true },
-                    { brand: '中華', price: 599, reward: 6, extra: '', isMonth: true },
-                    { brand: '中華', price: 699, reward: 3, extra: '', isMonth: true },
-                    { brand: '中華', price: 799, reward: 13, extra: '', isMonth: true },
-                    { brand: '中華', price: 999, reward: 19, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 399, reward: 3, isMonth: true },
+                    { brand: '遠傳', price: 599, reward: 8, isMonth: true },
+                    { brand: '遠傳', price: 799, reward: 13, isMonth: true },
+                    { brand: '遠傳', price: 999, reward: 19, isMonth: true },
+                    { brand: '遠傳', price: 1399, reward: 30, isMonth: true },
+                    { brand: '中華', price: 599, reward: 6, isMonth: true },
+                    { brand: '中華', price: 699, reward: 3, isMonth: true },
+                    { brand: '中華', price: 799, reward: 13, isMonth: true },
+                    { brand: '中華', price: 999, reward: 19, isMonth: true },
                     { brand: '中華', price: 1399, reward: 30, extra: '+分離式冷氣清洗一台', isMonth: true }
                 ]
             }
@@ -343,74 +310,55 @@
             if (!data) return;
             const overlay = document.getElementById('modal-overlay');
             const header = document.getElementById('modal-header');
-            const netDesc = document.getElementById('modal-net-desc');
-            const voiceDesc = document.getElementById('modal-voice-desc');
+            const prepayContainer = document.getElementById('modal-prepay-container');
+            
             header.textContent = `${brand} ${price}型 方案詳情`;
             header.style.backgroundColor = brand === '中華' ? '#673ab7' : '#e53935';
-            netDesc.innerText = data.net;
-            voiceDesc.innerText = data.voice;
-            overlay.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            document.getElementById('modal-overlay').classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-
-        function handleSelectColor(e) {
-            if (e.target.value) e.target.classList.remove('placeholder-style');
-            else e.target.classList.add('placeholder-style');
-        }
-
-        function handleUserTypeChange() {
-            const userType = document.getElementById('user-type').value;
-            const expiryBox = document.getElementById('expiry-box');
-            if (userType === 'old_customer') expiryBox.classList.remove('hidden');
-            else {
-                expiryBox.classList.add('hidden');
-                document.getElementById('expiry-status').value = "";
+            document.getElementById('modal-net-desc').innerText = data.net;
+            document.getElementById('modal-voice-desc').innerText = data.voice;
+            
+            if (brand === '中華' && data.prepay) {
+                document.getElementById('modal-prepay-desc').innerText = data.prepay;
+                prepayContainer.classList.remove('hidden');
+            } else {
+                prepayContainer.classList.add('hidden');
             }
-            updateAllPlanOptions();
-            calculateAll();
+            overlay.classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
+        function handleSelectColor(e) { e.target.classList.toggle('placeholder-style', !e.target.value); }
+        function handleUserTypeChange() {
+            const ut = document.getElementById('user-type').value;
+            document.getElementById('expiry-box').classList.toggle('hidden', ut !== 'old_customer');
+            updateAllPlanOptions(); calculateAll();
         }
 
         function addPhone() {
             const id = 'phone-' + Date.now();
             const container = document.getElementById('phone-list');
-            const phoneIdx = container.children.length + 1;
             const div = document.createElement('div');
-            div.id = id;
-            div.className = 'phone-item p-5 rounded-2xl shadow-sm space-y-4 relative';
-            div.dataset.applyType = 'np';
-            div.dataset.npMethod = 'auto'; 
-            div.dataset.targetBrand = ''; 
-            
+            div.id = id; div.className = 'phone-item p-5 rounded-2xl shadow-sm space-y-4 relative';
+            div.dataset.applyType = 'np'; div.dataset.npMethod = 'auto'; div.dataset.targetBrand = '';
             div.innerHTML = `
-                <div class="flex flex-wrap items-center gap-y-1 mb-1">
-                    <span class="bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-xs font-black italic">門號 #${phoneIdx}</span>
-                    <span class="phone-tip-red">✨雙網方案不限本人門號，朋友或家人都可以一起申辦！</span>
+                <div class="flex items-center gap-y-1 mb-1">
+                    <span class="bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-xs font-black italic">門號 #${container.children.length + 1}</span>
                     ${container.children.length > 0 ? `<button onclick="removePhone('${id}')" class="ml-auto text-gray-400 text-xs font-bold hover:text-red-500">移除 ×</button>` : ''}
                 </div>
-                
                 <div>
                     <label class="label-text">2. 您目前的電信門號</label>
                     <select class="tiffany-input w-full current-telco placeholder-style" onchange="handleSelectColor(event); updatePhoneLogic('${id}')">
                         <option value="" disabled selected>請選擇...</option>
-                        <option value="cht">中華電信</option>
-                        <option value="fet">遠傳電信</option>
-                        <option value="twn">台灣大哥大</option>
+                        <option value="cht">中華電信</option><option value="fet">遠傳電信</option><option value="twn">台灣大哥大</option>
                     </select>
                 </div>
-
                 <div>
                     <label class="label-text">3. 辦理類別</label>
                     <div class="flex flex-col gap-2">
-                        <button class="flex-1 py-3 px-2 rounded-lg text-[11px] font-bold btn-logic btn-logic-active btn-type-np leading-tight" onclick="setPhoneApplyType('${id}', 'np')">攜碼<br>(號碼不變，改用其他電信業者)</button>
-                        <button class="flex-1 py-3 px-2 rounded-lg text-[11px] font-bold btn-logic btn-type-new leading-tight" onclick="setPhoneApplyType('${id}', 'new')">新辦門號<br>(新的手機號碼)</button>
+                        <button class="flex-1 py-3 rounded-lg text-[11px] font-bold btn-logic btn-logic-active btn-type-np" onclick="setPhoneApplyType('${id}', 'np')">攜碼 (改電信)</button>
+                        <button class="flex-1 py-3 rounded-lg text-[11px] font-bold btn-logic btn-type-new" onclick="setPhoneApplyType('${id}', 'new')">新辦門號</button>
                     </div>
                 </div>
-
                 <div class="target-brand-selection-box hidden space-y-3">
                     <label class="label-text">想了解哪家電信？</label>
                     <div class="flex gap-2">
@@ -418,114 +366,72 @@
                         <button class="flex-1 py-3 rounded-xl text-[11px] font-bold btn-logic btn-target-fet" onclick="setTargetBrand('${id}', '遠傳')">遠傳電信</button>
                     </div>
                 </div>
-
                 <div class="np-method-container hidden space-y-3">
-                    <label class="label-text">4. 選擇優惠了解方式</label>
+                    <label class="label-text">4. 選擇優惠方式</label>
                     <div class="flex gap-2">
-                        <button class="flex-1 py-3 rounded-xl text-[10px] leading-tight font-bold btn-logic btn-logic-active btn-method-auto" onclick="setNpMethod('${id}', 'auto')">A. 比照我目前<br>的資費方案</button>
-                        <button class="flex-1 py-3 rounded-xl text-[10px] leading-tight font-bold btn-logic btn-method-manual" onclick="setNpMethod('${id}', 'manual')">B. 我想了解其他<br>資費優惠</button>
+                        <button class="flex-1 py-3 rounded-xl text-[10px] font-bold btn-logic btn-logic-active btn-method-auto" onclick="setNpMethod('${id}', 'auto')">比照現有資費</button>
+                        <button class="flex-1 py-3 rounded-xl text-[10px] font-bold btn-logic btn-method-manual" onclick="setNpMethod('${id}', 'manual')">了解其他資費</button>
                     </div>
                     <div class="auto-input-box p-3 bg-teal-50 rounded-lg">
-                        <label class="text-[10px] font-bold text-teal-600 mb-1 block">輸入目前門號月資費</label>
-                        <input type="number" class="tiffany-input w-full current-price-input" placeholder="請填入目前資費金額，例如：599" oninput="calculateAll()">
+                        <input type="number" class="tiffany-input w-full current-price-input" placeholder="目前的資費，如：599" oninput="calculateAll()">
                     </div>
                 </div>
-
-                <div class="manual-container hidden space-y-3">
-                    <div>
-                        <label class="label-text">選擇資費方案</label>
-                        <select class="tiffany-input w-full plan-select placeholder-style" onchange="handleSelectColor(event); calculateAll()">
-                            <option value="" disabled selected>請選擇...</option>
-                        </select>
-                    </div>
+                <div class="manual-container hidden">
+                    <select class="tiffany-input w-full plan-select placeholder-style" onchange="handleSelectColor(event); calculateAll()">
+                        <option value="" disabled selected>請選擇方案...</option>
+                    </select>
                 </div>
             `;
-            container.appendChild(div);
-            updatePhoneLogic(id, true);
+            container.appendChild(div); updatePhoneLogic(id);
         }
 
-        function removePhone(id) {
-            document.getElementById(id).remove();
-            calculateAll();
-        }
-
+        function removePhone(id) { document.getElementById(id).remove(); calculateAll(); }
         function setPhoneApplyType(id, type) {
-            const el = document.getElementById(id);
-            el.dataset.applyType = type;
+            const el = document.getElementById(id); el.dataset.applyType = type;
             el.querySelector('.btn-type-np').classList.toggle('btn-logic-active', type === 'np');
             el.querySelector('.btn-type-new').classList.toggle('btn-logic-active', type === 'new');
             updatePhoneLogic(id);
         }
-
         function setNpMethod(id, method) {
-            const el = document.getElementById(id);
-            el.dataset.npMethod = method;
+            const el = document.getElementById(id); el.dataset.npMethod = method;
             el.querySelector('.btn-method-auto').classList.toggle('btn-logic-active', method === 'auto');
             el.querySelector('.btn-method-manual').classList.toggle('btn-logic-active', method === 'manual');
             updatePhoneLogic(id);
         }
-
         function setTargetBrand(id, brand) {
-            const el = document.getElementById(id);
-            el.dataset.targetBrand = brand;
+            const el = document.getElementById(id); el.dataset.targetBrand = brand;
             el.querySelector('.btn-target-cht').classList.toggle('btn-logic-active', brand === '中華');
             el.querySelector('.btn-target-fet').classList.toggle('btn-logic-active', brand === '遠傳');
             updatePhoneLogic(id);
         }
 
-        function updatePhoneLogic(id, isInit = false) {
+        function updatePhoneLogic(id) {
             const el = document.getElementById(id);
             const curTelco = el.querySelector('.current-telco').value;
             const applyType = el.dataset.applyType;
-            const npMethod = el.dataset.npMethod;
-            const targetBrandBox = el.querySelector('.target-brand-selection-box');
-            const npContainer = el.querySelector('.np-method-container');
-            const autoInputBox = el.querySelector('.auto-input-box');
-            const manualContainer = el.querySelector('.manual-container');
-
-            targetBrandBox.classList.add('hidden');
-            npContainer.classList.add('hidden');
-            manualContainer.classList.add('hidden');
-
             if (applyType === 'np') {
                 if (curTelco === 'cht') el.dataset.targetBrand = '遠傳';
                 else if (curTelco === 'fet') el.dataset.targetBrand = '中華';
-                else if (curTelco === 'twn') targetBrandBox.classList.remove('hidden');
-
-                if (el.dataset.targetBrand) {
-                    npContainer.classList.remove('hidden');
-                    if (npMethod === 'auto') autoInputBox.classList.remove('hidden');
-                    else manualContainer.classList.remove('hidden');
-                }
+                el.querySelector('.target-brand-selection-box').classList.toggle('hidden', curTelco !== 'twn');
+                el.querySelector('.np-method-container').classList.toggle('hidden', !el.dataset.targetBrand);
             } else {
-                targetBrandBox.classList.remove('hidden');
-                if (el.dataset.targetBrand) manualContainer.classList.remove('hidden');
+                el.querySelector('.target-brand-selection-box').classList.remove('hidden');
             }
-            updatePlanOptions(id);
-            calculateAll();
+            el.querySelector('.manual-container').classList.toggle('hidden', !el.dataset.targetBrand || (applyType==='np' && el.dataset.npMethod==='auto'));
+            updatePlanOptions(id); calculateAll();
         }
 
-        function updateAllPlanOptions() {
-            document.querySelectorAll('.phone-item').forEach(item => updatePlanOptions(item.id));
-        }
-
+        function updateAllPlanOptions() { document.querySelectorAll('.phone-item').forEach(i => updatePlanOptions(i.id)); }
         function updatePlanOptions(id) {
-            const el = document.getElementById(id);
-            const userType = document.getElementById('user-type').value;
-            const brand = el.dataset.targetBrand;
-            const applyType = el.dataset.applyType;
+            const el = document.getElementById(id); const userType = document.getElementById('user-type').value;
+            const brand = el.dataset.targetBrand; const applyType = el.dataset.applyType;
             const select = el.querySelector('.plan-select');
-
             if (!brand || !userType) return;
-            let filterPrices = (brand === '中華' && applyType === 'new') ? [599, 699, 799, 999, 1399] : [399, 599, 699, 799, 999, 1399];
-            const plans = planData['discount'][applyType].filter(p => p.brand === brand && filterPrices.includes(p.price));
-            
+            const plans = planData['discount'][applyType].filter(p => p.brand === brand);
             select.innerHTML = '<option value="" disabled selected>請選擇...</option>';
             plans.forEach(p => {
-                const opt = document.createElement('option');
-                opt.value = JSON.stringify(p);
-                opt.textContent = `${p.brand} ${p.price}型`;
-                select.appendChild(opt);
+                const opt = document.createElement('option'); opt.value = JSON.stringify(p);
+                opt.textContent = `${p.brand} ${p.price}型`; select.appendChild(opt);
             });
         }
 
@@ -535,129 +441,70 @@
             const phoneItems = document.querySelectorAll('.phone-item');
             const summaryList = document.getElementById('res-summary-list');
             const totalContainer = document.getElementById('res-total-discount');
-            const threshold = 8900;
-            
             summaryList.innerHTML = '';
             if (!userType || (userType === 'old_customer' && !expiryStatus)) {
-                totalContainer.innerHTML = '<p class="text-gray-400 font-bold italic">請選擇寬頻合約狀態</p>';
-                return;
+                totalContainer.innerHTML = '<p class="text-gray-400 font-bold italic">請選擇寬頻合約狀態</p>'; return;
             }
 
-            let rewardA = 0; let monthsA = 0; let extrasA = [];
-            let rewardB = 0; let monthsB = 0; let extrasB = [];
-            let validCount = 0;
-
+            let validPlans = [];
             phoneItems.forEach((item, i) => {
-                const applyType = item.dataset.applyType;
-                const targetBrand = item.dataset.targetBrand;
+                const applyType = item.dataset.applyType; const targetBrand = item.dataset.targetBrand;
                 const npMethod = item.dataset.npMethod;
-                let selectedPrice = (applyType === 'np' && npMethod === 'auto') ? (parseInt(item.querySelector('.current-price-input').value) || 0) : 0;
-                if (!selectedPrice) {
-                    const selectVal = item.querySelector('.plan-select').value;
-                    if (selectVal) selectedPrice = JSON.parse(selectVal).price;
-                }
-
-                if (selectedPrice && targetBrand) {
-                    validCount++;
-                    const plansA = planData['discount'][applyType].filter(p => p.brand === targetBrand).sort((a,b) => a.price - b.price);
-                    const planA = plansA.find(p => p.price >= selectedPrice) || plansA[plansA.length-1];
-                    if (planA.isMonth) monthsA += planA.reward; else rewardA += planA.reward;
-                    if (planA.extra) extrasA.push(planA.extra.replace('+', ''));
-
-                    const plansB = planData['months'][applyType].filter(p => p.brand === targetBrand).sort((a,b) => a.price - b.price);
-                    const planB = plansB.find(p => p.price >= selectedPrice) || plansB[plansB.length-1];
-                    if (planB.isMonth) monthsB += planB.reward; else rewardB += planB.reward;
-                    if (planB.extra) extrasB.push(planB.extra.replace('+', ''));
-
-                    let typePrefix = (applyType === 'np' ? '攜碼' : '新辦');
-                    let planName = `${typePrefix}${targetBrand}${planA.price}`;
-                    let specSuffix = "";
-                    
-                    if ((targetBrand === '中華' && planA.price === 699) || (targetBrand === '遠傳' && planA.price === 399)) {
-                        specSuffix = " (4G方案)";
-                    } else {
-                        specSuffix = " (5G方案)";
-                    }
-
-                    const div = document.createElement('div');
-                    div.className = 'summary-item';
-                    const hasInfo = assetInfo[targetBrand]?.[planA.price];
-                    div.innerHTML = `
-                        <div class="summary-label text-[13px]">
-                            <span class="font-black text-[#00796b]">#${i+1}</span>
-                            <span class="font-bold text-gray-700 ml-1">${planName}${specSuffix}</span>
-                            ${hasInfo ? `<button onclick="showPlanDetails('${targetBrand}', ${planA.price})" class="btn-info">此方案了解更多</button>` : ''}
-                        </div>
-                        <div class="summary-value text-[11px] font-black text-[#e53935]">${(userType === 'old_customer' && expiryStatus === 'long') ? '方案 A/B 擇一' : (planA.isMonth ? `贈${planA.reward}個月` : `折${planA.reward}元`)}</div>
-                    `;
-                    summaryList.appendChild(div);
+                let price = (applyType === 'np' && npMethod === 'auto') ? (parseInt(item.querySelector('.current-price-input').value) || 0) : 0;
+                if (!price) { const s = item.querySelector('.plan-select').value; if(s) price = JSON.parse(s).price; }
+                if (price && targetBrand) {
+                    const listA = planData['discount'][applyType].filter(p => p.brand === targetBrand).sort((a,b)=>a.price-b.price);
+                    const listB = planData['months'][applyType].filter(p => p.brand === targetBrand).sort((a,b)=>a.price-b.price);
+                    const planA = listA.find(p => p.price >= price) || listA[listA.length-1];
+                    const planB = listB.find(p => p.price >= price) || listB[listB.length-1];
+                    validPlans.push({ index: i+1, brand: targetBrand, applyType, price: planA.price, planA, planB });
                 }
             });
 
-            if (validCount === 0) {
-                totalContainer.innerHTML = '<p class="text-gray-400 font-bold italic">請填寫門號資訊以計算優惠</p>';
-                return;
+            if (validPlans.length === 0) {
+                totalContainer.innerHTML = '<p class="text-gray-400 font-bold italic">請填寫門號資訊</p>'; return;
             }
 
-            let html = '';
-            if (userType === 'old_customer' && expiryStatus === 'long') {
-                html += `<div class="mb-6 p-4 bg-white/50 rounded-2xl border border-teal-100">
-                            <span class="inline-block px-3 py-1 bg-orange-100 text-orange-600 rounded-lg text-xs font-black mb-3">方案 A：提前續約現折網路費</span>`;
-                
-                if (rewardA > 0) {
-                    html += `<div class="mb-1 flex flex-col gap-1">
-                                <span class="normal-text">網路資費現折 ${rewardA}元</span>`;
-                    
-                    if (rewardA <= threshold) {
-                        html += `<div class="flex items-center gap-2">
-                                    <span class="price-strike">原價8900元</span>
-                                 </div>
-                                 <div class="mt-2">
-                                    <span class="normal-text">24個月網路</span>
-                                    <span class="highlight-super-large">只需${threshold - rewardA}元</span>
-                                 </div>`;
-                    } else {
-                        html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
-                    }
-                    html += `</div>`;
-                }
+            const isLong = (userType === 'old_customer' && expiryStatus === 'long');
+            const hasMix = validPlans.length > 1 && (new Set(validPlans.map(p => p.planA.isMonth))).size > 1;
 
-                if (monthsA > 0) html += `<div class="mt-2"><span class="normal-text">加碼贈送網路 <span class="text-[#e53935]">${monthsA}個月</span></span></div>`;
-                if (extrasA.length > 0) html += `<p class="text-sm font-bold text-[#00897b] mt-1">加贈：${[...new Set(extrasA)].join('、')}</p>`;
-                html += `</div>`;
-                
-                html += `<div class="p-4 bg-white/50 rounded-2xl border border-teal-100">
-                            <span class="inline-block px-3 py-1 bg-blue-100 text-blue-600 rounded-lg text-xs font-black mb-3">方案 B：免付網路費直接延長網路月份</span>`;
-                if (rewardB > 0) html += `<span class="normal-text">網路費現折 <span class="text-[#e53935]">${rewardB}元</span></span>`;
-                if (monthsB > 0) html += `<span class="normal-text">直接贈送網路 <span class="text-[#e53935]">${monthsB}個月</span></span>`;
-                if (extrasB.length > 0) html += `<p class="text-sm font-bold text-[#00897b] mt-1">加贈：${[...new Set(extrasB)].join('、')}</p>`;
-                html += `<p class="text-[10px] text-gray-400 mt-2 font-bold italic">💡 您可根據剩餘合約長短，選擇最划算的方案！</p></div>`;
-            } else {
-                if (rewardA > 0) {
-                    html += `<div class="mb-4">
-                                <span class="normal-text">網路資費現折 ${rewardA}元</span>`;
-                    
-                    if (rewardA <= threshold) {
-                        html += `<div class="flex items-center gap-2 mt-1">
-                                    <span class="price-strike">原價8900元</span>
-                                </div>
-                                <div class="mt-2">
-                                    <span class="normal-text">24個月網路</span>
-                                    <span class="highlight-super-large">只需${threshold - rewardA}元</span>
-                                </div>`;
+            const render = (mode) => {
+                let html = ''; let totalReward = 0; let totalMonths = 0; let extras = [];
+                validPlans.forEach(p => {
+                    let displayLabel = "";
+                    if (hasMix) { 
+                        displayLabel = `贈${p.planB.reward}個月`; totalMonths += p.planB.reward;
                     } else {
-                        html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
+                        if (p[mode].isMonth) { displayLabel = `贈${p[mode].reward}個月`; totalMonths += p[mode].reward; }
+                        else { displayLabel = `折${p[mode].reward}元`; totalReward += p[mode].reward; }
                     }
-                    html += `</div>`;
+                    if (p[mode].extra) extras.push(p[mode].extra.replace('+',''));
+                    if (mode === 'planA') {
+                        const div = document.createElement('div'); div.className = 'summary-item';
+                        div.innerHTML = `
+                            <div class="text-[12px] font-bold">#${p.index} ${p.applyType==='np'?'攜碼':'新辦'}${p.brand}${p.price}型 
+                                <button onclick="showPlanDetails('${p.brand}', ${p.price})" class="btn-info">此方案了解更多</button>
+                            </div>
+                            <div class="text-[11px] font-black text-[#e53935]">${isLong ? '方案A/B擇一' : displayLabel}</div>
+                        `;
+                        summaryList.appendChild(div);
+                    }
+                });
+
+                if (hasMix) html += `<div><span class="normal-text">總計贈送網路</span><span class="highlight-super-large">${totalMonths}個月</span></div>`;
+                else {
+                    if (totalReward > 0) html += `<div><span class="normal-text">網路資費現折</span><span class="highlight-super-large">${totalReward}元</span></div>`;
+                    if (totalMonths > 0) html += `<div><span class="normal-text">總計贈送網路</span><span class="highlight-super-large">${totalMonths}個月</span></div>`;
                 }
-                if (monthsA > 0) {
-                    html += `<div><span class="normal-text">直接贈送網路</span><span class="highlight-super-large">${monthsA}個月</span></div>`;
-                }
-                if (extrasA.length > 0) {
-                    html += `<div class="mt-3 p-3 bg-teal-50 rounded-xl"><span class="text-lg font-black text-[#00897b]">並加贈：${[...new Set(extrasA)].join('、')}</span></div>`;
-                }
-            }
-            totalContainer.innerHTML = html;
+                if (extras.length) html += `<div class="mt-2 text-[#00897b] font-black">加贈：${[...new Set(extras)].join('、')}</div>`;
+                return html;
+            };
+
+            totalContainer.innerHTML = isLong ? 
+                `<div class="space-y-4">
+                    <div class="p-3 bg-white rounded-xl border">A：${render('planA')}</div>
+                    <div class="p-3 bg-white rounded-xl border">B：${render('planB')}</div>
+                </div>` : render('planA');
         }
 
         window.onload = addPhone;
