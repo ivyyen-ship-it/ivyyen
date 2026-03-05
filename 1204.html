@@ -24,37 +24,39 @@
             backdrop-filter: blur(10px);
         }
 
-        /* 核心修正：統一 Android 下拉選單樣式 */
+        /* 統一 Android 下拉選單樣式 */
         .tiffany-input {
             display: block;
             width: 100%;
-            height: 48px; /* 固定高度增加觸控便利性 */
-            padding: 0 40px 0 14px; /* 右側預留 40px 給自定義箭頭 */
-            font-size: 16px; /* 防止 iOS/Android 自動放大縮小 */
+            height: 48px;
+            padding: 0 40px 0 14px;
+            font-size: 16px;
             font-weight: 500;
             color: #263238;
             background-color: #ffffff;
             border: 1.5px solid #b2dfdb;
             border-radius: 12px;
             transition: all 0.2s ease-in-out;
-            
-            /* 強力移除瀏覽器預設樣式 */
             -webkit-appearance: none !important;
             -moz-appearance: none !important;
             appearance: none !important;
-            
-            /* 自定義箭頭圖示 (SVG) */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234db6ac' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 12px center;
             background-size: 18px;
-            
-            /* 修正文字垂直對齊 */
             line-height: 48px;
             vertical-align: middle;
         }
 
-        /* 修正 Placeholder 顏色穩定度 */
+        /* 修正紅字 Placeholder */
+        .tiffany-input::placeholder {
+            color: #ef4444 !important;
+            opacity: 1;
+        }
+        .tiffany-input::-webkit-input-placeholder { color: #ef4444 !important; }
+        .tiffany-input::-moz-placeholder { color: #ef4444 !important; }
+        .tiffany-input:-ms-input-placeholder { color: #ef4444 !important; }
+
         .tiffany-input:invalid,
         .tiffany-input.placeholder-style {
             color: #94a3b8 !important;
@@ -67,9 +69,12 @@
             background-color: #fff;
         }
 
-        /* 移除 IE/Edge 預設箭頭 */
-        .tiffany-input::-ms-expand {
-            display: none;
+        /* 改為非粗體 (font-normal) */
+        .required-tag {
+            color: #ef4444;
+            font-size: 11px;
+            font-weight: 400; /* 使用標準字重 */
+            margin-left: 4px;
         }
 
         .btn-logic {
@@ -99,7 +104,8 @@
             font-weight: 700;
             font-size: 0.85rem;
             margin-bottom: 4px;
-            display: block;
+            display: flex;
+            align-items: center;
         }
         .warning-box {
             background-color: #fffaf0;
@@ -223,7 +229,7 @@
         <!-- 1. 寬頻狀態 -->
         <div class="tiffany-card p-6 mb-6 space-y-4">
             <div>
-                <label class="label-text">1. 今網寬頻網路合約狀態</label>
+                <label class="label-text">1. 今網寬頻網路合約狀態 <span class="required-tag">(必選)</span></label>
                 <select id="user-type" class="tiffany-input placeholder-style" onchange="handleSelectColor(event); handleUserTypeChange()" required>
                     <option value="" disabled selected>請選擇...</option>
                     <option value="new_customer">三個月內新申裝</option>
@@ -232,7 +238,7 @@
             </div>
 
             <div id="expiry-box" class="hidden">
-                <label class="label-text">1-2. 合約到期狀態</label>
+                <label class="label-text">1-2. 合約到期狀態 <span class="required-tag">(必選)</span></label>
                 <select id="expiry-status" class="tiffany-input placeholder-style" onchange="handleSelectColor(event); calculateAll()" required>
                     <option value="" disabled selected>請選擇...</option>
                     <option value="short">今網三個月內即將到期</option>
@@ -269,7 +275,7 @@
 
                 <div class="warning-box p-4 space-y-2">
                     <p class="text-[13px] text-[#c05621] font-bold leading-relaxed">
-                        ※ 說明1：多門號優惠可完全疊加！各門號優惠內容將於試算結果中詳列。
+                        ※ 說明1：多門號優惠可完全疊加！各門號優惠內容將於試算結果中詳列。如果有違約金也另有補償，快加line詢問專員吧！
                     </p>
                     <p class="text-[13px] text-[#c05621] font-bold leading-relaxed">
                         ※ 說明2：因雙網方案情境不同優惠可能有所變化，完整優惠仍需由電信專員說明最準確喔！
@@ -425,7 +431,7 @@
                 </div>
                 
                 <div>
-                    <label class="label-text">2. 目前電信業者</label>
+                    <label class="label-text">2. 目前電信業者 <span class="required-tag">(必選)</span></label>
                     <select class="tiffany-input current-telco placeholder-style" onchange="handleSelectColor(event); updatePhoneLogic('${id}')" required>
                         <option value="" disabled selected>請選擇...</option>
                         <option value="cht">中華電信</option>
@@ -435,7 +441,7 @@
                 </div>
 
                 <div>
-                    <label class="label-text">3. 辦理類別</label>
+                    <label class="label-text">3. 辦理類別 <span class="required-tag">(必選)</span></label>
                     <div class="flex flex-col gap-2">
                         <button class="flex-1 py-3 px-2 rounded-lg text-[11px] font-bold btn-logic btn-logic-active btn-type-np leading-tight" onclick="setPhoneApplyType('${id}', 'np')">攜碼<br>(門號不變改電信)</button>
                         <button class="flex-1 py-3 px-2 rounded-lg text-[11px] font-bold btn-logic btn-type-new leading-tight" onclick="setPhoneApplyType('${id}', 'new')">新辦<br>(新的手機號碼)</button>
@@ -443,7 +449,7 @@
                 </div>
 
                 <div class="target-brand-selection-box hidden space-y-3">
-                    <label class="label-text">想了解哪家電信？</label>
+                    <label class="label-text">想了解哪家電信？ <span class="required-tag">(必選)</span></label>
                     <div class="flex gap-2">
                         <button class="flex-1 py-3 rounded-xl text-[11px] font-bold btn-logic btn-target-cht" onclick="setTargetBrand('${id}', '中華')">中華電信</button>
                         <button class="flex-1 py-3 rounded-xl text-[11px] font-bold btn-logic btn-target-fet" onclick="setTargetBrand('${id}', '遠傳')">遠傳電信</button>
@@ -451,20 +457,20 @@
                 </div>
 
                 <div class="np-method-container hidden space-y-3">
-                    <label class="label-text">4. 選擇優惠了解方式</label>
+                    <label class="label-text">4. 選擇優惠了解方式 <span class="required-tag">(必選)</span></label>
                     <div class="flex gap-2">
                         <button class="flex-1 py-3 rounded-xl text-[10px] leading-tight font-bold btn-logic btn-logic-active btn-method-auto" onclick="setNpMethod('${id}', 'auto')">A. 比照目前<br>資費方案</button>
                         <button class="flex-1 py-3 rounded-xl text-[10px] leading-tight font-bold btn-logic btn-method-manual" onclick="setNpMethod('${id}', 'manual')">B. 了解其他<br>資費優惠</button>
                     </div>
                     <div class="auto-input-box p-3 bg-teal-50 rounded-lg">
-                        <label class="text-[10px] font-bold text-teal-600 mb-1 block">目前資費金額</label>
-                        <input type="number" class="tiffany-input current-price-input" style="height:44px; line-height:44px;" placeholder="例如：599" oninput="calculateAll()">
+                        <label class="text-[10px] font-bold text-teal-600 mb-1 block">目前資費金額 <span class="required-tag">(必填)</span></label>
+                        <input type="number" class="tiffany-input current-price-input" style="height:44px; line-height:44px;" placeholder="請填入目前資費金額，例如：599" oninput="calculateAll()">
                     </div>
                 </div>
 
                 <div class="manual-container hidden space-y-3">
                     <div>
-                        <label class="label-text">選擇資費方案</label>
+                        <label class="label-text">選擇資費方案 <span class="required-tag">(必選)</span></label>
                         <select class="tiffany-input plan-select placeholder-style" onchange="handleSelectColor(event); calculateAll()" required>
                             <option value="" disabled selected>請選擇...</option>
                         </select>
