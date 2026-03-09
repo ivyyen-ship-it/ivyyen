@@ -32,7 +32,8 @@
             padding: 0 40px 0 14px;
             font-size: 16px;
             font-weight: 500;
-            color: #263238;
+            /* 強制設定文字顏色為純黑色，包含未選取時的狀態 */
+            color: #000000 !important;
             background-color: #ffffff;
             border: 1.5px solid #b2dfdb;
             border-radius: 12px;
@@ -48,7 +49,7 @@
             vertical-align: middle;
         }
 
-        /* 修正紅字 Placeholder */
+        /* 修正紅字 Placeholder (適用於 Input) */
         .tiffany-input::placeholder {
             color: #ef4444 !important;
             opacity: 1;
@@ -57,9 +58,9 @@
         .tiffany-input::-moz-placeholder { color: #ef4444 !important; }
         .tiffany-input:-ms-input-placeholder { color: #ef4444 !important; }
 
-        .tiffany-input:invalid,
+        /* 移除原本未選擇時的灰色邏輯，改為強制黑色 */
         .tiffany-input.placeholder-style {
-            color: #94a3b8 !important;
+            color: #000000 !important;
         }
 
         .tiffany-input:focus {
@@ -411,6 +412,8 @@
         }
 
         function handleSelectColor(e) {
+            // 目前強制黑色，所以這裡不再動態改變 placeholder-style 的 CSS
+            // 但保留此函式架構以免未來需要
             if (e.target.value) e.target.classList.remove('placeholder-style');
             else e.target.classList.add('placeholder-style');
         }
