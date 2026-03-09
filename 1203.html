@@ -121,14 +121,22 @@
             font-size: 2.25rem;
             font-weight: 900;
             line-height: 1.2;
-            display: block;
-            margin-top: 4px;
         }
         .normal-text {
             font-size: 1.1rem;
             font-weight: 800;
             color: #37474f;
             display: block;
+        }
+        /* 淡黃色背景標籤 */
+        .label-highlight-yellow {
+            background-color: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #37474f;
+            margin-right: 8px;
         }
         .price-strike {
             text-decoration: line-through;
@@ -651,10 +659,10 @@
                         const total_price = threshold - rewardA;
                         const avg_price = Math.round(total_price / 24);
                         html += `<div class="flex items-center gap-2 mt-1"><span class="price-strike">原價8900元</span></div>
-                                 <div class="mt-2">
-                                    <span class="normal-text">24個月網路</span>
+                                 <div class="mt-2 flex items-center flex-wrap">
+                                    <span class="label-highlight-yellow">24個月網路</span>
                                     <span class="highlight-super-large">只需${total_price}元</span>
-                                    <span class="block mt-2 font-black text-[#37474f] text-[1.25rem]">每月平均只要 <span class="text-[#e53935] text-[1.6rem]">${avg_price}</span> 元</span>
+                                    <span class="block w-full mt-2 font-black text-[#37474f] text-[1.25rem]">每月平均只要 <span class="text-[#e53935] text-[1.6rem]">${avg_price}</span> 元</span>
                                  </div>`;
                     } else {
                         html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
@@ -678,10 +686,10 @@
                         const total_price = threshold - rewardA;
                         const avg_price = Math.round(total_price / 24);
                         html += `<div class="flex items-center gap-2 mt-1"><span class="price-strike">原價8900元</span></div>
-                                <div class="mt-2">
-                                    <span class="normal-text">24個月網路</span>
+                                <div class="mt-2 flex items-center flex-wrap">
+                                    <span class="label-highlight-yellow">24個月網路</span>
                                     <span class="highlight-super-large">只需${total_price}元</span>
-                                    <span class="block mt-2 font-black text-[#37474f] text-[1.25rem]">每月平均只要 <span class="text-[#e53935] text-[1.6rem]">${avg_price}</span> 元</span>
+                                    <span class="block w-full mt-2 font-black text-[#37474f] text-[1.25rem]">每月平均只要 <span class="text-[#e53935] text-[1.6rem]">${avg_price}</span> 元</span>
                                 </div>`;
                     } else {
                         html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
