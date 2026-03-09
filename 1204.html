@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>智生活今網寬頻雙網方案優惠試算</title>
+    <title>智生活 今網寬頻雙網方案(家用網路+手機門號)優惠試算</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
@@ -69,11 +69,11 @@
             background-color: #fff;
         }
 
-        /* 改為非粗體 (font-normal) */
+        /* 非粗體 (font-normal) 提醒字 */
         .required-tag {
             color: #ef4444;
             font-size: 11px;
-            font-weight: 400; /* 使用標準字重 */
+            font-weight: 400; 
             margin-left: 4px;
         }
 
@@ -90,9 +90,11 @@
             box-shadow: 0 4px 10px rgba(77, 182, 172, 0.3);
             font-weight: 800;
         }
+        
+        /* 鈷藍色按鈕樣式 */
         .btn-line {
-            background: linear-gradient(135deg, #4db6ac 0%, #26a69a 100%);
-            box-shadow: 0 8px 20px rgba(38, 166, 154, 0.25);
+            background: linear-gradient(135deg, #0047AB 0%, #002e6e 100%);
+            box-shadow: 0 8px 20px rgba(0, 71, 171, 0.3);
             animation: pulse 2.5s infinite;
         }
         @keyframes pulse {
@@ -179,9 +181,9 @@
             width: 360px;
         }
         .btn-info {
-            background: #e0f2f1;
-            color: #00796b;
-            border: 1px solid #b2dfdb;
+            background: #f3e5f5;
+            color: #7b1fa2;
+            border: 1px solid #e1bee7;
             font-size: 12px;
             padding: 3px 8px;
             border-radius: 4px;
@@ -189,6 +191,10 @@
             cursor: pointer;
             margin-left: 4px;
             display: inline-block;
+            transition: all 0.2s ease;
+        }
+        .btn-info:hover {
+            background: #e1bee7;
         }
     </style>
 </head>
@@ -221,8 +227,8 @@
     <div class="max-w-md mx-auto relative z-10">
         <!-- Header -->
         <div class="text-center mb-8 pt-4">
-            <h1 class="text-3xl font-black tracking-tighter mb-2 text-[#00796b]">智生活今網寬頻</h1>
-            <p class="text-lg font-bold text-[#4db6ac]">雙網方案優惠試算</p>
+            <h1 class="text-3xl font-black tracking-tighter mb-2 text-[#00796b]">智生活 今網寬頻</h1>
+            <p class="text-lg font-bold text-[#4db6ac]">雙網方案(家用網路+手機門號)優惠試算</p>
             <div class="h-1.5 w-16 bg-[#81cbd4] mx-auto rounded-full mt-4"></div>
         </div>
 
@@ -282,8 +288,9 @@
                     </p>
                 </div>
 
+                <!-- 鈷藍色底白字按鈕 -->
                 <a href="https://lin.ee/CPfNPRt" target="_blank" class="btn-line w-full flex flex-col items-center justify-center py-5 rounded-2xl text-white no-underline px-4 text-center">
-                    <span class="text-xl font-black mb-1">立即加line找服務專員</span>
+                    <span class="text-xl font-black mb-1">立即加Line找服務專員</span>
                     <span class="text-xs font-bold opacity-90">智生活專屬服務，立即領取隱藏福利</span>
                 </a>
             </div>
@@ -352,7 +359,7 @@
                     { brand: '遠傳', price: 399, reward: 3, extra: '', isMonth: true },
                     { brand: '遠傳', price: 599, reward: 8, extra: '', isMonth: true },
                     { brand: '遠傳', price: 799, reward: 13, extra: '', isMonth: true },
-                    { brand: '遠傳', price: 999, reward: 19, extra: '', isMonth: true },
+                    { brand: '遠傳', price: 19, reward: 19, extra: '', isMonth: true },
                     { brand: '遠傳', price: 1399, reward: 30, extra: '', isMonth: true },
                     { brand: '中華', price: 599, reward: 6, extra: '', isMonth: true },
                     { brand: '中華', price: 699, reward: 3, extra: '', isMonth: true },
@@ -435,8 +442,8 @@
                     <select class="tiffany-input current-telco placeholder-style" onchange="handleSelectColor(event); updatePhoneLogic('${id}')" required>
                         <option value="" disabled selected>請選擇...</option>
                         <option value="cht">中華電信</option>
-                        <option value="fet">遠傳電信</option>
-                        <option value="twn">台灣大哥大</option>
+                        <option value="fet">遠傳電信(或亞太)</option>
+                        <option value="twn">台灣大哥大(或台灣之星)</option>
                     </select>
                 </div>
 
@@ -464,7 +471,11 @@
                     </div>
                     <div class="auto-input-box p-3 bg-teal-50 rounded-lg">
                         <label class="text-[10px] font-bold text-teal-600 mb-1 block">目前資費金額 <span class="required-tag">(必填)</span></label>
-                        <input type="number" class="tiffany-input current-price-input" style="height:44px; line-height:44px;" placeholder="請填入目前資費金額，例如：599" oninput="calculateAll()">
+                        <input type="number" 
+                               class="tiffany-input current-price-input" 
+                               style="height:44px; line-height:44px;" 
+                               placeholder="請填入目前資費金額，例如：599" 
+                               oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4); calculateAll();">
                     </div>
                 </div>
 
@@ -633,12 +644,18 @@
             let html = '';
             if (userType === 'old_customer' && expiryStatus === 'long') {
                 html += `<div class="mb-6 p-4 bg-white/50 rounded-2xl border border-teal-100">
-                            <span class="inline-block px-3 py-1 bg-orange-100 text-orange-600 rounded-lg text-xs font-black mb-3">方案 A：提前續約現折網路費</span>`;
+                            <span class="inline-block px-3 py-1 bg-orange-100 text-orange-600 rounded-lg text-sm font-black mb-3">方案 A：今網提前續約現折網路費</span>`;
                 if (rewardA > 0) {
                     html += `<div class="mb-1 flex flex-col gap-1"><span class="normal-text">網路資費現折 ${rewardA}元</span>`;
                     if (rewardA <= threshold) {
-                        html += `<div class="flex items-center gap-2"><span class="price-strike">原價8900元</span></div>
-                                 <div class="mt-2"><span class="normal-text">24個月網路</span><span class="highlight-super-large">只需${threshold - rewardA}元</span></div>`;
+                        const total_price = threshold - rewardA;
+                        const avg_price = Math.round(total_price / 24);
+                        html += `<div class="flex items-center gap-2 mt-1"><span class="price-strike">原價8900元</span></div>
+                                 <div class="mt-2">
+                                    <span class="normal-text">24個月網路</span>
+                                    <span class="highlight-super-large">只需${total_price}元</span>
+                                    <span class="block mt-2 font-black text-[#37474f] text-[1.25rem]">每月平均只要 <span class="text-[#e53935] text-[1.6rem]">${avg_price}</span> 元</span>
+                                 </div>`;
                     } else {
                         html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
                     }
@@ -649,7 +666,7 @@
                 html += `</div>`;
                 
                 html += `<div class="p-4 bg-white/50 rounded-2xl border border-teal-100">
-                            <span class="inline-block px-3 py-1 bg-blue-100 text-blue-600 rounded-lg text-xs font-black mb-3">方案 B：免付網路費直接延長網路月份</span>`;
+                            <span class="inline-block px-3 py-1 bg-blue-100 text-blue-600 rounded-lg text-sm font-black mb-3">方案 B：免付網路費直接延長網路月份</span>`;
                 if (rewardB > 0) html += `<span class="normal-text">網路費現折 <span class="text-[#e53935]">${rewardB}元</span></span>`;
                 if (monthsB > 0) html += `<span class="normal-text">直接贈送網路 <span class="text-[#e53935]">${monthsB}個月</span></span>`;
                 if (extrasB.length > 0) html += `<p class="text-sm font-bold text-[#00897b] mt-1">加贈：${[...new Set(extrasB)].join('、')}</p>`;
@@ -658,8 +675,14 @@
                 if (rewardA > 0) {
                     html += `<div class="mb-4"><span class="normal-text">網路資費現折 ${rewardA}元</span>`;
                     if (rewardA <= threshold) {
+                        const total_price = threshold - rewardA;
+                        const avg_price = Math.round(total_price / 24);
                         html += `<div class="flex items-center gap-2 mt-1"><span class="price-strike">原價8900元</span></div>
-                                <div class="mt-2"><span class="normal-text">24個月網路</span><span class="highlight-super-large">只需${threshold - rewardA}元</span></div>`;
+                                <div class="mt-2">
+                                    <span class="normal-text">24個月網路</span>
+                                    <span class="highlight-super-large">只需${total_price}元</span>
+                                    <span class="block mt-2 font-black text-[#37474f] text-[1.25rem]">每月平均只要 <span class="text-[#e53935] text-[1.6rem]">${avg_price}</span> 元</span>
+                                </div>`;
                     } else {
                         html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
                     }
