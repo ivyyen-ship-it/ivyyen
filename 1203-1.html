@@ -30,7 +30,7 @@
             padding: 0 40px 0 14px;
             font-size: 16px;
             font-weight: 600;
-            color: #000000 !important;
+            color: #000000 !important; /* 選取後的文字顏色 */
             background-color: #ffffff;
             border: 1.5px solid #b2dfdb;
             border-radius: 12px;
@@ -45,11 +45,19 @@
             line-height: 48px;
             vertical-align: middle;
         }
-        /* 選項中的待拉選文字顏色加深 */
-        .tiffany-input.placeholder-style { color: #64748b !important; }
+        
+        /* 關鍵修正：將待選文字（Placeholder 狀態）顏色加深至 #1e293b */
+        .tiffany-input.placeholder-style { 
+            color: #1e293b !important; 
+            opacity: 1;
+        }
         
         /* 針對資費金額輸入框的紅色提示文字 */
-        .current-price-input::placeholder { color: #ef4444 !important; opacity: 1; font-weight: 700; }
+        .current-price-input::placeholder { 
+            color: #ef4444 !important; 
+            opacity: 1; 
+            font-weight: 700; 
+        }
 
         .tiffany-input:focus {
             border-color: #4db6ac;
@@ -98,7 +106,6 @@
 </head>
 <body class="py-10 px-4">
 
-    <!-- 方案詳細內容彈窗 -->
     <div id="modal-overlay" class="fixed inset-0 hidden flex items-center justify-center p-4">
         <div class="modal-content bg-white rounded-3xl shadow-2xl overflow-hidden">
             <div id="modal-header" class="p-4 text-white text-center font-black text-lg">方案詳細內容</div>
@@ -121,24 +128,18 @@
     </div>
 
     <div class="max-w-md mx-auto relative z-10">
-        <!-- Header -->
         <div class="text-center mb-8 pt-4">
             <h1 class="text-3xl font-black tracking-tighter mb-2 text-[#00796b]">智生活 今網寬頻</h1>
             <p class="text-lg font-bold text-[#4db6ac]">今網新裝機、老客戶續約專屬<br>雙網方案(家用網路+手機門號)優惠試算</p>
             <div class="h-1.5 w-16 bg-[#81cbd4] mx-auto rounded-full mt-4"></div>
         </div>
 
-        <!-- 門號清單 -->
-        <div id="phone-list" class="space-y-4 mb-6">
-            <!-- 門號項目動態生成 -->
-        </div>
+        <div id="phone-list" class="space-y-4 mb-6"></div>
 
-        <!-- 新增門號按鈕 -->
         <button onclick="addPhone()" class="w-full py-4 mb-8 border-2 border-dashed border-[#4db6ac] rounded-2xl text-[#00796b] font-bold flex items-center justify-center gap-2 bg-white/50 hover:bg-teal-50 transition-colors">
             <span class="text-xl">+</span> 新增另一個門號
         </button>
 
-        <!-- Result -->
         <div class="tiffany-card p-7 result-panel shadow-lg mb-10">
             <h2 class="text-xl font-bold mb-6 flex items-center text-[#00796b]"><span class="mr-2">✦</span> 總計試算結果</h2>
             <div class="space-y-6">
@@ -170,7 +171,6 @@
     </div>
 
     <script>
-        // 資料集
         const assetInfo = {
             '中華': {
                 599: { net: '5G行動 24GB\n到量後4G 12M吃到飽', voice: '網內每通前5分鐘\n網外30分鐘\n市話40分鐘', prepay: { new: '$3,500', np: '$3,500' } },
@@ -450,7 +450,8 @@
                     const total_price = threshold - rewardTotal;
                     const avg_price = Math.round(total_price / 24);
                     html += `<div class="flex items-center gap-2 mt-1"><span class="price-strike">原價8900元</span></div>
-                             <div class="mt-2 flex items-center flex-wrap\">\n                                <span class="label-highlight-yellow">24個月網路</span>
+                             <div class="mt-2 flex items-center flex-wrap">
+                                <span class="label-highlight-yellow">24個月網路</span>
                                 <span class="highlight-super-large">只需${total_price}元</span>
                                 <span class="block w-full mt-2 font-black text-[#37474f] text-[1.25rem]">每月平均只要 <span class="text-[#e53935] text-[1.6rem]">${avg_price}</span> 元</span>
                              </div>`;
