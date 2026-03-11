@@ -153,7 +153,7 @@
 
                 <div class="warning-box p-4 space-y-2">
                     <p class="text-[13px] text-[#c05621] font-bold leading-relaxed">
-                        ※ 說明1：多門號優惠可完全疊加！各門號優惠內容將於試算結果中詳列。如果有違約金也另有補償，快加line詢員吧！
+                        ※ 說明1：多門號優惠可完全疊加！各門號優惠內容將於試算結果中詳列。如果有違約金也另有補償，快加line詢問專員吧！
                     </p>
                     <p class="text-[13px] text-[#c05621] font-bold leading-relaxed">
                         ※ 說明2：因雙網方案情境不同優惠可能有所變化，完整優惠仍需由電信專員說明最準確喔！
@@ -296,7 +296,7 @@
                     </div>
                     <div class="auto-input-box p-3 bg-teal-50 rounded-lg">
                         <label class="text-[10px] font-bold text-teal-600 mb-1 block">目前資費金額 <span class="required-tag">(必填)</span></label>
-                        <input type="number" class="tiffany-input current-price-input" style="height:44px; line-height:44px;" placeholder="請填入目前資費金額，例如：599" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4); calculateAll();">
+                        <input type="number" class="tiffany-input current-price-input" style="height:44px; line-height:44px;" placeholder="請填入目前資費金額，例如：599" min="0" onkeydown="if(event.key==='-'||event.key==='e'||event.key==='.')event.preventDefault();" oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4); calculateAll();">
                     </div>
                 </div>
                 <div class="manual-container hidden space-y-3">
@@ -479,7 +479,6 @@
                 if (total_off < 8900) {
                     const final_price = 8900 - total_off;
                     const avg_price = Math.round(final_price / 24);
-                    // 調整為同一行顯示
                     html += `<div class="mb-1 flex items-center flex-wrap">
                                 <span class="normal-text">網路資費 <span class="price-strike">原價8900元</span> 現折 ${total_off}元</span>
                              </div>
