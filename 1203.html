@@ -664,7 +664,7 @@
                             <span class="inline-block px-3 py-1 bg-orange-100 text-orange-600 rounded-lg text-sm font-black mb-3">方案 A：今網提前續約現折網路費</span>`;
                 
                 if (forceMonthCalculation) {
-                    html += `<div class="mb-1"><span class="normal-text text-gray-500 text-sm mb-1">${monthCalculationList.join(' + ')} = ${totalEquivMonths}個月</span>
+                    html += `<div class="mb-1"><span class="normal-text text-gray-500 text-sm mb-1">贈送 ${monthCalculationList.join(' + ')} = ${totalEquivMonths}個月</span>
                              <span class="highlight-super-large">${totalEquivMonths}個月</span><span class="highlight-super-large ml-1">家用網路 0元</span></div>`;
                 } else {
                     if (rewardA > 0) {
@@ -697,7 +697,7 @@
                                         </div>
                                      </div>`;
                         } else {
-                            html += `<div class="mt-2"><span class="normal-text">${monthsA}個月家用網路 <span class="highlight-super-large">0元</span></span></div>`;
+                            html += `<div class="mt-2"><span class="normal-text">贈送 ${monthsA}個月家用網路 <span class="highlight-super-large">0元</span></span></div>`;
                         }
                     }
                 }
@@ -717,14 +717,14 @@
                                     </div>
                                  </div>`;
                     } else {
-                        html += `<div class="mt-2"><span class="normal-text">${monthsB}個月家用網路 <span class="highlight-super-large">0元</span></span></div>`;
+                        html += `<div class="mt-2"><span class="normal-text">贈送 ${monthsB}個月家用網路 <span class="highlight-super-large">0元</span></span></div>`;
                     }
                 }
                 if (extrasB.length > 0) html += `<p class="text-sm font-bold text-[#00897b] mt-1">並加贈：${[...new Set(extrasB)].join('、')}</p>`;
                 html += `<p class="text-[10px] text-gray-400 mt-2 font-bold italic">💡 您可根據剩餘合約長短，選擇最划算的方案！</p></div>`;
             } else {
                 if (forceMonthCalculation) {
-                    html += `<div class="mb-4"><span class="normal-text text-gray-500 text-sm mb-2">${monthCalculationList.join(' + ')} = ${totalEquivMonths}個月</span>
+                    html += `<div class="mb-4"><span class="normal-text text-gray-500 text-sm mb-2">贈送 ${monthCalculationList.join(' + ')} = ${totalEquivMonths}個月</span>
                              <span class="highlight-super-large">${totalEquivMonths}個月</span><span class="highlight-super-large ml-1">家用網路 0元</span></div>`;
                 } else {
                     if (rewardA > 0) {
@@ -757,7 +757,7 @@
                                         </div>
                                      </div>`;
                         } else {
-                            html += `<div class="mb-4"><span class="normal-text">${monthsA}個月家用網路 <span class="highlight-super-large">0元</span></span></div>`;
+                            html += `<div class="mb-4"><span class="normal-text">贈送 ${monthsA}個月家用網路 <span class="highlight-super-large">0元</span></span></div>`;
                         }
                     }
                 }
