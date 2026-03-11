@@ -92,7 +92,7 @@
         .highlight-super-large { color: #e53935; font-size: 2.25rem; font-weight: 900; line-height: 1.2; }
         .normal-text { font-size: 1.1rem; font-weight: 800; color: #37474f; display: block; }
         .label-highlight-yellow { background-color: #fff9c4; padding: 2px 6px; border-radius: 4px; font-size: 1.1rem; font-weight: 800; color: #37474f; margin-right: 8px; }
-        .price-strike { text-decoration: line-through; color: #4b5563; font-size: 1rem; font-weight: 700; margin-right: 8px; }
+        .price-strike { text-decoration: line-through; color: #4b5563; font-size: 1.1rem; font-weight: 700; margin: 0 8px; }
         .phone-item { border-left: 4px solid #4db6ac; background: #ffffff; }
         .summary-item { padding: 10px 8px; border-radius: 8px; background: #f1f8f7; border-left: 3px solid #81cbd4; display: flex; justify-content: space-between; align-items: center; gap: 4px; }
         .over-limit-hint { color: #ef4444; font-size: 1.25rem; font-weight: 900; display: block; margin-top: 12px; padding: 16px; background-color: #fff5f5; border-radius: 12px; line-height: 1.4; border: 2px solid #feb2b2; text-align: center; }
@@ -153,7 +153,7 @@
 
                 <div class="warning-box p-4 space-y-2">
                     <p class="text-[13px] text-[#c05621] font-bold leading-relaxed">
-                        ※ 說明1：多門號優惠可完全疊加！各門號優惠內容將於試算結果中詳列。如果有違約金也另有補償，快加line詢問專員吧！
+                        ※ 說明1：多門號優惠可完全疊加！各門號優惠內容將於試算結果中詳列。如果有違約金也另有補償，快加line詢員吧！
                     </p>
                     <p class="text-[13px] text-[#c05621] font-bold leading-relaxed">
                         ※ 說明2：因雙網方案情境不同優惠可能有所變化，完整優惠仍需由電信專員說明最準確喔！
@@ -186,7 +186,6 @@
             }
         };
 
-        // 核心資料庫：定義各方案回饋內容
         const planData = {
             'discount': { 
                 'np': [
@@ -397,15 +396,16 @@
             const phoneItems = document.querySelectorAll('.phone-item');
             summaryList.innerHTML = '';
             
-            let rewardTotal = 0; // 金額累計
-            let monthsTotal = 0; // 月份累計
+            let rewardTotal = 0;
+            let monthsTotal = 0;
             let extrasTotal = [];
             let validCount = 0;
 
             let hasCashDiscount = false;
             let hasMonthDiscount = false;
+            let monthDetailsList = []; 
 
-            const threshold = 9000; // 滿 30 個月網路 0 元的價值門檻
+            const threshold = 9000;
 
             phoneItems.forEach((item, i) => {
                 const applyType = item.dataset.applyType;
@@ -426,9 +426,13 @@
                     monthsTotal += plan.months;
                     if (plan.extra) extrasTotal.push(plan.extra.replace('+', ''));
 
-                    // 判斷該門號屬於哪種優惠類型
-                    if (plan.reward === threshold) hasMonthDiscount = true; // 9000 代表 30個月/0元
-                    else hasCashDiscount = true; // 低於 9000 代表現金現折
+                    if (plan.reward === threshold) {
+                        hasMonthDiscount = true;
+                    } else {
+                        hasCashDiscount = true;
+                    }
+                    
+                    monthDetailsList.push(plan.months);
 
                     let typePrefix = (applyType === 'np' ? '攜碼' : '新辦');
                     let planName = `${typePrefix}${targetBrand}${plan.price}`;
@@ -457,17 +461,12 @@
             }
 
             let html = '';
-            // 核心邏輯判斷：若「同時」具備兩種單位，則用月份加總顯示
-            if (hasCashDiscount && hasMonthDiscount) {
-                html += `<div class="mb-2">
-                            <div class="flex items-center flex-wrap">
-                                <span class="highlight-super-large">${monthsTotal}個月</span>
-                                <span class="text-xl font-black text-gray-700 mx-2">家用網路</span>
-                                <span class="highlight-super-large">0元</span>
-                            </div>
-                         </div>`;
-            } else if (hasMonthDiscount && !hasCashDiscount) {
-                // 全部都是 30 個月 0 元的情況 (或多個 30 個月 0 元累加)
+            
+            if (hasMonthDiscount) {
+                if (validCount > 1) {
+                    const formula = monthDetailsList.map(m => `${m}個月`).join('+');
+                    html += `<div class="mb-2 text-[13px] font-bold text-[#4b5563]">贈送 ${formula}=${monthsTotal}個月</div>`;
+                }
                 html += `<div class="mb-2">
                             <div class="flex items-center flex-wrap">
                                 <span class="highlight-super-large">${monthsTotal}個月</span>
@@ -476,26 +475,28 @@
                             </div>
                          </div>`;
             } else {
-                // 全部都是現金現折單位的情況
                 const total_off = rewardTotal;
                 if (total_off < 8900) {
                     const final_price = 8900 - total_off;
                     const avg_price = Math.round(final_price / 24);
-                    html += `<div class="mb-1"><span class="normal-text">網路資費現折 ${total_off}元</span></div>
-                             <div class="flex items-center gap-2 mt-1"><span class="price-strike">原價8900元</span></div>
+                    // 調整為同一行顯示
+                    html += `<div class="mb-1 flex items-center flex-wrap">
+                                <span class="normal-text">網路資費 <span class="price-strike">原價8900元</span> 現折 ${total_off}元</span>
+                             </div>
                              <div class="mt-2 flex items-center flex-wrap">
                                 <span class="label-highlight-yellow">24個月網路</span>
                                 <span class="highlight-super-large">只需${final_price}元</span>
                                 <span class="block w-full mt-2 font-black text-[#37474f] text-[1.25rem]">每月平均只要 <span class="text-[#e53935] text-[1.6rem]">${avg_price}</span> 元</span>
                              </div>`;
                 } else if (total_off === 8900) {
-                    html += `<div class="mb-1"><span class="normal-text">網路資費現折 8900元</span></div>
+                    html += `<div class="mb-1 flex items-center flex-wrap">
+                                <span class="normal-text">網路資費 <span class="price-strike">原價8900元</span> 現折 8900元</span>
+                             </div>
                              <div>
                                 <span class="label-highlight-yellow">24個月網路</span>
                                 <span class="highlight-super-large">0元</span>
                              </div>`;
                 } else {
-                    // 超過 8900 則顯示為月份
                     html += `<div class="over-limit-hint">🎉優惠回饋已超過 24 個月網路費！快點擊下方加 Line 讓專員算給你看😊</div>`;
                 }
             }
