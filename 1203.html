@@ -472,10 +472,12 @@
                     <div class="auto-input-box p-3 bg-teal-50 rounded-lg">
                         <label class="text-[10px] font-bold text-teal-600 mb-1 block">目前資費金額 <span class="required-tag">(必填)</span></label>
                         <input type="number" 
+                               min="0"
                                class="tiffany-input current-price-input" 
                                style="height:44px; line-height:44px;" 
                                placeholder="請填入目前資費金額，例如：599" 
-                               oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4); calculateAll();">
+                               onkeydown="if(event.key==='-' || event.key==='e') event.preventDefault();"
+                               oninput="if(this.value < 0) this.value = 0; if(this.value.length > 4) this.value = this.value.slice(0, 4); calculateAll();">
                     </div>
                 </div>
 
