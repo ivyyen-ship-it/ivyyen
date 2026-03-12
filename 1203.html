@@ -95,14 +95,17 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
         }
+        
+        /* 標題文字放大微調 */
         .label-text {
             color: #546e7a;
             font-weight: 700;
-            font-size: 0.85rem;
-            margin-bottom: 4px;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
         }
+        
         .warning-box {
             background-color: #fffaf0;
             border: 2px solid #feebc8;
@@ -142,16 +145,32 @@
             border-left: 4px solid #4db6ac;
             background: #ffffff;
         }
+        
+        /* 摘要項目對齊方式，不換行 */
         .summary-item {
-            padding: 10px 8px;
+            padding: 10px 12px;
             border-radius: 8px;
             background: #f1f8f7;
             border-left: 3px solid #81cbd4;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 4px;
+            gap: 12px;
+            flex-wrap: nowrap;
         }
+        .summary-label {
+            flex-grow: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .summary-value {
+            flex-shrink: 0;
+            white-space: nowrap;
+            text-align: right;
+        }
+
         .over-limit-hint {
             color: #ef4444; 
             font-size: 1.25rem; 
@@ -181,18 +200,20 @@
             max-width: 90%;
             width: 360px;
         }
+        /* 資訊按鈕微調，加長寬度以適應文字 */
         .btn-info {
             background: #f3e5f5;
             color: #7b1fa2;
             border: 1px solid #e1bee7;
-            font-size: 12px;
-            padding: 3px 8px;
-            border-radius: 4px;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 6px;
             font-weight: 900;
             cursor: pointer;
-            margin-left: 4px;
+            margin-left: 6px;
             display: inline-block;
             transition: all 0.2s ease;
+            white-space: nowrap;
         }
         .btn-info:hover {
             background: #e1bee7;
@@ -636,7 +657,7 @@
 
                     let typePrefix = (applyType === 'np' ? '攜碼' : '新辦');
                     let planName = `${typePrefix}${targetBrand}${planA.price}`;
-                    let specSuffix = ((targetBrand === '中華' && planA.price === 699) || (targetBrand === '遠傳' && planA.price === 399)) ? " (4G方案)" : " (5G方案)";
+                    let specSuffix = ((targetBrand === '中華' && planA.price === 699) || (targetBrand === '遠傳' && planA.price === 399)) ? " (4G)" : " (5G)";
 
                     const div = document.createElement('div');
                     div.className = 'summary-item';
@@ -647,7 +668,7 @@
                             <span class="font-bold text-gray-700 ml-1">${planName}${specSuffix}</span>
                             ${hasInfo ? `<button onclick="showPlanDetails('${targetBrand}', ${planA.price}, '${applyType}')" class="btn-info">點此了解更多</button>` : ''}
                         </div>
-                        <div class="summary-value text-[11px] font-black text-[#e53935]">${(userType === 'old_customer' && expiryStatus === 'long') ? '方案 A/B 擇一' : (planA.isMonth ? `贈${planA.reward}個月` : `折${planA.reward}元`)}</div>
+                        <div class="summary-value text-[12px] font-black text-[#e53935]">${(userType === 'old_customer' && expiryStatus === 'long') ? '方案 A/B 擇一' : (planA.isMonth ? `贈${planA.reward}個月` : `折${planA.reward}元`)}</div>
                     `;
                     summaryList.appendChild(div);
                 }
