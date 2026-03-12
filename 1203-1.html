@@ -64,6 +64,10 @@
             background-color: #fff;
         }
         .required-tag { color: #ef4444; font-size: 11px; font-weight: 400; margin-left: 4px; }
+        
+        /* 標題文字大小放大微調 */
+        .label-text { color: #546e7a; font-weight: 700; font-size: 1.05rem; margin-bottom: 6px; display: flex; align-items: center; }
+        
         .btn-logic {
             background-color: #f1f8f7;
             color: #90a4ae;
@@ -86,7 +90,6 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
         }
-        .label-text { color: #546e7a; font-weight: 700; font-size: 0.85rem; margin-bottom: 4px; display: flex; align-items: center; }
         .warning-box { background-color: #fffaf0; border: 2px solid #feebc8; border-radius: 16px; }
         .hidden { display: none; }
         .highlight-super-large { color: #e53935; font-size: 2.25rem; font-weight: 900; line-height: 1.2; }
@@ -94,7 +97,23 @@
         .label-highlight-yellow { background-color: #fff9c4; padding: 2px 6px; border-radius: 4px; font-size: 1.1rem; font-weight: 800; color: #37474f; margin-right: 8px; }
         .price-strike { text-decoration: line-through; color: #4b5563; font-size: 1.1rem; font-weight: 700; margin: 0 8px; }
         .phone-item { border-left: 4px solid #4db6ac; background: #ffffff; }
-        .summary-item { padding: 10px 8px; border-radius: 8px; background: #f1f8f7; border-left: 3px solid #81cbd4; display: flex; justify-content: space-between; align-items: center; gap: 4px; }
+        
+        /* 明細項目強制不換行微調 */
+        .summary-item { 
+            padding: 10px 8px; 
+            border-radius: 8px; 
+            background: #f1f8f7; 
+            border-left: 3px solid #81cbd4; 
+            display: flex; 
+            flex-wrap: nowrap; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        .summary-value {
+            white-space: nowrap;
+        }
+        
         .over-limit-hint { color: #ef4444; font-size: 1.25rem; font-weight: 900; display: block; margin-top: 12px; padding: 16px; background-color: #fff5f5; border-radius: 12px; line-height: 1.4; border: 2px solid #feb2b2; text-align: center; }
         .phone-tip-red { font-size: 13px; color: #ef4444; font-weight: 900; margin-left: 8px; letter-spacing: -0.2px; }
         #modal-overlay { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 50; }
@@ -444,12 +463,12 @@
                     let displayReward = (plan.reward === threshold) ? `贈送網路${plan.months}個月` : `網路現折${plan.reward}元`;
                     
                     div.innerHTML = `
-                        <div class="summary-label text-[13px]">
-                            <span class="font-black text-[#00796b]">#${i+1}</span>
-                            <span class="font-bold text-gray-700 ml-1">${planName}${specSuffix}</span>
-                            ${hasInfo ? `<button onclick="showPlanDetails('${targetBrand}', ${plan.price}, '${applyType}')" class="btn-info">點此了解更多</button>` : ''}
+                        <div class="summary-label text-[13px] flex items-center overflow-hidden">
+                            <span class="font-black text-[#00796b] flex-shrink-0">#${i+1}</span>
+                            <span class="font-bold text-gray-700 ml-1 truncate">${planName}${specSuffix}</span>
+                            ${hasInfo ? `<button onclick="showPlanDetails('${targetBrand}', ${plan.price}, '${applyType}')" class="btn-info flex-shrink-0">點此了解更多</button>` : ''}
                         </div>
-                        <div class="summary-value text-[11px] font-black text-[#e53935]">${displayReward}</div>
+                        <div class="summary-value text-[11px] font-black text-[#e53935] flex-shrink-0">${displayReward}</div>
                     `;
                     summaryList.appendChild(div);
                 }
