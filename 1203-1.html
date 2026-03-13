@@ -80,11 +80,20 @@
             box-shadow: 0 4px 10px rgba(77, 182, 172, 0.3);
             font-weight: 800;
         }
+        
+        /* 僅調整此按鈕顏色為紅色 */
         .btn-line {
-            background: linear-gradient(135deg, #0047AB 0%, #002e6e 100%);
-            box-shadow: 0 8px 20px rgba(0, 71, 171, 0.3);
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
             animation: pulse 2.5s infinite;
         }
+        
+        /* 火符號黑線描邊樣式 */
+        .fire-icon {
+            filter: drop-shadow(1px 0 0 black) drop-shadow(-1px 0 0 black) drop-shadow(0 1px 0 black) drop-shadow(0 -1px 0 black);
+            margin-right: 4px;
+        }
+
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
@@ -117,10 +126,9 @@
         #modal-overlay { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 50; }
         .modal-content { max-width: 90%; width: 360px; }
         
-        /* 微調：點此了解更多按鈕樣式 */
         .btn-info { 
-            background: #00695c; /* 深藍綠色 */
-            color: #ffffff;      /* 白色字 */
+            background: #00695c; 
+            color: #ffffff;      
             border: 1px solid #004d40; 
             font-size: 12px; 
             padding: 3px 8px; 
@@ -195,8 +203,11 @@
                     </p>
                 </div>
 
+                <!-- 僅調整此處：按鈕顏色改為紅色，並在文字前加上火符號 (黑邊描邊) -->
                 <a href="https://lin.ee/CPfNPRt" target="_blank" class="btn-line w-full flex flex-col items-center justify-center py-5 rounded-2xl text-white no-underline px-4 text-center">
-                    <span class="text-xl font-black mb-1">立即加Line找服務專員</span>
+                    <span class="text-xl font-black mb-1 flex items-center">
+                        <span class="fire-icon">🔥</span>立即加Line找服務專員
+                    </span>
                     <span class="text-xs font-bold opacity-90">智生活專屬服務，立即領取隱藏福利</span>
                 </a>
             </div>
