@@ -85,14 +85,25 @@
             font-weight: 800;
         }
         
+        /* 調整為紅色的 Line 按鈕樣式 */
         .btn-line {
-            background: linear-gradient(135deg, #0047AB 0%, #002e6e 100%);
-            box-shadow: 0 8px 20px rgba(0, 71, 171, 0.3);
+            background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+            box-shadow: 0 8px 20px rgba(229, 57, 53, 0.3);
             animation: pulse 2.5s infinite;
         }
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.02); }
+        }
+
+        /* 火符號黑色描邊微調 */
+        .fire-emoji {
+            text-shadow: 
+                -1px -1px 0 #000,  
+                 1px -1px 0 #000,
+                -1px  1px 0 #000,
+                 1px  1px 0 #000,
+                 0px  2px 4px rgba(0,0,0,0.5);
         }
         
         .label-text {
@@ -327,9 +338,13 @@
                     </p>
                 </div>
 
-                <a href="https://lin.ee/CPfNPRt" target="_blank" class="btn-line w-full flex flex-col items-center justify-center py-5 rounded-2xl text-white no-underline px-4 text-center">
-                    <span class="text-xl font-black mb-1">立即加Line找服務專員</span>
-                    <span class="text-xs font-bold opacity-90">智生活專屬服務，立即領取隱藏福利</span>
+                <!-- 微調後的 Line 按鈕 -->
+                <a href="https://lin.ee/CPfNPRt" target="_blank" class="btn-line w-full flex flex-row items-center justify-center py-5 rounded-2xl text-white no-underline px-4 text-center">
+                    <span class="fire-emoji text-2xl mr-3">🔥</span>
+                    <div class="flex flex-col items-start">
+                        <span class="text-xl font-black mb-1">立即加Line找服務專員</span>
+                        <span class="text-xs font-bold opacity-90">智生活專屬服務，立即領取隱藏福利</span>
+                    </div>
                 </a>
             </div>
         </div>
