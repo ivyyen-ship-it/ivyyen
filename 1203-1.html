@@ -65,7 +65,6 @@
         }
         .required-tag { color: #ef4444; font-size: 11px; font-weight: 400; margin-left: 4px; }
         
-        /* 標題文字大小放大微調 */
         .label-text { color: #546e7a; font-weight: 700; font-size: 1.05rem; margin-bottom: 6px; display: flex; align-items: center; }
         
         .btn-logic {
@@ -98,7 +97,6 @@
         .price-strike { text-decoration: line-through; color: #4b5563; font-size: 1.1rem; font-weight: 700; margin: 0 8px; }
         .phone-item { border-left: 4px solid #4db6ac; background: #ffffff; }
         
-        /* 明細項目強制不換行微調 */
         .summary-item { 
             padding: 10px 8px; 
             border-radius: 8px; 
@@ -118,7 +116,25 @@
         .phone-tip-red { font-size: 13px; color: #ef4444; font-weight: 900; margin-left: 8px; letter-spacing: -0.2px; }
         #modal-overlay { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 50; }
         .modal-content { max-width: 90%; width: 360px; }
-        .btn-info { background: #f3e5f5; color: #7b1fa2; border: 1px solid #e1bee7; font-size: 12px; padding: 3px 8px; border-radius: 4px; font-weight: 900; cursor: pointer; margin-left: 4px; display: inline-block; transition: all 0.2s ease; }
+        
+        /* 微調：點此了解更多按鈕樣式 */
+        .btn-info { 
+            background: #00695c; /* 深藍綠色 */
+            color: #ffffff;      /* 白色字 */
+            border: 1px solid #004d40; 
+            font-size: 12px; 
+            padding: 3px 8px; 
+            border-radius: 4px; 
+            font-weight: 900; 
+            cursor: pointer; 
+            margin-left: 4px; 
+            display: inline-block; 
+            transition: all 0.2s ease; 
+        }
+        .btn-info:hover {
+            background: #004d40;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body class="py-10 px-4">
@@ -489,7 +505,7 @@
                 html += `<div class="mb-2">
                             <div class="flex items-center flex-wrap">
                                 <span class="highlight-super-large">${monthsTotal}個月</span>
-                                <span class="text-xl font-black text-gray-700 mx-2">家用網路</span>
+                                <span class="text-xl font-black text-gray-700 mx-2">今網寬頻</span>
                                 <span class="highlight-super-large">0元</span>
                             </div>
                          </div>`;
@@ -499,7 +515,7 @@
                     const final_price = 8900 - total_off;
                     const avg_price = Math.round(final_price / 24);
                     html += `<div class="mb-1 flex items-center flex-wrap">
-                                <span class="normal-text">網路資費 <span class="price-strike">原價8900元</span> 現折 ${total_off}元</span>
+                                <span class="normal-text">今網網路資費 <span class="price-strike">原價8900元</span> 現折 ${total_off}元</span>
                              </div>
                              <div class="mt-2 flex items-center flex-wrap">
                                 <span class="label-highlight-yellow">24個月網路</span>
@@ -508,7 +524,7 @@
                              </div>`;
                 } else if (total_off === 8900) {
                     html += `<div class="mb-1 flex items-center flex-wrap">
-                                <span class="normal-text">網路資費 <span class="price-strike">原價8900元</span> 現折 8900元</span>
+                                <span class="normal-text">今網網路資費 <span class="price-strike">原價8900元</span> 現折 8900元</span>
                              </div>
                              <div>
                                 <span class="label-highlight-yellow">24個月網路</span>
