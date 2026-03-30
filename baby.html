@@ -24,6 +24,7 @@
   --radius-md: 14px;
   --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+  --over-100: #FACC15; /* 亮黃色 */
 }
 
 * { 
@@ -43,7 +44,7 @@ body {
 
 .app { max-width: 850px; margin: 0 auto; min-height: 100vh; background: var(--bg-main); position: relative; }
 
-/* Header 美化 */
+/* Header */
 .header {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
@@ -85,18 +86,17 @@ body {
     display: flex; align-items: center; gap: 6px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-.edit-trigger:active { transform: scale(0.95); opacity: 0.9; }
 
-/* Tabs 分頁美化 */
+/* Tabs */
 .tabs {
     display: flex;
-    padding: 20px;
+    padding: 15px 20px;
     gap: 12px;
 }
 .tab-btn {
-    flex: 1; padding: 14px; border-radius: var(--radius-md); border: none;
+    flex: 1; padding: 12px; border-radius: var(--radius-md); border: none;
     background: #E2E8F0; color: var(--text-muted); font-weight: 800; cursor: pointer;
-    font-size: 15px; letter-spacing: 1px;
+    font-size: 14px;
 }
 .tab-btn.active { 
     background: white; color: var(--text-dark); 
@@ -104,193 +104,135 @@ body {
     transform: translateY(-2px);
 }
 
-/* Person Row 佈局美化 */
+/* 佈局核心：手機版並排 */
 .person-row {
     display: flex;
-    flex-wrap: wrap;
-    padding: 0 20px;
-    gap: 20px;
-    margin-bottom: 30px;
+    padding: 0 12px;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
-/* Overview Card 總覽卡片 */
+/* Overview Card */
 .ov-card {
-    flex: 0 0 220px;
-    border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-md);
+    flex: 1;
+    border-radius: var(--radius-lg); padding: 16px 10px; box-shadow: var(--shadow-md);
     border: 1px solid rgba(255,255,255,0.4); position: relative; overflow: hidden;
     cursor: pointer;
-    text-align: center; /* 為了讓內容置中 */
-}
-.ov-card::after {
-    content: ''; position: absolute; top: -50%; right: -50%; width: 150px; height: 150px;
-    border-radius: 50%; background: rgba(255,255,255,0.15); pointer-events: none;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
 }
 .ov-card.hardy { background: linear-gradient(135deg, var(--hardy-main), #60A5FA); color: white; }
 .ov-card.ted { background: linear-gradient(135deg, var(--ted-main), #34D399); color: white; }
 
-/* 特別美化人名部分 */
 .ov-name { 
-    font-size: 26px; /* 放大 */
-    font-weight: 900; /* 加粗 */
-    margin-bottom: 8px; 
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 4px; 
     display: flex; 
     align-items: center; 
-    justify-content: center; /* 置中 */
-    gap: 10px;
-    letter-spacing: 2px; /* 字距 */
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 增加清晰度 */
-    font-family: system-ui, "Arial Black", sans-serif; /* 使用較粗的系統字體 */
+    justify-content: center;
+    gap: 6px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-.ov-total { font-size: 38px; font-weight: 900; line-height: 1; margin-bottom: 6px; display: flex; align-items: baseline; justify-content: center; gap: 4px; }
-.ov-total span { font-size: 14px; opacity: 0.8; font-weight: 600; }
-.ov-formula { font-size: 11px; font-weight: 500; opacity: 0.85; background: rgba(0,0,0,0.1); padding: 4px 12px; border-radius: 20px; width: fit-content; margin: 0 auto; }
-.ov-rem-box { background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); padding: 12px; border-radius: var(--radius-md); margin-top: 18px; border: 1px solid rgba(255,255,255,0.2); }
-.ov-rem-label { font-size: 15px; font-weight: 900; display: block; margin-bottom: 2px; }
-.ov-rem-sub { font-size: 10px; font-weight: 500; opacity: 0.8; display: block; }
+.ov-total { font-size: 32px; font-weight: 900; line-height: 1; margin-bottom: 4px; }
+.ov-total span { font-size: 12px; opacity: 0.8; }
+.ov-formula { font-size: 9px; font-weight: 600; opacity: 0.9; background: rgba(0,0,0,0.1); padding: 2px 6px; border-radius: 12px; width: fit-content; margin: 0 auto; white-space: nowrap; }
 
-/* Dashboard 儀表板 */
+.ov-rem-box { 
+    background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); 
+    padding: 8px 4px; border-radius: var(--radius-md); margin-top: 12px; 
+    border: 1px solid rgba(255,255,255,0.2); 
+}
+.ov-rem-label { font-size: 14px; font-weight: 900; display: block; }
+.ov-rem-sub { font-size: 9px; font-weight: 500; opacity: 0.85; display: block; }
+
+/* Dashboard Section */
 .dashboard-section {
     flex: 1;
     background: white;
-    border-radius: var(--radius-xl);
-    padding: 24px;
+    border-radius: var(--radius-lg);
+    padding: 12px 8px;
     box-shadow: var(--shadow-md);
-    min-width: 320px;
+    min-width: 0;
 }
-.dash-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    border-left: 5px solid var(--text-dark);
-    padding-left: 12px;
-}
-.dash-title { font-weight: 900; font-size: 16px; color: var(--text-dark); }
 
 .dash-grid {
     display: flex;
     justify-content: space-between;
-    height: 140px; 
-    align-items: flex-end;
+    height: 140px;
+    align-items: center;
+    padding: 0 4px;
 }
-.dash-col {
-    flex: 1; display: flex; flex-direction: column; align-items: center;
+.dash-col { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+    gap: 4px;
 }
 
 .dash-bar-track {
-    width: 28px; height: 90px; background: #F1F5F9; border-radius: 15px;
-    position: relative; overflow: hidden; margin-bottom: 10px; 
+    width: 14px; height: 60px; background: #F1F5F9; border-radius: 8px;
+    position: relative; overflow: hidden;
 }
-.dash-bar-fill {
-    position: absolute; bottom: 0; width: 100%; border-radius: 15px;
-}
-.dash-bar-fill.normal-a { background: var(--hardy-main); }
-.dash-bar-fill.normal-b { background: var(--ted-main); }
-.dash-bar-fill.excellent { background: linear-gradient(to top, #F59E0B, #FCD34D); box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+.dash-bar-fill { position: absolute; bottom: 0; width: 100%; border-radius: 8px; }
+.dash-bar-fill.normal { background: var(--hardy-main); }
+.dash-bar-fill.over { background: var(--over-100); }
 
-.dash-label { font-size: 11px; font-weight: 800; color: var(--text-muted); margin-bottom: 2px; }
-.dash-pct { font-size: 10px; font-weight: 900; color: var(--text-dark); }
-.dash-star { font-size: 14px; position: absolute; top: -18px; }
+.dash-label-top { font-size: 10px; font-weight: 900; color: var(--text-dark); margin-bottom: 2px; }
+.dash-label-bottom { font-size: 8px; font-weight: 800; color: var(--text-muted); text-align: center; line-height: 1; min-height: 20px; display: flex; flex-direction: column; align-items: center; }
+.dash-trophy { font-size: 10px; margin-top: 1px; }
 
-/* Child Selector 角色切換 */
-.child-selector { display: flex; padding: 0 20px 20px; gap: 10px; }
-.child-btn {
-    flex: 1; padding: 16px; border-radius: var(--radius-md); border: 1px solid #E2E8F0;
-    background: white; font-weight: 900; color: var(--text-muted); cursor: pointer;
-    font-size: 16px; box-shadow: var(--shadow-sm);
-}
-.child-btn.on-a { background: var(--hardy-light); color: var(--hardy-dark); border-color: var(--hardy-main); box-shadow: 0 8px 20px -6px rgba(59, 130, 246, 0.2); }
-.child-btn.on-b { background: var(--ted-light); color: var(--ted-dark); border-color: var(--ted-main); box-shadow: 0 8px 20px -6px rgba(16, 185, 129, 0.2); }
-
-/* Reward Banner 獎勵橫幅 */
-.reward-banner {
-    margin: 0 20px 24px; padding: 30px; border-radius: var(--radius-xl);
-    background: linear-gradient(135deg, #0F172A, #334155); color: white; text-align: center; 
-    box-shadow: 0 15px 30px -10px rgba(15, 23, 42, 0.3); position: relative; overflow: hidden;
-}
-.reward-banner::before {
-    content: '🎁'; position: absolute; left: -10px; top: -10px; font-size: 80px; opacity: 0.1;
-}
-.time-val { font-size: 64px; font-weight: 900; color: var(--accent-warm); line-height: 1; letter-spacing: -2px; }
-
-/* Task Items 任務清單美化 */
-.day-group { 
-    background: white; margin: 0 20px 20px; border-radius: var(--radius-xl); 
-    padding: 24px; box-shadow: var(--shadow-md); border: 1px solid rgba(0,0,0,0.02);
-}
-.day-head { 
-    font-weight: 900; font-size: 18px; margin-bottom: 20px; 
-    display: flex; justify-content: space-between; align-items: baseline; 
-    border-bottom: 2px solid #F1F5F9; padding-bottom: 12px; color: var(--text-dark);
-}
-
-.task-section-label { 
-    font-size: 12px; font-weight: 900; color: var(--text-muted); 
-    margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 1px;
-    display: flex; align-items: center; gap: 8px;
-}
-.task-section-label::after { content: ''; flex: 1; height: 1px; background: #F1F5F9; }
-
-.task-item {
-    display: flex; align-items: center; padding: 14px 18px; border-radius: var(--radius-md); 
-    background: #F8FAFC; margin-bottom: 10px; cursor: pointer; border: 1px solid transparent;
-}
-.task-item:active { transform: scale(0.98); }
-.task-item.done-a { background: var(--hardy-light); color: var(--hardy-dark); border-color: rgba(59, 130, 246, 0.2); }
-.task-item.done-b { background: var(--ted-light); color: var(--ted-dark); border-color: rgba(16, 185, 129, 0.2); }
-
-.check-box { 
-    width: 26px; height: 26px; border-radius: 9px; border: 2.5px solid #CBD5E1; 
-    margin-right: 14px; background: white; display: flex; align-items: center; justify-content: center; font-size: 14px;
-}
-.done-a .check-box { background: var(--hardy-main); border-color: var(--hardy-main); color: white; }
-.done-b .check-box { background: var(--ted-main); border-color: var(--ted-main); color: white; }
-
-/* Modal 編輯視窗美化 */
-#modal-mask {
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000;
-}
-.modal-body {
-    background: white; width: 92%; max-width: 480px; border-radius: var(--radius-xl);
-    padding: 32px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-}
-.modal-title { font-size: 22px; font-weight: 900; margin-bottom: 24px; text-align: center; }
-.modal-field { margin-bottom: 20px; }
-.modal-field label { display: block; font-size: 13px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; }
-.modal-field textarea {
-    width: 100%; border: 2px solid #F1F5F9; border-radius: var(--radius-md); padding: 16px; 
-    font-size: 15px; min-height: 120px; resize: none; background: #F8FAFC;
-}
-.modal-field textarea:focus { border-color: var(--text-dark); background: white; }
-
-.modal-btn { flex: 1; padding: 15px; border: none; border-radius: var(--radius-md); font-weight: 900; cursor: pointer; font-size: 15px; }
-.btn-save { background: var(--text-dark); color: white; }
-.btn-cancel { background: #F1F5F9; color: var(--text-muted); }
-
-/* Action Cards 下方操作卡片 */
-.action-card {
-    background: white; border-radius: var(--radius-xl); padding: 24px; margin: 0 20px 20px;
-    box-shadow: var(--shadow-md);
-}
-.action-title { font-weight: 900; font-size: 16px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
-
-.counter-box { display: flex; justify-content: space-between; align-items: center; }
-.counter-ctrl { 
-    display: flex; align-items: center; background: #F1F5F9; padding: 6px; border-radius: 18px; gap: 4px;
-}
-.counter-ctrl .nav-btn { background: white; box-shadow: var(--shadow-sm); }
-
+/* 獎勵紀錄調整 */
+.bonus-history-container { padding: 0 12px 20px; }
 .bonus-tag {
-    display: flex; align-items: center; padding: 14px 18px; border-radius: var(--radius-md); 
-    margin-bottom: 10px; font-size: 13px; font-weight: 700; border: 1px solid rgba(0,0,0,0.03);
+    display: flex; align-items: center; padding: 10px 14px; border-radius: var(--radius-md); 
+    margin-bottom: 8px; font-size: 12px; font-weight: 700; background: white; box-shadow: var(--shadow-sm);
 }
-.bonus-tag .name-badge { padding: 4px 10px; border-radius: 10px; color: white; font-size: 11px; margin-right: 12px; font-weight: 900; }
+.bonus-tag .name-badge { padding: 2px 8px; border-radius: 8px; color: white; font-size: 10px; margin-right: 8px; font-weight: 900; }
 
-@media (max-width: 650px) {
-    .ov-card { flex: 1 1 100%; }
-    .dashboard-section { min-width: 100%; }
-    .time-val { font-size: 48px; }
+/* 其他架構 */
+.child-selector { display: flex; padding: 0 20px 20px; gap: 10px; }
+.child-btn { flex: 1; padding: 16px; border-radius: var(--radius-md); border: 1px solid #E2E8F0; background: white; font-weight: 900; font-size: 16px; }
+.child-btn.on-a { background: var(--hardy-light); color: var(--hardy-dark); border-color: var(--hardy-main); }
+.child-btn.on-b { background: var(--ted-light); color: var(--ted-dark); border-color: var(--ted-main); }
+
+.reward-banner { margin: 0 20px 24px; padding: 24px; border-radius: var(--radius-xl); background: linear-gradient(135deg, #0F172A, #334155); color: white; text-align: center; }
+.time-val { font-size: 52px; font-weight: 900; color: var(--accent-warm); line-height: 1; }
+
+.day-group { background: white; margin: 0 20px 20px; border-radius: var(--radius-xl); padding: 20px; box-shadow: var(--shadow-md); overflow: hidden; }
+.day-head { font-weight: 900; font-size: 16px; margin-bottom: 15px; border-bottom: 2px solid #F1F5F9; padding-bottom: 10px; }
+
+/* 任務樣式 */
+.task-item { display: flex; align-items: center; padding: 10px 12px; border-radius: var(--radius-md); background: #F8FAFC; margin-bottom: 6px; font-size: 14px; }
+
+/* 夜間任務區塊樣式 */
+.night-block { background: #0F172A; color: white; border-radius: var(--radius-lg); padding: 15px; margin-top: 15px; }
+.night-block .task-item { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.05); }
+
+.check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #CBD5E1; margin-right: 12px; display: flex; align-items: center; justify-content: center; background: white; }
+.night-block .check-box { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.2); }
+
+#modal-mask { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+.modal-body { background: white; width: 92%; max-width: 450px; border-radius: var(--radius-xl); padding: 24px; }
+
+.action-card { background: white; border-radius: var(--radius-xl); padding: 20px; margin: 0 20px 20px; box-shadow: var(--shadow-md); }
+
+@media (min-width: 651px) {
+    .ov-card { padding: 24px; }
+    .ov-name { font-size: 26px; }
+    .ov-total { font-size: 38px; }
+    .ov-formula { font-size: 12px; }
+    .dashboard-section { padding: 24px; }
+    .dash-grid { height: 180px; }
+    .dash-bar-track { width: 24px; height: 90px; }
+    .dash-label-top { font-size: 13px; }
+    .dash-label-bottom { font-size: 11px; }
 }
 
 </style>
@@ -315,24 +257,20 @@ body {
     <div id="ov-panel"></div>
     <div id="dt-panel" style="display:none"></div>
 
-    <!-- 任務編輯彈窗 -->
     <div id="modal-mask">
         <div class="modal-body">
-            <div class="modal-title">🔧 任務配置</div>
-            <div class="modal-field">
-                <label>☀️ 日間任務 (每行一項)</label>
-                <textarea id="edit-dtasks" placeholder="例如：準時起床 ⏰"></textarea>
+            <div style="font-size:20px; font-weight:900; margin-bottom:20px; text-align:center">🔧 任務配置</div>
+            <div style="margin-bottom:15px">
+                <label style="display:block; font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:5px">☀️ 日間任務</label>
+                <textarea id="edit-dtasks" style="width:100%; border:2px solid #F1F5F9; border-radius:12px; padding:12px; min-height:100px; resize:none"></textarea>
             </div>
-            <div class="modal-field">
-                <label>🌙 夜間任務 (每行一項)</label>
-                <textarea id="edit-ntasks" placeholder="例如：好好吃飯 🥗"></textarea>
+            <div style="margin-bottom:20px">
+                <label style="display:block; font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:5px">🌙 夜間任務</label>
+                <textarea id="edit-ntasks" style="width:100%; border:2px solid #F1F5F9; border-radius:12px; padding:12px; min-height:100px; resize:none"></textarea>
             </div>
-            <div style="font-size:11px; color:#94A3B8; text-align:center; background:#F8FAFC; padding:10px; border-radius:10px; margin-bottom:20px">
-                💡 提示：點擊儲存後，系統將立即同步更新所有看板。
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn btn-cancel" onclick="closeEditor()">返回</button>
-                <button class="modal-btn btn-save" onclick="saveTasks()">確認儲存</button>
+            <div style="display:flex; gap:10px">
+                <button style="flex:1; padding:12px; border:none; border-radius:12px; background:#F1F5F9; font-weight:800" onclick="closeEditor()">取消</button>
+                <button style="flex:1; padding:12px; border:none; border-radius:12px; background:var(--text-dark); color:white; font-weight:800" onclick="saveTasks()">儲存</button>
             </div>
         </div>
     </div>
@@ -353,9 +291,9 @@ const DEFAULT_NTASKS = [
 
 let wkOff = 0, aCh = 'a', D = {}, config = { dtasks: DEFAULT_DTASKS, ntasks: DEFAULT_NTASKS };
 
-function localSave(){ localStorage.setItem('kids_dashboard_rollback_v2', JSON.stringify({D, config})); }
+function localSave(){ localStorage.setItem('kids_dashboard_rollback_v2_final', JSON.stringify({D, config})); }
 function localLoad(){ 
-    const saved = JSON.parse(localStorage.getItem('kids_dashboard_rollback_v2') || '{}');
+    const saved = JSON.parse(localStorage.getItem('kids_dashboard_rollback_v2_final') || '{}');
     if(saved.D) D = saved.D;
     if(saved.config) config = saved.config;
 }
@@ -376,22 +314,35 @@ function togT(wk, cid, di, tid) {
     render(); 
 }
 
-function getCompletionStatus(wk, cid, di) {
+function getFullCompletion(wk, cid, di) {
     ensure(wk, cid);
     const dayData = D[wk][cid].days[di] || {};
     const bonus = D[wk][cid].bonus || 0;
+    
+    // 檢查該日是否有任何紀錄，若無紀錄則回傳 null (空白狀態)
+    const hasAnyData = Object.keys(dayData).some(tid => dayData[tid] === true);
+    if (!hasAnyData) return null;
+    
     const dayDone = config.dtasks.length > 0 && config.dtasks.every(t => dayData[t.id] === true);
     const nightDone = config.ntasks.length > 0 && config.ntasks.every(t => dayData[t.id] === true);
+    
     let basePercent = 0;
     if (dayDone) basePercent += 50;
     if (nightDone) basePercent += 50;
-    let extra = (dayDone && nightDone) ? (bonus * 10) : 0;
-    return basePercent + extra;
+    
+    const bonusPercent = (bonus * 50); 
+    
+    return basePercent + bonusPercent;
 }
 
 function dayScore(wk, cid, di){
-    const d = config.dtasks.length > 0 && config.dtasks.every(t=>getT(wk,cid,di,t.id))?1:0;
-    const n = config.ntasks.length > 0 && config.ntasks.every(t=>getT(wk,cid,di,t.id))?1:0;
+    ensure(wk, cid);
+    const dayData = D[wk][cid].days[di] || {};
+    const hasAnyData = Object.keys(dayData).some(tid => dayData[tid] === true);
+    if(!hasAnyData) return 0;
+
+    const d = config.dtasks.length > 0 && config.dtasks.every(t=>dayData[t.id]===true)?1:0;
+    const n = config.ntasks.length > 0 && config.ntasks.every(t=>dayData[t.id]===true)?1:0;
     return d+n;
 }
 
@@ -436,52 +387,58 @@ function saveTasks(){
 
 function renderOv(){
     const wk = getWkKey(wkOff);
-    let h = '';
+    let h = '<div class="person-row">'; 
     CH.forEach(c => {
         const res = weekCalc(wk, c.id);
-        h += `<div class="person-row">
-        <div class="ov-card ${c.id==='a'?'hardy':'ted'}" onclick="pickChild('${c.id}')">
+        h += `<div class="ov-card ${c.id==='a'?'hardy':'ted'}" onclick="pickChild('${c.id}')">
             <div class="ov-name">${c.icon} ${c.name}</div>
             <div class="ov-total">${res.rawTotalPoints}<span>分</span></div>
-            <div class="ov-formula">基本 ${res.base} + 額外 ${res.bonus}</div>
+            <div class="ov-formula">基本 ${res.base} 分 + 額外獎勵 ${res.bonus} 小時</div>
             <div class="ov-rem-box">
                 <span class="ov-rem-label">獎勵 ${res.remHours} 小時</span>
                 <span class="ov-rem-sub">累計 ${res.totalHours} / 已領 ${res.used}</span>
             </div>
-        </div>
-        <div class="dashboard-section">
-            <div class="dash-header"><div class="dash-title">完成趨勢</div></div>
+        </div>`;
+    });
+    h += '</div><div class="person-row">'; 
+    CH.forEach(c => {
+        h += `<div class="dashboard-section">
             <div class="dash-grid">`;
         for(let i=0; i<7; i++){
-            const pct = getCompletionStatus(wk, c.id, i);
-            const isExcellent = pct > 100;
-            const barHeight = Math.min(100, pct);
+            const pct = getFullCompletion(wk, c.id, i);
+            const isOver = pct !== null && pct > 100;
+            const displayPct = pct === null ? 0 : Math.min(100, pct);
+            
             h += `<div class="dash-col">
+                <div class="dash-label-top">${DAYS[i]}</div>
                 <div class="dash-bar-track">
-                    <div class="dash-bar-fill ${isExcellent ? 'excellent' : ('normal-'+c.id)}" style="height:${barHeight}%"></div>
-                    ${pct >= 100 ? `<div class="dash-star" style="bottom:${barHeight}%">⭐</div>` : ''}
+                    <div class="dash-bar-fill ${isOver ? 'over' : 'normal'}" style="height:${displayPct}%"></div>
                 </div>
-                <div class="dash-label">${DAYS[i]}</div>
-                <div class="dash-pct">${pct}%</div>
+                <div class="dash-label-bottom">
+                    ${pct !== null ? pct + '%' : ''}
+                    ${isOver ? '<div class="dash-trophy">🏆</div>' : ''}
+                </div>
             </div>`;
         }
-        h += `</div></div></div>`;
+        h += `</div></div>`;
     });
+    h += '</div>';
+
     let bonusHistoryHtml = '';
     CH.forEach(c => {
         ensure(wk, c.id);
         const res = D[wk][c.id];
-        if (res.bonus > 0 || res.note) {
+        if (res.bonus > 0 || (res.note && res.note.trim() !== '')) {
             bonusHistoryHtml += `
-            <div class="bonus-tag ${c.id === 'a' ? 'hardy' : 'ted'}" style="background:white">
+            <div class="bonus-tag">
                 <span class="name-badge" style="background:${c.id==='a'?'var(--hardy-main)':'var(--ted-main)'}">${c.name}</span>
-                <span style="flex:1; color:var(--text-dark)">${res.note || '表現優異'}</span>
-                <span style="font-weight:900; color:${c.id==='a'?'var(--hardy-main)':'var(--ted-main)'}">+ ${res.bonus} 分</span>
+                <span style="flex:1; color:var(--text-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${res.note || '表現優異'}</span>
+                <span style="font-weight:900; color:${c.id==='a'?'var(--hardy-main)':'var(--ted-main)'}">${res.bonus > 0 ? '+ ' + res.bonus + ' 小時' : ''}</span>
             </div>`;
         }
     });
     if (bonusHistoryHtml) {
-        h += `<div style="padding:0 20px 20px"><div class="dashboard-section" style="margin:0"><div class="dash-title" style="margin-bottom:15px">⭐ 本週加分紀錄</div>${bonusHistoryHtml}</div></div>`;
+        h += `<div class="bonus-history-container"><div style="font-weight:900; font-size:14px; margin-bottom:10px; padding-left:5px">⭐ 獎勵紀錄</div>${bonusHistoryHtml}</div>`;
     }
     document.getElementById('ov-panel').innerHTML = h;
 }
@@ -496,44 +453,47 @@ function renderDt(){
     CH.forEach(x => h += `<button class="child-btn ${aCh===x.id?'on-'+x.id:''}" onclick="pickChild('${x.id}')">${x.icon} ${x.name}</button>`);
     h += `</div>`;
     h += `<div class="reward-banner">
-        <div style="font-size:13px; opacity:0.8; margin-bottom:4px; font-weight:700">獎勵兌換餘額</div>
-        <div class="time-val">${res.remHours}<span style="font-size:18px; margin-left:8px; color:white; opacity:0.7">HOUR</span></div>
-        <div style="font-size:11px; opacity:0.6; margin-top:10px">累計獲得 ${res.totalHours} / 已兌換 ${res.used}</div>
+        <div style="font-size:12px; opacity:0.8; margin-bottom:4px; font-weight:700">獎勵兌換餘額</div>
+        <div class="time-val">${res.remHours}<span style="font-size:16px; margin-left:5px; color:white; opacity:0.7">小時</span></div>
+        <div style="font-size:10px; opacity:0.6; margin-top:8px">累計 ${res.totalHours} / 已領 ${res.used}</div>
     </div>`;
     for(let i=0; i<7; i++){
         const d = dates[i], ds = d.toISOString().split('T')[0];
         if(ds > todayStr) continue; 
-        const comp = getCompletionStatus(wk, c.id, i);
+        const comp = getFullCompletion(wk, c.id, i);
         h += `<div class="day-group">
             <div class="day-head">
-                <span>週${DAYS[i]} <small style="font-weight:500; opacity:0.5; margin-left:8px">${d.getMonth()+1}/${d.getDate()}</small></span>
-                <span style="color:${comp>=100?'var(--accent-warm)':'var(--text-muted)'}; font-size:13px">完成 ${comp}%</span>
+                <span>週${DAYS[i]} <small style="opacity:0.4; margin-left:5px">${d.getMonth()+1}/${d.getDate()}</small></span>
+                <span style="color:${(comp!==null && comp>=100)?'var(--accent-warm)':'var(--text-muted)'}; font-size:12px">${comp!==null ? comp+'%' : ''}</span>
             </div>
-            <div class="task-section-label">☀️ 日間任務</div>
-            ${config.dtasks.length > 0 ? config.dtasks.map(t=>`<div class="task-item ${getT(wk,c.id,i,t.id)?'done-'+aCh:''}" onclick="togT('${wk}','${c.id}',${i},'${t.id}')"><div class="check-box">${getT(wk,c.id,i,t.id)?'✓':''}</div><span>${t.l}</span></div>`).join('') : '<div style="font-size:12px; color:#999; padding:10px">尚無任務</div>'}
-            <div class="task-section-label">🌙 夜間任務</div>
-            ${config.ntasks.length > 0 ? config.ntasks.map(t=>`<div class="task-item ${getT(wk,c.id,i,t.id)?'done-'+aCh:''}" onclick="togT('${wk}','${c.id}',${i},'${t.id}')"><div class="check-box">${getT(wk,c.id,i,t.id)?'✓':''}</div><span>${t.l}</span></div>`).join('') : '<div style="font-size:12px; color:#999; padding:10px">尚無任務</div>'}
+            
+            <div style="font-size:11px; font-weight:800; color:var(--text-muted); margin:15px 0 8px">☀️ 日間任務</div>
+            ${config.dtasks.map(t=>`<div class="task-item" onclick="togT('${wk}','${c.id}',${i},'${t.id}')"><div class="check-box" style="${getT(wk,c.id,i,t.id)?'background:var(--'+(aCh==='a'?'hardy':'ted')+'-main); border-color:transparent; color:white':''}">${getT(wk,c.id,i,t.id)?'✓':''}</div><span>${t.l}</span></div>`).join('')}
+            
+            <div class="night-block">
+                <div style="font-size:11px; font-weight:800; opacity:0.7; margin-bottom:12px; display:flex; align-items:center; gap:6px">🌙 夜間任務區</div>
+                ${config.ntasks.map(t=>`<div class="task-item" onclick="togT('${wk}','${c.id}',${i},'${t.id}')"><div class="check-box" style="${getT(wk,c.id,i,t.id)?'background:var(--'+(aCh==='a'?'hardy':'ted')+'-main); border-color:transparent; color:white':''}">${getT(wk,c.id,i,t.id)?'✓':''}</div><span style="color:white">${t.l}</span></div>`).join('')}
+            </div>
         </div>`;
     }
     h += `<div class="action-card">
-        <div class="action-title">⭐ 獎勵與備註</div>
-        <div class="counter-box">
-            <span style="font-weight:700">額外加分</span>
-            <div class="counter-ctrl">
+        <div style="font-weight:900; margin-bottom:15px">⭐ 獎勵與備註</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
+            <span style="font-size:14px; font-weight:700">額外加分 (小時)</span>
+            <div style="display:flex; align-items:center; gap:10px; background:#F1F5F9; padding:5px; border-radius:12px">
                 <button class="nav-btn" onclick="adjB('${wk}','${c.id}',-1)">-</button>
-                <span style="font-size:20px; font-weight:900; width:30px; text-align:center">${D[wk]?.[c.id]?.bonus||0}</span>
+                <span style="font-weight:900; width:20px; text-align:center">${D[wk]?.[c.id]?.bonus||0}</span>
                 <button class="nav-btn" onclick="adjB('${wk}','${c.id}',1)">+</button>
             </div>
         </div>
-        <textarea style="width:100%; margin-top:15px; border:2px solid #F1F5F9; border-radius:12px; padding:12px; font-size:14px; min-height:80px" placeholder="記錄今日的好表現..." oninput="setNote('${wk}','${c.id}',this.value)">${D[wk]?.[c.id]?.note||''}</textarea>
-    </div>`;
-    h += `<div class="action-card" style="background: linear-gradient(to bottom right, #FFFBEB, #FEF3C7); border:1px solid #FDE68A">
-        <div class="action-title" style="color: #92400E">🎁 兌換獎勵</div>
-        <div class="counter-box">
-            <span style="font-weight:700; color:#92400E">已兌換時數</span>
-            <div class="counter-ctrl" style="background:rgba(255,255,255,0.5)">
+        <textarea style="width:100%; border:2px solid #F1F5F9; border-radius:12px; padding:12px; font-size:14px; min-height:70px" placeholder="寫點什麼...備註將顯示於數據看板下方" oninput="setNote('${wk}','${c.id}',this.value)">${D[wk]?.[c.id]?.note||''}</textarea>
+    </div>
+    <div class="action-card" style="background:#FFFBEB; border:1px solid #FDE68A">
+        <div style="display:flex; justify-content:space-between; align-items:center">
+            <span style="font-weight:900; color:#92400E">已領時數</span>
+            <div style="display:flex; align-items:center; gap:10px; background:white; padding:5px; border-radius:12px">
                 <button class="nav-btn" onclick="doUse('${wk}','${c.id}',-1)">-</button>
-                <span style="font-size:20px; font-weight:900; width:30px; text-align:center; color:#92400E">${D[wk]?.[c.id]?.used||0}</span>
+                <span style="font-weight:900; width:20px; text-align:center; color:#92400E">${D[wk]?.[c.id]?.used||0}</span>
                 <button class="nav-btn" onclick="doUse('${wk}','${c.id}',1)" ${res.remHours<=0?'disabled':''}>+</button>
             </div>
         </div>
@@ -555,7 +515,7 @@ function adjWk(n){ wkOff += n; render(); }
 function pickChild(cid){ aCh = cid; goView('dt'); render(); }
 function adjB(wk,cid,v){ ensure(wk,cid); D[wk][cid].bonus = Math.max(0, (D[wk][cid].bonus||0)+v); localSave(); render(); }
 function doUse(wk,cid,v){ ensure(wk,cid); D[wk][cid].used = Math.max(0, (D[wk][cid].used||0)+v); localSave(); render(); }
-function setNote(wk,cid,v){ ensure(wk,cid); D[wk][cid].note = v; localSave(); }
+function setNote(wk,cid,v){ ensure(wk,cid); D[wk][cid].note = v; localSave(); renderOv(); }
 
 function render(){
     const dates = getWkDates(wkOff);
