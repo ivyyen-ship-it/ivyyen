@@ -241,7 +241,7 @@ function renderOv(wk,dates){
       <div class="ov-name ov-name-${c.id}">${c.name}</div>
       <div class="ov-score">${calc.base+calc.bonus+calc.study}</div>
       <div class="ov-detail">基本${calc.base} ＋ 額外${calc.bonus} ＋ 複習${calc.study}</div>
-      <div class="ov-hours ov-hours-${c.id}">剩餘 ${calc.remaining}h ／ 共 ${calc.totalHours}h</div>
+      <div class="ov-hours ov-hours-${c.id}">剩餘 ${calc.remaining} 小時 ／ 共 ${calc.totalHours} 小時</div>
       ${basePill}
     </div>`;
   });
@@ -292,8 +292,8 @@ function renderDt(wk,dates){
     </div>
     <div class="stat-box">
       <div class="stat-lbl">可用電腦時數</div>
-      <div class="stat-val">${calc.totalHours}h</div>
-      <div class="stat-sub">基本換算${calc.baseHours}h ＋ 獎勵${calc.extraHours}h</div>
+      <div class="stat-val">${calc.totalHours} 小時</div>
+      <div class="stat-sub">基本換算 ${calc.baseHours} 小時 ＋ 獎勵 ${calc.extraHours} 小時</div>
     </div>
   </div>
   <span class="result-pill ${basePillCls}">${basePillTxt}</span>`;
@@ -305,8 +305,8 @@ function renderDt(wk,dates){
       <span class="reward-unit">小時可用</span>
     </div>
     <div class="reward-breakdown">
-      基本換算 ${calc.baseHours}h　＋　額外加分 ${calc.bonus}h　＋　複習加分 ${calc.study}h<br>
-      共 ${calc.totalHours}h　　已使用 ${calc.used}h　　剩餘 ${calc.remaining}h
+      基本換算 ${calc.baseHours} 小時　＋　額外加分 ${calc.bonus} 小時　＋　複習加分 ${calc.study} 小時<br>
+      共 ${calc.totalHours} 小時　已使用 ${calc.used} 小時　剩餘 ${calc.remaining} 小時
     </div>
     <div class="reward-actions">
       <button class="r-btn r-btn-use" onclick="useHour('${wk}','${c.id}')" ${!canUse?'disabled':''}>使用 1 小時</button>
