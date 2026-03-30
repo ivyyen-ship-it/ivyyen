@@ -14,6 +14,7 @@
   --lavender:#EEEDFE;--lavender-border:#AFA9EC;--lavender-text:#3C3489;
   --amber-bg:#FAEEDA;--amber-text:#633806;
   --red-bg:#FCEBEB;--red-text:#791F1F;
+  --blue-bg:#E6F1FB;--blue-text:#0C447C;--blue-border:#85B7EB;
   --bg:#fff;--bg2:#f7f7f5;--bg3:#f0ede8;
   --text:#1a1a1a;--text2:#666;--text3:#999;
   --border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.18);
@@ -25,22 +26,22 @@ body{background:var(--bg3);font-family:-apple-system,BlinkMacSystemFont,'Helveti
 .nav-wrap{display:flex;align-items:center;gap:8px}
 .nav-btn{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--pink-border);background:var(--pink);cursor:pointer;font-size:16px;color:var(--pink-text);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .week-lbl{font-size:14px;font-weight:600;color:var(--text)}
-.sync-badge{font-size:11px;padding:3px 10px;border-radius:12px;font-weight:500}
-.sync-ok{background:var(--mint);color:var(--mint-text)}
-.sync-ing{background:var(--amber-bg);color:var(--amber-text)}
-.sync-err{background:var(--red-bg);color:var(--red-text)}
 .vtabs{display:flex;gap:5px;margin-bottom:1rem;background:var(--bg2);border-radius:var(--r20);padding:3px}
 .vtab{flex:1;padding:8px 0;border-radius:17px;border:none;background:transparent;font-size:13px;cursor:pointer;color:var(--text2);font-weight:500;-webkit-tap-highlight-color:transparent}
 .vtab.on{background:var(--bg);color:var(--text);border:0.5px solid var(--border);font-weight:600}
 .overview-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
-.ov-card{border-radius:var(--r16);padding:1rem;border:1.5px solid}
+.ov-card{border-radius:var(--r16);padding:1rem;border:1.5px solid;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ov-card:active{opacity:.85}
 .ov-card-a{background:var(--lavender);border-color:var(--lavender-border)}
 .ov-card-b{background:var(--mint);border-color:var(--mint-border)}
 .ov-name{font-size:12px;font-weight:600;margin-bottom:4px}
 .ov-name-a{color:var(--lavender-text)}
 .ov-name-b{color:var(--mint-text)}
 .ov-score{font-size:30px;font-weight:600;line-height:1;color:var(--text)}
-.ov-detail{font-size:11px;color:var(--text2);margin:3px 0 8px}
+.ov-detail{font-size:11px;color:var(--text2);margin:3px 0 5px}
+.ov-hours{font-size:13px;font-weight:600;margin-bottom:6px}
+.ov-hours-a{color:var(--lavender-text)}
+.ov-hours-b{color:var(--mint-text)}
 .pill{display:inline-block;border-radius:12px;padding:3px 9px;font-size:11px;font-weight:600}
 .pill-ok{background:var(--mint);color:var(--mint-text)}
 .pill-warn{background:var(--amber-bg);color:var(--amber-text)}
@@ -68,6 +69,21 @@ body{background:var(--bg3);font-family:-apple-system,BlinkMacSystemFont,'Helveti
 .stat-val{font-size:24px;font-weight:600;color:var(--text)}
 .stat-sub{font-size:11px;color:var(--text2);margin-top:1px}
 .result-pill{border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;display:inline-block;margin-bottom:1rem}
+.reward-box{border-radius:var(--r16);border:1.5px solid var(--blue-border);background:var(--blue-bg);padding:1rem;margin-bottom:1rem}
+.reward-title{font-size:13px;font-weight:600;color:var(--blue-text);margin-bottom:.75rem}
+.reward-hours-display{display:flex;align-items:baseline;gap:6px;margin-bottom:.5rem}
+.reward-big{font-size:40px;font-weight:700;color:var(--blue-text);line-height:1}
+.reward-unit{font-size:15px;color:var(--blue-text);font-weight:500}
+.reward-breakdown{font-size:11px;color:var(--blue-text);opacity:.7;margin-bottom:.85rem;line-height:1.7}
+.reward-actions{display:flex;gap:8px}
+.r-btn{flex:1;padding:11px 0;border-radius:var(--r12);border:none;font-size:14px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.r-btn:active{opacity:.8}
+.r-btn-use{background:var(--blue-text);color:#fff}
+.r-btn-use:disabled{background:#b0c4d8;color:#fff;cursor:default}
+.r-btn-ret{background:rgba(12,68,124,0.12);color:var(--blue-text)}
+.reward-used-row{display:flex;align-items:center;justify-content:space-between;margin-top:.65rem;padding-top:.65rem;border-top:1px solid rgba(12,68,124,0.15)}
+.reward-used-lbl{font-size:12px;color:var(--blue-text);opacity:.7}
+.reward-used-val{font-size:13px;font-weight:600;color:var(--blue-text)}
 .day-block{background:var(--bg);border:1px solid var(--border);border-radius:var(--r16);padding:1rem;margin-bottom:.75rem}
 .db-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
 .db-title{font-size:14px;font-weight:600;color:var(--text)}
@@ -89,16 +105,19 @@ body{background:var(--bg3);font-family:-apple-system,BlinkMacSystemFont,'Helveti
 .tn{font-size:14px;color:var(--text)}
 .task-row.ck .tn{color:var(--mint-text)}
 .task-row.ck-night .tn{color:var(--lavender-text)}
-.bonus-sec{padding-top:0}
+.bonus-block{background:var(--bg);border:1px solid var(--border);border-radius:var(--r16);padding:1rem;margin-bottom:.75rem}
 .bonus-row{display:flex;align-items:center;gap:8px;margin-bottom:.65rem}
-.bl{font-size:13px;color:var(--text2);flex:1}
+.bonus-row:last-of-type{margin-bottom:0}
+.bl{font-size:13px;color:var(--text2);flex:1;line-height:1.3}
+.bl-sub{font-size:10px;color:var(--text3);display:block;margin-top:2px}
 .bctrl{display:flex;align-items:center;gap:10px}
 .bb{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border2);background:none;cursor:pointer;font-size:18px;color:var(--text2);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
 .bb:active{background:var(--bg2)}
 .bv{font-size:16px;font-weight:600;min-width:24px;text-align:center;color:var(--text)}
-.note-area{width:100%;border-radius:var(--r8);border:1px solid var(--border);padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--bg2);resize:none;min-height:70px;margin-top:4px}
+.divider{border:none;border-top:1px solid var(--border);margin:.7rem 0}
+.note-lbl{font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:600;margin-top:.85rem;display:block}
+.note-area{width:100%;border-radius:var(--r8);border:1px solid var(--border);padding:10px 12px;font-size:14px;font-family:inherit;color:var(--text);background:var(--bg2);resize:none;min-height:70px}
 .note-area:focus{outline:none;border-color:var(--lavender-border)}
-.note-lbl{font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:600}
 </style>
 </head>
 <body>
@@ -109,7 +128,6 @@ body{background:var(--bg3);font-family:-apple-system,BlinkMacSystemFont,'Helveti
       <span class="week-lbl" id="weekLbl">載入中…</span>
       <button class="nav-btn" id="nextWeek">&#8250;</button>
     </div>
-    <span class="sync-badge sync-ing" id="syncBadge">載入中</span>
   </div>
   <div class="vtabs">
     <button class="vtab on" id="vt-ov" onclick="setView('ov')">總覽</button>
@@ -133,38 +151,25 @@ const NTASKS=[
 
 let wkOff=0,aCh='a',curView='ov';
 let D={};
-let saveTimer=null;
-
-function setSyncBadge(state){
-  const b=document.getElementById('syncBadge');
-  if(!b)return;
-  const map={ok:['已同步','sync-ok'],ing:['同步中','sync-ing'],err:['僅本機','sync-err']};
-  const[txt,cls]=map[state]||map.ing;
-  b.textContent=txt;b.className='sync-badge '+cls;
-}
 
 function localSave(){try{localStorage.setItem('kids_reward',JSON.stringify(D))}catch(e){}}
 function localLoad(){try{return JSON.parse(localStorage.getItem('kids_reward')||'{}')}catch(e){return{}}}
 
 function ensure(wk,cid){
   if(!D[wk])D[wk]={};
-  if(!D[wk][cid])D[wk][cid]={days:{},bonus:0,study:0,note:''};
-  if(typeof D[wk][cid].bonus!=='number')D[wk][cid].bonus=0;
-  if(typeof D[wk][cid].study!=='number')D[wk][cid].study=0;
-  if(typeof D[wk][cid].note!=='string')D[wk][cid].note='';
+  if(!D[wk][cid])D[wk][cid]={days:{},bonus:0,study:0,note:'',used:0};
+  const c=D[wk][cid];
+  if(typeof c.bonus!=='number')c.bonus=0;
+  if(typeof c.study!=='number')c.study=0;
+  if(typeof c.note!=='string')c.note='';
+  if(typeof c.used!=='number')c.used=0;
 }
 function getT(wk,cid,di,tid){return D?.[wk]?.[cid]?.days?.[di]?.[tid]===true}
-function setT(wk,cid,di,tid,v){ensure(wk,cid);if(!D[wk][cid].days[di])D[wk][cid].days[di]={};D[wk][cid].days[di][tid]=v;scheduleSave();render()}
+function setT(wk,cid,di,tid,v){ensure(wk,cid);if(!D[wk][cid].days[di])D[wk][cid].days[di]={};D[wk][cid].days[di][tid]=v;localSave();render()}
 function getB(wk,cid,k){const v=D?.[wk]?.[cid]?.[k];return typeof v==='number'?v:0}
-function setB(wk,cid,k,v){ensure(wk,cid);D[wk][cid][k]=Math.max(0,v);scheduleSave();render()}
+function setB(wk,cid,k,v){ensure(wk,cid);D[wk][cid][k]=Math.max(0,v);localSave();render()}
 function getNote(wk,cid){return D?.[wk]?.[cid]?.note||''}
-function setNote(wk,cid,v){ensure(wk,cid);D[wk][cid].note=v;scheduleSave()}
-
-function scheduleSave(){
-  clearTimeout(saveTimer);
-  localSave();
-  saveTimer=setTimeout(()=>{setSyncBadge('ok')},300);
-}
+function setNote(wk,cid,v){ensure(wk,cid);D[wk][cid].note=v;localSave()}
 
 function wkKey(off){
   const n=new Date(),dy=n.getDay(),m=new Date(n);
@@ -184,16 +189,18 @@ function dayScore(wk,cid,di){
   return (DTASKS.every(t=>getT(wk,cid,di,t.id))?1:0)+(NTASKS.every(t=>getT(wk,cid,di,t.id))?1:0);
 }
 function weekCalc(wk,cid){
-  let base=0;for(let i=0;i<5;i++)base+=dayScore(wk,cid,i);
-  const extra=getB(wk,cid,'bonus'),study=getB(wk,cid,'study');
-  return{base,extra,study,total:base+extra+study};
-}
-function result(total){
-  const t=parseInt(total)||0;
-  if(t<3)return{lbl:`未達門檻（${t}/3分）`,cls:'pill-no',h:0};
-  const h=Math.floor((t-3)/3);
-  if(h===0)return{lbl:'可用手機，尚無電腦時數',cls:'pill-warn',h:0};
-  return{lbl:`週末電腦 ${h} 小時`,cls:'pill-ok',h};
+  let base=0;
+  for(let i=0;i<5;i++)base+=dayScore(wk,cid,i);
+  const bonus=getB(wk,cid,'bonus');
+  const study=getB(wk,cid,'study');
+  const used=getB(wk,cid,'used');
+  // 基本分達標(>=3)後，每多3分換1小時
+  const baseHours=base>=3?Math.floor((base-3)/3):0;
+  // 額外加分與複習加分各1分=1小時
+  const extraHours=bonus+study;
+  const totalHours=baseHours+extraHours;
+  const remaining=Math.max(0,totalHours-used);
+  return{base,bonus,study,used,baseHours,extraHours,totalHours,remaining};
 }
 
 window.setView=function(v){
@@ -206,20 +213,36 @@ window.setView=function(v){
 window.switchCh=function(cid){aCh=cid;render()};
 window.togT=function(wk,cid,di,tid){setT(wk,cid,di,tid,!getT(wk,cid,di,tid))};
 window.adjB=function(wk,cid,k,d){setB(wk,cid,k,getB(wk,cid,k)+d)};
+window.useHour=function(wk,cid){
+  ensure(wk,cid);
+  const{totalHours,used}=weekCalc(wk,cid);
+  if(used>=totalHours)return;
+  D[wk][cid].used=used+1;localSave();render();
+};
+window.retHour=function(wk,cid){
+  ensure(wk,cid);
+  const used=getB(wk,cid,'used');
+  if(used<=0)return;
+  D[wk][cid].used=used-1;localSave();render();
+};
 window.saveNote=function(wk,cid,v){setNote(wk,cid,v)};
+window.goDetail=function(cid){aCh=cid;setView('dt')};
 
 function renderOv(wk,dates){
   const p=document.getElementById('ov-panel');
   const today=todayS();
   let h='<div class="overview-cards">';
   CH.forEach(c=>{
-    const{base,extra,study,total}=weekCalc(wk,c.id);
-    const res=result(total);
-    h+=`<div class="ov-card ov-card-${c.id}">
+    const calc=weekCalc(wk,c.id);
+    const basePill=calc.base>=3
+      ?`<span class="pill pill-ok">基本達標</span>`
+      :`<span class="pill pill-no">未達標（${calc.base}/3）</span>`;
+    h+=`<div class="ov-card ov-card-${c.id}" onclick="goDetail('${c.id}')">
       <div class="ov-name ov-name-${c.id}">${c.name}</div>
-      <div class="ov-score">${total}</div>
-      <div class="ov-detail">基本${base} + 額外${extra} + 複習${study}</div>
-      <span class="pill ${res.cls}">${res.lbl}</span>
+      <div class="ov-score">${calc.base+calc.bonus+calc.study}</div>
+      <div class="ov-detail">基本${calc.base} ＋ 額外${calc.bonus} ＋ 複習${calc.study}</div>
+      <div class="ov-hours ov-hours-${c.id}">剩餘 ${calc.remaining}h ／ 共 ${calc.totalHours}h</div>
+      ${basePill}
     </div>`;
   });
   h+='</div><div class="days-row">';
@@ -248,10 +271,12 @@ function renderOv(wk,dates){
 function renderDt(wk,dates){
   const p=document.getElementById('dt-panel');
   const c=CH.find(x=>x.id===aCh);
-  const{base,extra,study,total}=weekCalc(wk,c.id);
-  const res=result(total);
+  const calc=weekCalc(wk,c.id);
   const today=todayS();
   const note=getNote(wk,c.id);
+  const canUse=calc.remaining>0;
+  const basePillCls=calc.base>=3?'pill-ok':'pill-no';
+  const basePillTxt=calc.base>=3?'基本任務達標':'基本任務未達標（'+calc.base+'/3分）';
 
   let h=`<div class="child-tabs">`;
   CH.forEach(x=>{
@@ -260,10 +285,38 @@ function renderDt(wk,dates){
   });
   h+=`</div>
   <div class="stat-row">
-    <div class="stat-box"><div class="stat-lbl">本週總分</div><div class="stat-val">${total}</div><div class="stat-sub">基本${base} + 額外${extra} + 複習${study}</div></div>
-    <div class="stat-box"><div class="stat-lbl">週末電腦</div><div class="stat-val">${res.h>0?res.h+'h':'—'}</div><div class="stat-sub">${res.h>0?`共${res.h}小時`:total>=3?'可用手機':'未達門檻'}</div></div>
+    <div class="stat-box">
+      <div class="stat-lbl">本週總分</div>
+      <div class="stat-val">${calc.base+calc.bonus+calc.study}</div>
+      <div class="stat-sub">基本${calc.base} ＋ 額外${calc.bonus} ＋ 複習${calc.study}</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-lbl">可用電腦時數</div>
+      <div class="stat-val">${calc.totalHours}h</div>
+      <div class="stat-sub">基本換算${calc.baseHours}h ＋ 獎勵${calc.extraHours}h</div>
+    </div>
   </div>
-  <span class="result-pill ${res.cls}">${res.lbl}</span>`;
+  <span class="result-pill ${basePillCls}">${basePillTxt}</span>`;
+
+  h+=`<div class="reward-box">
+    <div class="reward-title">電腦時數使用情況</div>
+    <div class="reward-hours-display">
+      <span class="reward-big">${calc.remaining}</span>
+      <span class="reward-unit">小時可用</span>
+    </div>
+    <div class="reward-breakdown">
+      基本換算 ${calc.baseHours}h　＋　額外加分 ${calc.bonus}h　＋　複習加分 ${calc.study}h<br>
+      共 ${calc.totalHours}h　　已使用 ${calc.used}h　　剩餘 ${calc.remaining}h
+    </div>
+    <div class="reward-actions">
+      <button class="r-btn r-btn-use" onclick="useHour('${wk}','${c.id}')" ${!canUse?'disabled':''}>使用 1 小時</button>
+      <button class="r-btn r-btn-ret" onclick="retHour('${wk}','${c.id}')">退回 1 小時</button>
+    </div>
+    <div class="reward-used-row">
+      <span class="reward-used-lbl">本週已使用</span>
+      <span class="reward-used-val">${calc.used} 小時</span>
+    </div>
+  </div>`;
 
   for(let i=0;i<5;i++){
     const d=dates[i];
@@ -282,7 +335,7 @@ function renderDt(wk,dates){
       const done=getT(wk,c.id,i,t.id);
       h+=`<div class="task-row${done?' ck':''}" onclick="togT('${wk}','${c.id}',${i},'${t.id}')"><div class="chk">${done?'✓':''}</div><span class="tn">${t.l}</span></div>`;
     });
-    h+=`</div><div class="sec-lbl" style="margin-top:8px"><span class="sec-icon ic-night">★</span>晚上任務${nd?' ✓':''}</div><div class="task-list">`;
+    h+=`</div><div class="sec-lbl" style="margin-top:4px"><span class="sec-icon ic-night">★</span>晚上任務${nd?' ✓':''}</div><div class="task-list">`;
     NTASKS.forEach(t=>{
       const done=getT(wk,c.id,i,t.id);
       h+=`<div class="task-row${done?' ck-night':''}" onclick="togT('${wk}','${c.id}',${i},'${t.id}')"><div class="chk">${done?'✓':''}</div><span class="tn">${t.l}</span></div>`;
@@ -290,28 +343,27 @@ function renderDt(wk,dates){
     h+=`</div></div>`;
   }
 
-  h+=`<div class="day-block">
-    <div class="bonus-sec">
-      <div class="sec-lbl">加分記錄</div>
-      <div class="bonus-row">
-        <span class="bl">額外表現加分</span>
-        <div class="bctrl">
-          <button class="bb" onclick="adjB('${wk}','${c.id}','bonus',-1)">−</button>
-          <span class="bv">${extra}</span>
-          <button class="bb" onclick="adjB('${wk}','${c.id}','bonus',1)">+</button>
-        </div>
+  h+=`<div class="bonus-block">
+    <div class="sec-lbl">加分記錄</div>
+    <div class="bonus-row">
+      <span class="bl">額外表現加分<span class="bl-sub">每 +1 分 = 1 小時電腦時間</span></span>
+      <div class="bctrl">
+        <button class="bb" onclick="adjB('${wk}','${c.id}','bonus',-1)">−</button>
+        <span class="bv">${calc.bonus}</span>
+        <button class="bb" onclick="adjB('${wk}','${c.id}','bonus',1)">+</button>
       </div>
-      <div class="bonus-row">
-        <span class="bl">複習進度加分</span>
-        <div class="bctrl">
-          <button class="bb" onclick="adjB('${wk}','${c.id}','study',-1)">−</button>
-          <span class="bv">${study}</span>
-          <button class="bb" onclick="adjB('${wk}','${c.id}','study',1)">+</button>
-        </div>
-      </div>
-      <div class="note-lbl">複習備註</div>
-      <textarea class="note-area" placeholder="例：今天複習數學30分鐘、背了10個單字…" oninput="saveNote('${wk}','${c.id}',this.value)"></textarea>
     </div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:.7rem 0">
+    <div class="bonus-row">
+      <span class="bl">複習進度加分<span class="bl-sub">每 +1 分 = 1 小時電腦時間</span></span>
+      <div class="bctrl">
+        <button class="bb" onclick="adjB('${wk}','${c.id}','study',-1)">−</button>
+        <span class="bv">${calc.study}</span>
+        <button class="bb" onclick="adjB('${wk}','${c.id}','study',1)">+</button>
+      </div>
+    </div>
+    <span class="note-lbl">複習備註</span>
+    <textarea class="note-area" placeholder="例：今天複習數學30分鐘、背了10個單字…" oninput="saveNote('${wk}','${c.id}',this.value)"></textarea>
   </div>`;
 
   p.innerHTML=h;
@@ -331,7 +383,6 @@ document.getElementById('prevWeek').addEventListener('click',()=>{wkOff--;render
 document.getElementById('nextWeek').addEventListener('click',()=>{wkOff++;render()});
 
 D=localLoad();
-setSyncBadge('ok');
 render();
 </script>
 </body>
