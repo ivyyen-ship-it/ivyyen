@@ -24,7 +24,7 @@
   --radius-md: 14px;
   --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
-  --over-100: #FACC15; /* 亮黃色 */
+  --over-100: #FACC15; 
 }
 
 * { 
@@ -76,7 +76,8 @@ body {
     display: flex; align-items: center; justify-content: center;
     font-size: 18px; font-weight: bold;
 }
-.nav-btn:hover { background: var(--text-dark); color: white; }
+.nav-btn:hover:not(:disabled) { background: var(--text-dark); color: white; }
+.nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 .week-label { font-size: 14px; font-weight: 800; padding: 0 10px; min-width: 100px; text-align: center; color: var(--text-dark); letter-spacing: -0.5px; }
 
@@ -104,7 +105,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* 佈局核心：手機版並排 */
+/* 佈局核心 */
 .person-row {
     display: flex;
     padding: 0 12px;
@@ -136,7 +137,6 @@ body {
     justify-content: center;
     gap: 6px;
     letter-spacing: 1px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 .ov-total { font-size: 32px; font-weight: 900; line-height: 1; margin-bottom: 4px; }
 .ov-total span { font-size: 12px; opacity: 0.8; }
@@ -188,13 +188,25 @@ body {
 .dash-label-bottom { font-size: 8px; font-weight: 800; color: var(--text-muted); text-align: center; line-height: 1; min-height: 20px; display: flex; flex-direction: column; align-items: center; }
 .dash-trophy { font-size: 10px; margin-top: 1px; }
 
-/* 獎勵紀錄調整 */
+/* 獎勵紀錄看板 */
 .bonus-history-container { padding: 0 12px 20px; }
 .bonus-tag {
     display: flex; align-items: center; padding: 10px 14px; border-radius: var(--radius-md); 
     margin-bottom: 8px; font-size: 12px; font-weight: 700; background: white; box-shadow: var(--shadow-sm);
 }
 .bonus-tag .name-badge { padding: 2px 8px; border-radius: 8px; color: white; font-size: 10px; margin-right: 8px; font-weight: 900; }
+
+/* Date Selector in Detail */
+.date-tabs {
+    display: flex; overflow-x: auto; gap: 8px; padding: 0 20px 15px;
+    scrollbar-width: none; -ms-overflow-style: none;
+}
+.date-tabs::-webkit-scrollbar { display: none; }
+.date-tab {
+    flex: 0 0 auto; padding: 10px 16px; border-radius: 12px; background: #E2E8F0;
+    color: var(--text-muted); font-weight: 900; font-size: 13px; border: none; cursor: pointer;
+}
+.date-tab.active { background: var(--text-dark); color: white; }
 
 /* 其他架構 */
 .child-selector { display: flex; padding: 0 20px 20px; gap: 10px; }
@@ -289,40 +301,39 @@ const DEFAULT_NTASKS = [
     {id:'bowl', l:'洗餐碗 🧼'}, {id:'brush', l:'20:30前刷牙 🪥'}, {id:'sleep', l:'21:00睡覺 🌙'}
 ];
 
-let wkOff = 0, aCh = 'a', D = {}, config = { dtasks: DEFAULT_DTASKS, ntasks: DEFAULT_NTASKS };
+let wkOff = 0, aCh = 'a', aDay = 0, D = {}, config = { dtasks: DEFAULT_DTASKS, ntasks: DEFAULT_NTASKS };
 
-function localSave(){ localStorage.setItem('kids_dashboard_rollback_v2_final', JSON.stringify({D, config})); }
+function localSave(){ localStorage.setItem('kids_dashboard_daily_v1', JSON.stringify({D, config})); }
 function localLoad(){ 
-    const saved = JSON.parse(localStorage.getItem('kids_dashboard_rollback_v2_final') || '{}');
+    const saved = JSON.parse(localStorage.getItem('kids_dashboard_daily_v1') || '{}');
     if(saved.D) D = saved.D;
     if(saved.config) config = saved.config;
+    const today = new Date().getDay();
+    aDay = (today === 0 ? 6 : today - 1);
 }
 
-function ensure(wk, cid){
+function ensure(wk, cid, di){
     if(!D[wk]) D[wk]={};
-    if(!D[wk][cid]) D[wk][cid]={days:{}, bonus:0, used:0, note:''};
+    if(!D[wk][cid]) D[wk][cid]={days:{}};
+    if(!D[wk][cid].days[di]) D[wk][cid].days[di]={tasks:{}, bonus:0, used:0, note:''};
 }
 
-function getT(wk, cid, di, tid){ return D?.[wk]?.[cid]?.days?.[di]?.[tid] === true; }
+function getT(wk, cid, di, tid){ return D?.[wk]?.[cid]?.days?.[di]?.tasks?.[tid] === true; }
 
 function togT(wk, cid, di, tid) {
     const cur = getT(wk, cid, di, tid);
-    ensure(wk, cid); 
-    if(!D[wk][cid].days[di]) D[wk][cid].days[di]={}; 
-    D[wk][cid].days[di][tid]=!cur; 
+    ensure(wk, cid, di); 
+    D[wk][cid].days[di].tasks[tid]=!cur; 
     localSave(); 
     render(); 
 }
 
-function getFullCompletion(wk, cid, di) {
-    ensure(wk, cid);
-    const dayData = D[wk][cid].days[di] || {};
-    const bonus = D[wk][cid].bonus || 0;
+function getDailyResult(wk, cid, di) {
+    ensure(wk, cid, di);
+    const day = D[wk][cid].days[di];
+    const dayData = day.tasks || {};
     
-    // 檢查該日是否有任何紀錄，若無紀錄則回傳 null (空白狀態)
-    const hasAnyData = Object.keys(dayData).some(tid => dayData[tid] === true);
-    if (!hasAnyData) return null;
-    
+    // 基礎分 (日任務全達成 50% + 夜任務全達成 50%)
     const dayDone = config.dtasks.length > 0 && config.dtasks.every(t => dayData[t.id] === true);
     const nightDone = config.ntasks.length > 0 && config.ntasks.every(t => dayData[t.id] === true);
     
@@ -330,34 +341,46 @@ function getFullCompletion(wk, cid, di) {
     if (dayDone) basePercent += 50;
     if (nightDone) basePercent += 50;
     
-    const bonusPercent = (bonus * 50); 
+    // 額外分數 (每一小時獎勵 + 50%)
+    const bonusPercent = (day.bonus * 50); 
     
-    return basePercent + bonusPercent;
-}
-
-function dayScore(wk, cid, di){
-    ensure(wk, cid);
-    const dayData = D[wk][cid].days[di] || {};
+    const totalPoints = (dayDone?1:0) + (nightDone?1:0); // 當天基礎 0~2 分
     const hasAnyData = Object.keys(dayData).some(tid => dayData[tid] === true);
-    if(!hasAnyData) return 0;
 
-    const d = config.dtasks.length > 0 && config.dtasks.every(t=>dayData[t.id]===true)?1:0;
-    const n = config.ntasks.length > 0 && config.ntasks.every(t=>dayData[t.id]===true)?1:0;
-    return d+n;
+    return {
+        percent: hasAnyData || day.bonus > 0 ? (basePercent + bonusPercent) : null,
+        baseScore: totalPoints,
+        bonus: day.bonus,
+        used: day.used,
+        rem: Math.max(0, (totalPoints >= 2 ? 0 : 0) + day.bonus - day.used), // 只有額外小時可兌換
+        // 修正逻辑：基本小時 = (baseScore >= 2 ? 1小時 : 0)
+        // 總時數 = 基本小時 + 額外小時
+        dailyTotalHours: (totalPoints >= 2 ? 1 : 0) + day.bonus,
+        note: day.note
+    };
 }
 
-function weekCalc(wk, cid){
-    ensure(wk, cid);
-    const c = D[wk][cid];
-    let base = 0;
-    for(let i=0; i<7; i++) base += dayScore(wk, cid, i);
-    const extra = (c.bonus||0);
-    const bh = base >= 3 ? Math.floor((base-3)/3) : 0;
-    const total = bh + extra;
-    return { 
-        base, bonus: extra, used: c.used||0, totalHours: total, 
-        remHours: Math.max(0, total - (c.used||0)),
-        rawTotalPoints: base + extra 
+function weekSummary(wk, cid){
+    let totalBaseScore = 0;
+    let totalBonusHours = 0;
+    let totalUsedHours = 0;
+    let totalAwardedHours = 0;
+
+    for(let i=0; i<7; i++) {
+        const res = getDailyResult(wk, cid, i);
+        totalBaseScore += res.baseScore;
+        totalBonusHours += res.bonus;
+        totalUsedHours += res.used;
+        totalAwardedHours += res.dailyTotalHours;
+    }
+
+    return {
+        base: totalBaseScore,
+        bonus: totalBonusHours,
+        totalHours: totalAwardedHours,
+        used: totalUsedHours,
+        remHours: Math.max(0, totalAwardedHours - totalUsedHours),
+        rawTotalPoints: totalBaseScore + totalBonusHours
     };
 }
 
@@ -366,7 +389,6 @@ function goView(v){
     document.getElementById('tab-dt').className = 'tab-btn' + (v==='dt'?' active':'');
     document.getElementById('ov-panel').style.display = v==='ov'?'':'none';
     document.getElementById('dt-panel').style.display = v==='dt'?'':'none';
-    if(v==='dt') window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 function openEditor(){
@@ -389,13 +411,13 @@ function renderOv(){
     const wk = getWkKey(wkOff);
     let h = '<div class="person-row">'; 
     CH.forEach(c => {
-        const res = weekCalc(wk, c.id);
+        const res = weekSummary(wk, c.id);
         h += `<div class="ov-card ${c.id==='a'?'hardy':'ted'}" onclick="pickChild('${c.id}')">
             <div class="ov-name">${c.icon} ${c.name}</div>
             <div class="ov-total">${res.rawTotalPoints}<span>分</span></div>
-            <div class="ov-formula">基本 ${res.base} 分 + 額外獎勵 ${res.bonus} 小時</div>
+            <div class="ov-formula">本週累計獎勵 ${res.totalHours} 小時</div>
             <div class="ov-rem-box">
-                <span class="ov-rem-label">獎勵 ${res.remHours} 小時</span>
+                <span class="ov-rem-label">獎勵餘額 ${res.remHours} 小時</span>
                 <span class="ov-rem-sub">累計 ${res.totalHours} / 已領 ${res.used}</span>
             </div>
         </div>`;
@@ -405,11 +427,12 @@ function renderOv(){
         h += `<div class="dashboard-section">
             <div class="dash-grid">`;
         for(let i=0; i<7; i++){
-            const pct = getFullCompletion(wk, c.id, i);
+            const res = getDailyResult(wk, c.id, i);
+            const pct = res.percent;
             const isOver = pct !== null && pct > 100;
             const displayPct = pct === null ? 0 : Math.min(100, pct);
             
-            h += `<div class="dash-col">
+            h += `<div class="dash-col" onclick="pickChild('${c.id}', ${i})">
                 <div class="dash-label-top">${DAYS[i]}</div>
                 <div class="dash-bar-track">
                     <div class="dash-bar-fill ${isOver ? 'over' : 'normal'}" style="height:${displayPct}%"></div>
@@ -426,19 +449,20 @@ function renderOv(){
 
     let bonusHistoryHtml = '';
     CH.forEach(c => {
-        ensure(wk, c.id);
-        const res = D[wk][c.id];
-        if (res.bonus > 0 || (res.note && res.note.trim() !== '')) {
-            bonusHistoryHtml += `
-            <div class="bonus-tag">
-                <span class="name-badge" style="background:${c.id==='a'?'var(--hardy-main)':'var(--ted-main)'}">${c.name}</span>
-                <span style="flex:1; color:var(--text-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${res.note || '表現優異'}</span>
-                <span style="font-weight:900; color:${c.id==='a'?'var(--hardy-main)':'var(--ted-main)'}">${res.bonus > 0 ? '+ ' + res.bonus + ' 小時' : ''}</span>
-            </div>`;
+        for(let i=0; i<7; i++) {
+            const res = getDailyResult(wk, c.id, i);
+            if (res.bonus > 0 || (res.note && res.note.trim() !== '')) {
+                bonusHistoryHtml += `
+                <div class="bonus-tag">
+                    <span class="name-badge" style="background:${c.id==='a'?'var(--hardy-main)':'var(--ted-main)'}">${c.name} (${DAYS[i]})</span>
+                    <span style="flex:1; color:var(--text-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${res.note || '表現優異'}</span>
+                    <span style="font-weight:900; color:${c.id==='a'?'var(--hardy-main)':'var(--ted-main)'}">${res.bonus > 0 ? '+ ' + res.bonus + ' 小時' : ''}</span>
+                </div>`;
+            }
         }
     });
     if (bonusHistoryHtml) {
-        h += `<div class="bonus-history-container"><div style="font-weight:900; font-size:14px; margin-bottom:10px; padding-left:5px">⭐ 獎勵紀錄</div>${bonusHistoryHtml}</div>`;
+        h += `<div class="bonus-history-container"><div style="font-weight:900; font-size:14px; margin-bottom:10px; padding-left:5px">⭐ 每日獎勵與備註</div>${bonusHistoryHtml}</div>`;
     }
     document.getElementById('ov-panel').innerHTML = h;
 }
@@ -446,58 +470,76 @@ function renderOv(){
 function renderDt(){
     const wk = getWkKey(wkOff);
     const c = CH.find(x=>x.id===aCh);
-    const res = weekCalc(wk, c.id);
+    const resSummary = weekSummary(wk, c.id);
+    const resDaily = getDailyResult(wk, c.id, aDay);
     const dates = getWkDates(wkOff);
+    const targetDate = dates[aDay];
     const todayStr = (new Date()).toISOString().split('T')[0];
+    
     let h = `<div class="child-selector">`;
-    CH.forEach(x => h += `<button class="child-btn ${aCh===x.id?'on-'+x.id:''}" onclick="pickChild('${x.id}')">${x.icon} ${x.name}</button>`);
+    CH.forEach(x => h += `<button class="child-btn ${aCh===x.id?'on-'+x.id:''}" onclick="pickChild('${x.id}', ${aDay})">${x.icon} ${x.name}</button>`);
     h += `</div>`;
+    
     h += `<div class="reward-banner">
         <div style="font-size:12px; opacity:0.8; margin-bottom:4px; font-weight:700">獎勵兌換餘額</div>
-        <div class="time-val">${res.remHours}<span style="font-size:16px; margin-left:5px; color:white; opacity:0.7">小時</span></div>
-        <div style="font-size:10px; opacity:0.6; margin-top:8px">累計 ${res.totalHours} / 已領 ${res.used}</div>
+        <div class="time-val">${resSummary.remHours}<span style="font-size:16px; margin-left:5px; color:white; opacity:0.7">小時</span></div>
+        <div style="font-size:10px; opacity:0.6; margin-top:8px">全週累計 ${resSummary.totalHours} / 全週已領 ${resSummary.used}</div>
     </div>`;
-    for(let i=0; i<7; i++){
+
+    // 日期分頁鈕
+    h += `<div class="date-tabs">`;
+    for(let i=0; i<7; i++) {
         const d = dates[i], ds = d.toISOString().split('T')[0];
-        if(ds > todayStr) continue; 
-        const comp = getFullCompletion(wk, c.id, i);
-        h += `<div class="day-group">
-            <div class="day-head">
-                <span>週${DAYS[i]} <small style="opacity:0.4; margin-left:5px">${d.getMonth()+1}/${d.getDate()}</small></span>
-                <span style="color:${(comp!==null && comp>=100)?'var(--accent-warm)':'var(--text-muted)'}; font-size:12px">${comp!==null ? comp+'%' : ''}</span>
-            </div>
-            
-            <div style="font-size:11px; font-weight:800; color:var(--text-muted); margin:15px 0 8px">☀️ 日間任務</div>
-            ${config.dtasks.map(t=>`<div class="task-item" onclick="togT('${wk}','${c.id}',${i},'${t.id}')"><div class="check-box" style="${getT(wk,c.id,i,t.id)?'background:var(--'+(aCh==='a'?'hardy':'ted')+'-main); border-color:transparent; color:white':''}">${getT(wk,c.id,i,t.id)?'✓':''}</div><span>${t.l}</span></div>`).join('')}
-            
-            <div class="night-block">
-                <div style="font-size:11px; font-weight:800; opacity:0.7; margin-bottom:12px; display:flex; align-items:center; gap:6px">🌙 夜間任務區</div>
-                ${config.ntasks.map(t=>`<div class="task-item" onclick="togT('${wk}','${c.id}',${i},'${t.id}')"><div class="check-box" style="${getT(wk,c.id,i,t.id)?'background:var(--'+(aCh==='a'?'hardy':'ted')+'-main); border-color:transparent; color:white':''}">${getT(wk,c.id,i,t.id)?'✓':''}</div><span style="color:white">${t.l}</span></div>`).join('')}
-            </div>
-        </div>`;
+        const isFuture = ds > todayStr;
+        h += `<button class="date-tab ${aDay===i?'active':''}" onclick="aDay=${i}; renderDt();" ${isFuture?'disabled':''}>週${DAYS[i]} ${d.getDate()}日</button>`;
     }
+    h += `</div>`;
+
+    // 當日內容
+    const ds = targetDate.toISOString().split('T')[0];
+    const comp = resDaily.percent;
+    
+    h += `<div class="day-group">
+        <div class="day-head">
+            <span>週${DAYS[aDay]} <small style="opacity:0.4; margin-left:5px">${targetDate.getMonth()+1}/${targetDate.getDate()}</small></span>
+            <span style="color:${(comp!==null && comp>=100)?'var(--accent-warm)':'var(--text-muted)'}; font-size:12px">${comp!==null ? comp+'%' : '無數據'}</span>
+        </div>
+        
+        <div style="font-size:11px; font-weight:800; color:var(--text-muted); margin:15px 0 8px">☀️ 日間任務</div>
+        ${config.dtasks.map(t=>`<div class="task-item" onclick="togT('${wk}','${c.id}',${aDay},'${t.id}')"><div class="check-box" style="${getT(wk,c.id,aDay,t.id)?'background:var(--'+(aCh==='a'?'hardy':'ted')+'-main); border-color:transparent; color:white':''}">${getT(wk,c.id,aDay,t.id)?'✓':''}</div><span>${t.l}</span></div>`).join('')}
+        
+        <div class="night-block">
+            <div style="font-size:11px; font-weight:800; opacity:0.7; margin-bottom:12px; display:flex; align-items:center; gap:6px">🌙 夜間任務區</div>
+            ${config.ntasks.map(t=>`<div class="task-item" onclick="togT('${wk}','${c.id}',${aDay},'${t.id}')"><div class="check-box" style="${getT(wk,c.id,aDay,t.id)?'background:var(--'+(aCh==='a'?'hardy':'ted')+'-main); border-color:transparent; color:white':''}">${getT(wk,c.id,aDay,t.id)?'✓':''}</div><span style="color:white">${t.l}</span></div>`).join('')}
+        </div>
+    </div>`;
+
+    // 當日獎勵與備註
     h += `<div class="action-card">
-        <div style="font-weight:900; margin-bottom:15px">⭐ 獎勵與備註</div>
+        <div style="font-weight:900; margin-bottom:15px">⭐ 週${DAYS[aDay]} 獎勵與備註</div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
             <span style="font-size:14px; font-weight:700">額外加分 (小時)</span>
             <div style="display:flex; align-items:center; gap:10px; background:#F1F5F9; padding:5px; border-radius:12px">
-                <button class="nav-btn" onclick="adjB('${wk}','${c.id}',-1)">-</button>
-                <span style="font-weight:900; width:20px; text-align:center">${D[wk]?.[c.id]?.bonus||0}</span>
-                <button class="nav-btn" onclick="adjB('${wk}','${c.id}',1)">+</button>
+                <button class="nav-btn" onclick="adjB('${wk}','${c.id}',${aDay},-1)">-</button>
+                <span style="font-weight:900; width:20px; text-align:center">${resDaily.bonus}</span>
+                <button class="nav-btn" onclick="adjB('${wk}','${c.id}',${aDay},1)">+</button>
             </div>
         </div>
-        <textarea style="width:100%; border:2px solid #F1F5F9; border-radius:12px; padding:12px; font-size:14px; min-height:70px" placeholder="寫點什麼...備註將顯示於數據看板下方" oninput="setNote('${wk}','${c.id}',this.value)">${D[wk]?.[c.id]?.note||''}</textarea>
-    </div>
-    <div class="action-card" style="background:#FFFBEB; border:1px solid #FDE68A">
+        <textarea style="width:100%; border:2px solid #F1F5F9; border-radius:12px; padding:12px; font-size:14px; min-height:70px" placeholder="該日的備註..." oninput="setNote('${wk}','${c.id}',${aDay},this.value)">${resDaily.note}</textarea>
+    </div>`;
+
+    // 當日已領時數
+    h += `<div class="action-card" style="background:#FFFBEB; border:1px solid #FDE68A">
         <div style="display:flex; justify-content:space-between; align-items:center">
-            <span style="font-weight:900; color:#92400E">已領時數</span>
+            <span style="font-weight:900; color:#92400E">週${DAYS[aDay]} 已領時數</span>
             <div style="display:flex; align-items:center; gap:10px; background:white; padding:5px; border-radius:12px">
-                <button class="nav-btn" onclick="doUse('${wk}','${c.id}',-1)">-</button>
-                <span style="font-weight:900; width:20px; text-align:center; color:#92400E">${D[wk]?.[c.id]?.used||0}</span>
-                <button class="nav-btn" onclick="doUse('${wk}','${c.id}',1)" ${res.remHours<=0?'disabled':''}>+</button>
+                <button class="nav-btn" onclick="doUse('${wk}','${c.id}',${aDay},-1)">-</button>
+                <span style="font-weight:900; width:20px; text-align:center; color:#92400E">${resDaily.used}</span>
+                <button class="nav-btn" onclick="doUse('${wk}','${c.id}',${aDay},1)" ${resSummary.remHours<=0?'disabled':''}>+</button>
             </div>
         </div>
     </div>`;
+
     document.getElementById('dt-panel').innerHTML = h;
 }
 
@@ -512,10 +554,15 @@ function getWkDates(off){
     return Array.from({length:7}, (_,i)=>{ const d=new Date(m); d.setDate(m.getDate()+i); return d; });
 }
 function adjWk(n){ wkOff += n; render(); }
-function pickChild(cid){ aCh = cid; goView('dt'); render(); }
-function adjB(wk,cid,v){ ensure(wk,cid); D[wk][cid].bonus = Math.max(0, (D[wk][cid].bonus||0)+v); localSave(); render(); }
-function doUse(wk,cid,v){ ensure(wk,cid); D[wk][cid].used = Math.max(0, (D[wk][cid].used||0)+v); localSave(); render(); }
-function setNote(wk,cid,v){ ensure(wk,cid); D[wk][cid].note = v; localSave(); renderOv(); }
+function pickChild(cid, di){ 
+    aCh = cid; 
+    if(di !== undefined) aDay = di;
+    goView('dt'); 
+    render(); 
+}
+function adjB(wk,cid,di,v){ ensure(wk,cid,di); D[wk][cid].days[di].bonus = Math.max(0, (D[wk][cid].days[di].bonus||0)+v); localSave(); render(); }
+function doUse(wk,cid,di,v){ ensure(wk,cid,di); D[wk][cid].days[di].used = Math.max(0, (D[wk][cid].days[di].used||0)+v); localSave(); render(); }
+function setNote(wk,cid,di,v){ ensure(wk,cid,di); D[wk][cid].days[di].note = v; localSave(); renderOv(); }
 
 function render(){
     const dates = getWkDates(wkOff);
