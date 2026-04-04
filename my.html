@@ -60,6 +60,13 @@
             position: relative;
             overflow: hidden;
             border-radius: 4px;
+            height: 100%;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .annotation {
@@ -180,8 +187,7 @@
             <div class="lg:col-span-7">
                 <div class="img-container">
                     <span class="fig-tag">GPT 數位助理</span>
-                    <!-- 圖片連結已更新 -->
-                    <img src="https://drive.google.com/thumbnail?id=1rwNlvTOxdXKycDY_4C1XRsL3l-S6dhf4&sz=w1000" alt="GPT 部門數位助理" class="w-full">
+                    <img src="https://drive.google.com/thumbnail?id=1rwNlvTOxdXKycDY_4C1XRsL3l-S6dhf4&sz=w1000" alt="GPT 部門數位助理">
                 </div>
             </div>
         </div>
@@ -191,7 +197,7 @@
             <div class="lg:col-span-7 order-2 lg:order-1">
                 <div class="img-container">
                     <span class="fig-tag">聲紋技術應用</span>
-                    <img src="https://drive.google.com/thumbnail?id=1rRox01vyH0XbGqhem70B4WPeOCd1BphA&sz=w1000" alt="逐字稿聲紋紀錄" class="w-full">
+                    <img src="https://drive.google.com/thumbnail?id=1rRox01vyH0XbGqhem70B4WPeOCd1BphA&sz=w1000" alt="逐字稿聲紋紀錄">
                 </div>
             </div>
             <div class="lg:col-span-5 order-1 lg:order-2 space-y-6">
@@ -217,11 +223,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="img-container">
                     <span class="fig-tag">質檢報告模組</span>
-                    <img src="https://drive.google.com/thumbnail?id=1sQtg2gDHV1w0SQ-LLQ3fsQKtVPpoH2bC&sz=w800" class="w-full">
+                    <img src="https://drive.google.com/thumbnail?id=1sQtg2gDHV1w0SQ-LLQ3fsQKtVPpoH2bC&sz=w800">
                 </div>
                 <div class="img-container">
-                    <span class="fig-tag">締結有效性分析</span>
-                    <img src="https://drive.google.com/thumbnail?id=19yye8InOyRhPeCcwdZcMo7UdXl8ECDkc&sz=w800" class="w-full">
+                    <span class="fig-tag">影片教材產出</span>
+                    <img src="https://drive.google.com/thumbnail?id=19yye8InOyRhPeCcwdZcMo7UdXl8ECDkc&sz=w800">
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center pt-8 border-t border-stone-50">
@@ -256,7 +262,7 @@
             <div class="lg:col-span-7">
                 <div class="img-container">
                     <span class="fig-tag">自動化介面展示</span>
-                    <img src="https://drive.google.com/thumbnail?id=17omhlj9mc5-2tIPwuDTt8R_qdhWvbGzk&sz=w1000" class="w-full">
+                    <img src="https://drive.google.com/thumbnail?id=17omhlj9mc5-2tIPwuDTt8R_qdhWvbGzk&sz=w1000">
                 </div>
             </div>
         </div>
@@ -274,126 +280,164 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="img-container">
-                    <img src="https://drive.google.com/thumbnail?id=1ijYyjahEjsmPPb48Z6XC-uqZWw3d9LnV&sz=w600" class="w-full">
+                    <img src="https://drive.google.com/thumbnail?id=1ijYyjahEjsmPPb48Z6XC-uqZWw3d9LnV&sz=w600">
                 </div>
                 <div class="img-container">
-                    <img src="https://drive.google.com/thumbnail?id=116zsv7BKPha6pwjs-IvI0FY1zWOh-gmN&sz=w600" class="w-full">
+                    <img src="https://drive.google.com/thumbnail?id=116zsv7BKPha6pwjs-IvI0FY1zWOh-gmN&sz=w600">
                 </div>
                 <div class="img-container">
-                    <img src="https://drive.google.com/thumbnail?id=1IHI5L65YKrH9pZxT_AMM8QSedi1N5eng&sz=w600" class="w-full">
-                </div>
-            </div>
-            <div class="bg-stone-800 text-stone-200 p-8 rounded-lg flex flex-wrap justify-between items-center gap-6">
-                <div class="flex-1 min-w-[200px]">
-                    <h4 class="text-xs tracking-widest uppercase text-stone-400 mb-2">成交率帶動</h4>
-                    <p class="text-lg serif italic">具象化優惠金額，將隱形價值轉化為直觀數字。</p>
-                </div>
-                <div class="flex-1 min-w-[200px]">
-                    <h4 class="text-xs tracking-widest uppercase text-stone-400 mb-2">部署架構</h4>
-                    <p class="text-lg serif italic">Gemini (Code) + GitHub 快速迭代開發。</p>
+                    <img src="https://drive.google.com/thumbnail?id=1IHI5L65YKrH9pZxT_AMM8QSedi1N5eng&sz=w600">
                 </div>
             </div>
         </div>
 
-        <!-- 06. 公司系統介面優化 -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-            <div class="lg:col-span-7 order-2 lg:order-1">
-                <div class="img-container">
-                    <span class="fig-tag">UI/UX 優化方案</span>
-                    <img src="https://drive.google.com/thumbnail?id=1ppcUeaOuF7rBewZXpt5OK_8cXNOyZ5KY&sz=w1000" class="w-full">
-                </div>
+        <!-- 07. 服務之星績效管理與激勵系統 (V1→V2) -->
+        <div class="space-y-16">
+            <div class="max-w-4xl mx-auto text-center space-y-4">
+                <span class="tech-label">07. 績效管理與激勵系統 (V1→V2 數位演進)</span>
+                <h2 class="text-4xl serif">服務之星：從自動化到深度行為洞察</h2>
+                <p class="text-gray-600 font-light">將碎片化的考核數據轉化為「可視化績效中樞」，實現數據驅動的 1-on-1 輔導。</p>
             </div>
-            <div class="lg:col-span-5 order-1 lg:order-2 space-y-6">
-                <span class="tech-label">06. 產品對接能力</span>
-                <h2 class="text-3xl serif">系統介面優化：100% 需求對齊</h2>
-                <div class="space-y-4 text-gray-600 font-light leading-relaxed">
-                    <p><strong>核心目標：</strong> 作為業務與研發端的溝通橋樑，確保開發內容完全符合第一線實務作業流程。</p>
-                    <p><strong>解決痛點：</strong> 透過 UI 重塑實現「單一視角工作流」，減少跨系統切換，並從源頭串接公關優惠與自動流程，杜絕人為漏單。</p>
-                </div>
-                <div class="annotation">
-                    <strong>具體效益：</strong> 效率提升 30%，達成客訴預防率 100%，消除業務端與 RD 端之間的認知落差。
-                </div>
-            </div>
-        </div>
 
-        <!-- 07. 服務之星 V2 -->
-        <div class="space-y-12">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-                <div class="lg:col-span-4 space-y-6">
-                    <span class="tech-label">07. 管理自動化</span>
-                    <h2 class="text-3xl serif">服務之星：自動化行為洞察</h2>
-                    <p class="text-gray-600 font-light leading-relaxed">
-                        這不只是獎項制度，更是透過 App Script 與數據可視化，將枯燥的績效轉化為「年度趨勢圖」與「個人雷達圖」的管理中樞。
-                    </p>
-                    <div class="space-y-3">
-                        <div class="flex items-center text-xs text-stone-500">
-                            <span class="w-2 h-2 bg-stone-400 rounded-full mr-3"></span>
-                            行為矯正：自動偵測正確率低點進行即時提醒。
-                        </div>
-                        <div class="flex items-center text-xs text-stone-500">
-                            <span class="w-2 h-2 bg-stone-400 rounded-full mr-3"></span>
-                            榮譽機制：名人堂數位牆激發團隊正面競爭。
-                        </div>
-                        <div class="flex items-center text-xs text-stone-500">
-                            <span class="w-2 h-2 bg-stone-400 rounded-full mr-3"></span>
-                            高效反饋：每日自動推播成效至 Line Notify。
-                        </div>
+            <!-- V1 內容 -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                <div class="lg:col-span-7">
+                    <div class="img-container">
+                        <span class="fig-tag">V1 流程自動化</span>
+                        <img src="https://drive.google.com/thumbnail?id=1l0VAQPUGqkOMQtN2cGqF1K7BdKr62zzX&sz=w1000">
                     </div>
                 </div>
-                <div class="lg:col-span-8 space-y-4">
-                    <div class="img-container mb-4">
-                        <img src="https://drive.google.com/thumbnail?id=1BUXfWSacOM0goIR7bwAppYAmrhWoxns2&sz=w1000" class="w-full">
+                <div class="lg:col-span-5 space-y-6">
+                    <h3 class="text-2xl serif text-stone-700 underline decoration-oak underline-offset-8">V1：流程自動化基礎</h3>
+                    <div class="space-y-4 text-gray-600 font-light leading-relaxed">
+                        <p>透過 <strong>Apps Script</strong> 解決跨組別數據整合痛點，實現考核結果「一鍵分發」，解決原本繁瑣的手動作業，確保反饋即時性。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- V2 內容 -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+                <div class="lg:col-span-5 space-y-6">
+                    <h3 class="text-2xl serif text-stone-700 underline decoration-oak underline-offset-8">V2：數據可視化轉型</h3>
+                    <div class="space-y-4 text-gray-600 font-light leading-relaxed">
+                        <p>運用 <strong>Gemini 協作開發與 GitHub 部署</strong>，將冰冷數字轉化為年度趨勢圖、個人總分年度趨勢圖、個人各考核項目年度趨勢圖。管理者可一眼識別同仁成長曲線或衰退預警。</p>
+                        <ul class="space-y-2 text-xs">
+                            <li class="flex items-start"><span class="text-oak mr-2">◆</span> <strong>精準輔導：</strong> 面談前即掌握半年表現波動，告別憑感覺管理。</li>
+                            <li class="flex items-start"><span class="text-oak mr-2">◆</span> <strong>榮譽機制：</strong> 名人堂模組提升競爭意識與歸屬感。</li>
+                        </ul>
+                    </div>
+                    <div class="annotation">
+                        <strong>過度優勢：</strong> 成功將單純的「行政考核」升級為「正面激勵機制」，顯著提升團隊績效穩定度。
+                    </div>
+                </div>
+                <div class="lg:col-span-7 space-y-4">
+                    <div class="img-container">
+                        <span class="fig-tag">V2 年度趨勢看板</span>
+                        <img src="https://drive.google.com/thumbnail?id=1BUXfWSacOM0goIR7bwAppYAmrhWoxns2&sz=w1000">
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="img-container">
-                            <img src="https://drive.google.com/thumbnail?id=11R4dp09T21DjCb1FPsA_CKgCmJoLqRvn&sz=w600" class="w-full">
+                            <img src="https://drive.google.com/thumbnail?id=1x6_UHASPqPSZr6DdUnXqgt3XGIwUBOAz&sz=w600">
                         </div>
                         <div class="img-container">
-                            <img src="https://drive.google.com/thumbnail?id=1RkXTCk_Kk16zjy5ts9Mr0U2ZZf8-ld4h&sz=w600" class="w-full">
+                            <img src="https://drive.google.com/thumbnail?id=1VahGs9eU6iZF7bGxP_sdE0fXzitl5-R0&sz=w600">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 08. 部門高效搜尋系統 -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-            <div class="lg:col-span-5 space-y-6">
-                <span class="tech-label">08. 知識管理系統</span>
-                <h2 class="text-3xl serif">部門高效搜尋系統</h2>
-                <div class="space-y-4 text-gray-600 font-light leading-relaxed">
-                    <p><strong>作用：</strong> 整合超過 145+ 組異質資料庫，將跨部門、跨資料夾的繁瑣搜尋行為，優化為秒級反應的極速檢索。</p>
-                    <p><strong>能力核心：</strong> 數據架構優化。自 2026/03 上線以來，使用覆蓋率達 100%，顯示系統設計完美貼合同仁每日作業需求。</p>
+        <!-- 09. Webhook 監控中樞 -->
+        <div class="space-y-16">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center p-12 bg-white rounded-xl border border-stone-100 shadow-sm">
+                <div class="lg:col-span-7">
+                    <div class="img-container">
+                        <span class="fig-tag">Webhook 即時通報</span>
+                        <img src="https://drive.google.com/thumbnail?id=1bZVNMcZilKupeqt3zZXeeqQIuGvoWs5k&sz=w1000" alt="Webhook 監控">
+                    </div>
                 </div>
-                <div class="annotation">
-                    <strong>具體效益：</strong> 顯著降低非生產性作業時間，讓管理者能即時掌握數位工具的滲透率與使用趨勢。
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="tech-label">09. 即時應對中樞</span>
+                    <h2 class="text-3xl serif">Webhook 即時監控中樞</h2>
+                    <div class="space-y-4 text-gray-600 font-light leading-relaxed">
+                        <p><strong>作用：</strong> 串接 Google Forms、Webhook 與 Chat API，實現黃金時間的即時響應。</p>
+                        <p><strong>關鍵能力：</strong> 精準分流自動化。客戶一填表立即跳出通知，讓業務或客服能在黃金 5 分鐘內介入。</p>
+                    </div>
+                    <div class="annotation">
+                        <strong>具體效益：</strong> 打破被動檢查模式，實現「秒級介入」，提升成交轉化率並降低人工檢查成本。
+                    </div>
                 </div>
             </div>
-            <div class="lg:col-span-7">
-                <div class="img-container">
-                    <span class="fig-tag">145+ 資料庫集成</span>
-                    <img src="https://drive.google.com/thumbnail?id=1aq5nYDpEmXOpC6P6p5n_EiLy-k0JSSwS&sz=w1000" alt="部門搜尋系統" class="w-full">
+
+            <div class="bg-stone-800 text-stone-100 p-12 rounded-xl">
+                <div class="max-w-4xl mx-auto space-y-8">
+                    <div class="text-center space-y-4">
+                        <span class="tech-label" style="color: #D7C4B1;">進階應用</span>
+                        <h2 class="text-3xl serif">業助雙網工項三大指標自動計算通知</h2>
+                        <p class="text-stone-400 font-light">核心技術：Webhook 即時數據串接 + Google 試算表邏輯引擎 + 可視化儀表板</p>
+                    </div>
+                    
+                    <div class="max-w-2xl mx-auto">
+                        <div class="img-container">
+                            <span class="fig-tag" style="background: rgba(215, 196, 177, 0.8); color: #3E2723;">指標自動化看板</span>
+                            <img src="https://drive.google.com/thumbnail?id=1voVSsvRTORGx4tJvk0st4PKB5wlY9y52&sz=w1000">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 text-center md:text-left">
+                        <div class="space-y-3">
+                            <h4 class="serif text-oak text-lg">管理透明化</h4>
+                            <p class="text-xs leading-relaxed text-stone-400">解決傳統業助作業「黑盒化」問題。透過 Webhook 即時同步進度，管理人員無需詢問即可掌握當下作業量與完工狀態。</p>
+                        </div>
+                        <div class="space-y-3">
+                            <h4 class="serif text-oak text-lg">風險預警機制</h4>
+                            <p class="text-xs leading-relaxed text-stone-400">針對「業務取消率」與「提前派工率」建立監控指標，即時發現前端銷售與後端派案的「脫節」狀況。</p>
+                        </div>
+                        <div class="space-y-3">
+                            <h4 class="serif text-oak text-lg">數據驅動調度</h4>
+                            <p class="text-xs leading-relaxed text-stone-400">量化助理工作負荷，作為人力增減或工項調整的客觀依據，實現資源調度的靈活性。</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- 09. Webhook 即時監控中樞 -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center p-12 bg-white rounded-xl border border-stone-100">
-            <div class="lg:col-span-7">
-                <div class="img-container">
-                    <span class="fig-tag">Webhook 即時通報</span>
-                    <img src="https://drive.google.com/thumbnail?id=1voVSsvRTORGx4tJvk0st4PKB5wlY9y52&sz=w1000" alt="Webhook 監控" class="w-full">
+        <!-- 10. 寶貝獎勵看板 -->
+        <div class="space-y-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="tech-label">10. 最新作品 | 家庭教育數位工具</span>
+                    <h2 class="text-3xl serif">寶貝獎勵看板 (Baby Reward Board)</h2>
+                    <div class="space-y-4 text-gray-600 font-light leading-relaxed">
+                        <p><strong>初衷：</strong> 將建立生活規律的痛點轉化為有趣的「升級遊戲」。解決紙本勾選表易遺失且缺乏數據統計的問題。</p>
+                        <p><strong>核心價值：</strong> 結合數據追蹤與正向激勵。支援動態任務配置與多成員管理，落實「延遲滿足」與「資產管理」概念。</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="capability-tag">Single-File JS</span>
+                        <span class="capability-tag">LocalStorage 離線儲存</span>
+                        <span class="capability-tag">Mobile-First UI</span>
+                    </div>
+                    <div class="annotation">
+                        <strong>具體效益：</strong> 透過數據視覺化建立孩子成就感，將「被動執行」轉向「主動爭取分數」，大幅降低管理摩擦。
+                    </div>
                 </div>
-            </div>
-            <div class="lg:col-span-5 space-y-6">
-                <span class="tech-label">09. 即時應對中樞</span>
-                <h2 class="text-3xl serif">Webhook 即時監控中樞</h2>
-                <div class="space-y-4 text-gray-600 font-light leading-relaxed">
-                    <p><strong>作用：</strong> 串接 Google Forms、Webhook 與 Chat API，實現黃金時間的即時響應 (Speed-to-Lead)。</p>
-                    <p><strong>關鍵能力：</strong> 精準分流自動化。根據表單內容自動決定通知哪個 Chat 群組，確保資訊無時差傳達。</p>
-                </div>
-                <div class="annotation">
-                    <strong>具體效益：</strong> 打破被動檢查模式，實現「秒級介入」，極大化成交轉化率並有效降低人工檢查成本。
+                <div class="lg:col-span-7 space-y-4">
+                    <p class="text-xs text-stone-400 tracking-widest uppercase italic">系統介面與功能展示</p>
+                    <!-- 四張圖並列且一樣大小 -->
+                    <div class="grid grid-cols-4 gap-4 aspect-[16/10]">
+                        <div class="img-container">
+                            <img src="https://drive.google.com/thumbnail?id=1VjvJAx5iXJbacML6R7m739_CTwNN71jG&sz=w600">
+                        </div>
+                        <div class="img-container">
+                            <img src="https://drive.google.com/thumbnail?id=1sjjTtw2M_7Y5HMCDXrJI3KWVt5hvl9Pv&sz=w600">
+                        </div>
+                        <div class="img-container">
+                            <img src="https://drive.google.com/thumbnail?id=18QkgnavnDU2UhQ2JX0hOeT8MnxlXeqIq&sz=w600">
+                        </div>
+                        <div class="img-container">
+                            <img src="https://drive.google.com/thumbnail?id=1uvF8vLNoeILJi-weTlSe1hduc6PqqTSJ&sz=w600">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
