@@ -2,365 +2,407 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ivy Yen | AI 戰略與數位轉型實戰作品集</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ivy Yen | AI 戰略與營運轉型專家</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700;900&display=swap');
-        
         :root {
-            --wood-dark: #2c241e;
-            --sand-light: #f4f1ee;
-            --earth-taupe: #8e8271;
-            --accent-gold: #b59a7d;
+            --walnut: #3E2723;
+            --oak: #D7C4B1;
+            --sand: #F9F7F4;
+            --ivory: #F5F5F5;
+            --charcoal: #2C2C2C;
         }
 
-        body { 
-            font-family: 'Noto Serif TC', serif; 
-            background-color: var(--sand-light);
-            color: var(--wood-dark);
+        body {
+            background-color: var(--sand);
+            color: var(--charcoal);
+            font-family: 'Noto Sans TC', sans-serif;
             scroll-behavior: smooth;
-            overflow-x: hidden;
         }
 
-        .font-black-plus { font-weight: 900; }
-        .font-bold-plus { font-weight: 700; }
-        
-        .nav-scrolled {
-            background: rgba(252, 250, 247, 0.95);
+        h1, h2, h3, .serif { font-family: 'Noto Serif TC', serif; }
+
+        .glass-nav {
             backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(44, 36, 30, 0.1);
-            box-shadow: 0 4px 25px rgba(0,0,0,0.06);
-            color: var(--wood-dark) !important;
+            background: rgba(249, 247, 244, 0.85);
+            border-bottom: 1px solid rgba(62, 39, 35, 0.05);
         }
-
-        nav { transition: all 0.4s ease; }
 
         .hero-section {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
-                        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
-            background-position: center;
-            height: 60vh;
-            min-height: 450px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            position: relative;
+            background: linear-gradient(180deg, #F5F2EE 0%, #E8E2DB 100%);
+            min-height: 65vh;
+            padding-bottom: 4rem;
         }
 
-        .card-elegant {
-            background: #fff;
-            border: 1px solid #e5e1da;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            height: 100%;
+        .case-card {
+            background: white;
+            border: 1px solid rgba(215, 196, 177, 0.3);
+            transition: all 0.5s ease;
         }
 
-        .card-elegant:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(44, 36, 30, 0.1);
-        }
-
-        .wave-bar {
-            width: 4px;
-            height: 20px;
-            background: var(--accent-gold);
-            display: inline-block;
-            margin: 0 2px;
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-
-        @keyframes pulse {
-            0%, 100% { height: 12px; }
-            50% { height: 35px; }
-        }
-
-        .tag-pill {
-            font-size: 10px;
+        .tech-label {
+            color: var(--oak);
+            font-size: 0.8rem;
             font-weight: 700;
-            border: 1px solid #d1ccc5;
-            padding: 2px 8px;
-            border-radius: 2px;
-            color: var(--earth-taupe);
-            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 0.5rem;
         }
 
-        /* 逐字稿容器 */
-        .transcript-container {
-            font-family: 'Courier New', Courier, monospace;
-            background: #fdfdfd;
+        .img-container {
+            border: 1px solid #E8E2DB;
+            background: #fff;
+            padding: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
             border-radius: 4px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
         }
 
-        @media (max-width: 640px) {
-            .hero-section { height: 50vh; min-height: 380px; }
-            h1 { font-size: 2rem !important; }
+        .annotation {
+            border-left: 3px solid var(--oak);
+            padding-left: 1rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #5D5751;
         }
+
+        .kpi-number {
+            font-size: 3rem;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            color: var(--walnut);
+        }
+
+        .fig-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(62, 39, 35, 0.7);
+            color: white;
+            padding: 2px 10px;
+            font-size: 9px;
+            letter-spacing: 1px;
+            border-radius: 12px;
+            z-index: 10;
+        }
+
+        .capability-tag {
+            background: #E8E2DB;
+            color: #3E2723;
+            padding: 2px 8px;
+            font-size: 11px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-bottom: 3px solid var(--oak);
+            transition: transform 0.3s ease;
+        }
+        .dashboard-card:hover { transform: translateY(-5px); }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- 導航列 -->
-    <nav id="mainNav" class="fixed w-full z-50 px-4 md:px-16 py-4 md:py-5 flex justify-between items-center text-white transition-all">
-        <div class="text-lg md:text-xl font-black-plus tracking-wider">Ivy Yen</div>
-        <div class="flex space-x-4 md:space-x-10 text-[12px] md:text-sm font-bold-plus">
-            <a href="#vision" class="hover:opacity-60 transition">核心影響力</a>
-            <a href="#voice" class="hover:opacity-60 transition">語音鑑識</a>
-            <a href="#systems" class="hover:opacity-60 transition">實戰系統集</a>
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav px-8 py-4 flex justify-between items-center">
+        <div class="text-xl font-bold tracking-widest serif uppercase text-stone-800">Ivy Yen</div>
+        <div class="hidden md:flex space-x-12 text-[11px] tracking-[0.3em] font-medium uppercase">
+            <a href="#vision" class="hover:text-stone-500 transition">核心價值</a>
+            <a href="#portfolio" class="hover:text-stone-500 transition">全作品展示</a>
         </div>
     </nav>
 
-    <!-- 主視覺區 -->
-    <header class="hero-section">
-        <div class="text-center px-4 max-w-4xl mx-auto">
-            <h1 class="text-4xl md:text-6xl font-black-plus mb-6 tracking-tight">AI 戰略與數位轉型實戰</h1>
-            <p class="text-sm md:text-xl font-bold-plus opacity-90 tracking-[0.3em] uppercase">Ivy Yen | AI Strategy & Transformation</p>
-        </div>
-        <div class="absolute bottom-8 flex flex-col items-center">
-            <i class="fas fa-chevron-down text-sm animate-bounce opacity-70"></i>
+    <!-- Hero -->
+    <header id="vision" class="hero-section flex items-center justify-center pt-32 px-8 text-center">
+        <div class="max-w-4xl">
+            <span class="text-[10px] tracking-[0.5em] text-stone-400 mb-6 block uppercase">AI Operations & Strategy Portfolio</span>
+            <h1 class="text-4xl md:text-6xl font-light leading-tight mb-8">
+                精準對接業務與開發端<br><span class="italic serif text-stone-500 text-3xl md:text-5xl">數據驅動轉型，產出 100% 實務系統</span>
+            </h1>
+            
+            <!-- Dashboard Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 mb-8">
+                <div class="dashboard-card p-6 rounded-lg shadow-sm">
+                    <div class="text-xs text-stone-400 tracking-widest mb-2 uppercase">行政諮詢降幅</div>
+                    <div class="kpi-number serif">-70%</div>
+                    <div class="text-[10px] text-stone-500">主管與行政負擔顯著釋放</div>
+                </div>
+                <div class="dashboard-card p-6 rounded-lg shadow-sm">
+                    <div class="text-xs text-stone-400 tracking-widest mb-2 uppercase">成交轉化提升</div>
+                    <div class="kpi-number serif">+15%</div>
+                    <div class="text-[10px] text-stone-500">AI 質檢與試算工具帶動</div>
+                </div>
+                <div class="dashboard-card p-6 rounded-lg shadow-sm">
+                    <div class="text-xs text-stone-400 tracking-widest mb-2 uppercase">作業正確率</div>
+                    <div class="kpi-number serif">100%</div>
+                    <div class="text-[10px] text-stone-500">消除人為記憶誤差</div>
+                </div>
+                <div class="dashboard-card p-6 rounded-lg shadow-sm">
+                    <div class="text-xs text-stone-400 tracking-widest mb-2 uppercase">資源周轉率</div>
+                    <div class="kpi-number serif">+15%</div>
+                    <div class="text-[10px] text-stone-500">自動化監控與即時響應</div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4 mt-8">
+                <span class="capability-tag">AI 知識庫集成</span>
+                <span class="capability-tag">作業自動化轉型</span>
+                <span class="capability-tag">UI/UX 實務優化</span>
+                <span class="capability-tag">數據洞察決策</span>
+            </div>
         </div>
     </header>
 
-    <!-- 核心數據指標 -->
-    <section id="vision" class="py-16 md:py-24 px-6 max-w-6xl mx-auto text-center">
-        <h2 class="text-[10px] md:text-xs font-bold-plus uppercase tracking-[0.4em] text-stone-400 mb-12">核心影響力指標</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-            <div class="group">
-                <div class="text-4xl md:text-5xl font-black-plus mb-3 text-[#4a443e] group-hover:text-accent-gold transition-colors">30%</div>
-                <p class="text-sm md:text-base font-bold-plus tracking-widest text-stone-500">營運流程效率提升</p>
+    <!-- Main Portfolio -->
+    <main id="portfolio" class="max-w-7xl mx-auto px-8 py-32 space-y-48">
+
+        <!-- 01. GPT 部門數位助理 X2 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            <div class="lg:col-span-5 space-y-6">
+                <span class="tech-label">01. 核心 AI 應用</span>
+                <h2 class="text-3xl serif">GPT 部門數位助理 X2</h2>
+                <div class="space-y-4 text-gray-600 font-light leading-relaxed">
+                    <p><strong>作用：</strong> 成功整合電銷與業務部異質領域（網路、Hami Video、LiTV、家電清洗）的產品知識、流程與話稿。</p>
+                    <p><strong>核心能力：</strong> 知識集成化與決策去中心化。打破傳統對主管的諮詢依賴，實現 24/7 即時導師機制。</p>
+                </div>
+                <div class="annotation">
+                    <strong>具體效益：</strong> 降低主管 70% 行政諮詢負擔，成交率預期提升 15%，確保一線人員資訊正確率達 100%。
+                </div>
             </div>
-            <div class="group">
-                <div class="text-4xl md:text-5xl font-black-plus mb-3 text-[#4a443e] group-hover:text-accent-gold transition-colors">145+</div>
-                <p class="text-sm md:text-base font-bold-plus tracking-widest text-stone-500">整合部門資料庫來源</p>
-            </div>
-            <div class="group">
-                <div class="text-4xl md:text-5xl font-black-plus mb-3 text-[#4a443e] group-hover:text-accent-gold transition-colors">即時化</div>
-                <p class="text-sm md:text-base font-bold-plus tracking-widest text-stone-500">自動化回饋與質檢</p>
+            <div class="lg:col-span-7">
+                <div class="img-container">
+                    <span class="fig-tag">GPT 數位助理</span>
+                    <!-- 圖片連結已更新 -->
+                    <img src="https://drive.google.com/thumbnail?id=1rwNlvTOxdXKycDY_4C1XRsL3l-S6dhf4&sz=w1000" alt="GPT 部門數位助理" class="w-full">
+                </div>
             </div>
         </div>
-    </section>
 
-    <!-- 語音鑑識專案 -->
-    <section id="voice" class="py-16 md:py-24 bg-[#ebe7e1]">
-        <div class="max-w-7xl mx-auto px-6 md:px-12">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-                <div class="lg:col-span-5 lg:sticky lg:top-24">
-                    <span class="inline-block bg-[#b59a7d] text-white px-3 py-1 text-[9px] font-bold-plus tracking-widest mb-6 uppercase">Featured Project</span>
-                    <h3 class="text-3xl md:text-4xl font-black-plus mb-6 text-[#2c241e]">逐字稿聲紋紀錄工具</h3>
-                    
-                    <div class="space-y-6 md:space-y-10 text-stone-700">
-                        <div class="p-5 md:p-6 bg-white shadow-sm border-l-4 border-stone-800">
-                            <h4 class="text-base md:text-lg font-black-plus text-stone-800 mb-2">【語音轉錄逐字稿】</h4>
-                            <p class="text-sm md:text-base font-bold-plus leading-relaxed text-stone-600">
-                                將 AI 轉譯提升至「司法聲學鑑識」規格。不只是記錄對話，更能精準識別角色聲線特性、語速與情緒防衛感，為培訓與精準客訴處理提供科學依據。
-                            </p>
+        <!-- 02. 逐字稿聲紋紀錄工具 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            <div class="lg:col-span-7 order-2 lg:order-1">
+                <div class="img-container">
+                    <span class="fig-tag">聲紋技術應用</span>
+                    <img src="https://drive.google.com/thumbnail?id=1rRox01vyH0XbGqhem70B4WPeOCd1BphA&sz=w1000" alt="逐字稿聲紋紀錄" class="w-full">
+                </div>
+            </div>
+            <div class="lg:col-span-5 order-1 lg:order-2 space-y-6">
+                <span class="tech-label">02. 智能數據轉譯</span>
+                <h2 class="text-3xl serif">逐字稿聲紋紀錄工具</h2>
+                <div class="space-y-4 text-gray-600 font-light leading-relaxed">
+                    <p><strong>作用：</strong> 導入 Google AI Studio 技術，將音檔轉化為包含情緒、聲紋分析的結構化文字。</p>
+                    <p><strong>核心能力：</strong> 深層情緒解析。精準捕捉訊號不穩、語氣遲疑等情緒特徵，讓主管無需聽取全文即可判斷客戶猶疑點。</p>
+                </div>
+                <div class="annotation">
+                    <strong>具體效益：</strong> 作為 AI 質檢的第一步，顯著縮短主管側聽時間，提升客戶輪廓標籤（Tagging）精準度。
+                </div>
+            </div>
+        </div>
+
+        <!-- 03. AI 音檔質檢與閉環培訓 -->
+        <div class="space-y-12 bg-white p-12 rounded-xl shadow-sm border border-stone-100">
+            <div class="max-w-3xl mx-auto text-center space-y-4">
+                <span class="tech-label">03. 閉環培訓系統</span>
+                <h2 class="text-4xl serif">AI 音檔質檢與教材產出</h2>
+                <p class="text-gray-600 font-light">整合 NotebookLM 實現從「數據獲取」到「資源沈澱」的自動化培訓閉環。</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="img-container">
+                    <span class="fig-tag">質檢報告模組</span>
+                    <img src="https://drive.google.com/thumbnail?id=1sQtg2gDHV1w0SQ-LLQ3fsQKtVPpoH2bC&sz=w800" class="w-full">
+                </div>
+                <div class="img-container">
+                    <span class="fig-tag">締結有效性分析</span>
+                    <img src="https://drive.google.com/thumbnail?id=19yye8InOyRhPeCcwdZcMo7UdXl8ECDkc&sz=w800" class="w-full">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center pt-8 border-t border-stone-50">
+                <div>
+                    <h4 class="font-bold text-stone-800 mb-2 italic serif">智能質檢</h4>
+                    <p class="text-xs text-stone-500 font-light leading-relaxed">自動產生情緒、語意、溝通評分表，並給予深度優缺點評述與話稿建議。</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-stone-800 mb-2 italic serif">教材自動化</h4>
+                    <p class="text-xs text-stone-500 font-light leading-relaxed">匯出質檢結果後自動轉化為短影片教材，實現秒級資源生產。</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-stone-800 mb-2 italic serif">數據化增長</h4>
+                    <p class="text-xs text-stone-500 font-light leading-relaxed">偵測締結有效性，為主管提供精準的 1-on-1 輔導戰略方向。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 04. 雙網客戶工項自動化介面 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            <div class="lg:col-span-5 space-y-6">
+                <span class="tech-label">04. 作業流程重塑</span>
+                <h2 class="text-3xl serif">雙網客戶工項自動化介面</h2>
+                <div class="space-y-4 text-gray-600 font-light leading-relaxed">
+                    <p><strong>作用：</strong> 整合 Gemini 邏輯判斷與 GitHub 部署，針對 142,800 種合約組合進行程式化運算，自動產出工項清單。</p>
+                    <p><strong>核心能力：</strong> 複雜變數工程化。破解原電信、資費、月份、派送等五大核心變數的連動關係。</p>
+                </div>
+                <div class="annotation">
+                    <strong>具體效益：</strong> 取代傳統人為查表誤差，實現 0 誤差的違約金補償計算，讓門號業務只需「拉選情境」即可完成規格化輸出。
+                </div>
+            </div>
+            <div class="lg:col-span-7">
+                <div class="img-container">
+                    <span class="fig-tag">自動化介面展示</span>
+                    <img src="https://drive.google.com/thumbnail?id=17omhlj9mc5-2tIPwuDTt8R_qdhWvbGzk&sz=w1000" class="w-full">
+                </div>
+            </div>
+        </div>
+
+        <!-- 05. 雙版本優惠試算機 -->
+        <div class="space-y-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div class="space-y-2">
+                    <span class="tech-label">05. 客戶端轉換策略</span>
+                    <h2 class="text-3xl serif">雙版本優惠試算機</h2>
+                </div>
+                <p class="text-gray-600 font-light text-sm max-w-xl">
+                    針對不同客群開發兩種版本的 UI 試算工具，讓客戶在選取個人情境後，立即獲得個人化優惠結果，大幅縮短考慮期。
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="img-container">
+                    <img src="https://drive.google.com/thumbnail?id=1ijYyjahEjsmPPb48Z6XC-uqZWw3d9LnV&sz=w600" class="w-full">
+                </div>
+                <div class="img-container">
+                    <img src="https://drive.google.com/thumbnail?id=116zsv7BKPha6pwjs-IvI0FY1zWOh-gmN&sz=w600" class="w-full">
+                </div>
+                <div class="img-container">
+                    <img src="https://drive.google.com/thumbnail?id=1IHI5L65YKrH9pZxT_AMM8QSedi1N5eng&sz=w600" class="w-full">
+                </div>
+            </div>
+            <div class="bg-stone-800 text-stone-200 p-8 rounded-lg flex flex-wrap justify-between items-center gap-6">
+                <div class="flex-1 min-w-[200px]">
+                    <h4 class="text-xs tracking-widest uppercase text-stone-400 mb-2">成交率帶動</h4>
+                    <p class="text-lg serif italic">具象化優惠金額，將隱形價值轉化為直觀數字。</p>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <h4 class="text-xs tracking-widest uppercase text-stone-400 mb-2">部署架構</h4>
+                    <p class="text-lg serif italic">Gemini (Code) + GitHub 快速迭代開發。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 06. 公司系統介面優化 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            <div class="lg:col-span-7 order-2 lg:order-1">
+                <div class="img-container">
+                    <span class="fig-tag">UI/UX 優化方案</span>
+                    <img src="https://drive.google.com/thumbnail?id=1ppcUeaOuF7rBewZXpt5OK_8cXNOyZ5KY&sz=w1000" class="w-full">
+                </div>
+            </div>
+            <div class="lg:col-span-5 order-1 lg:order-2 space-y-6">
+                <span class="tech-label">06. 產品對接能力</span>
+                <h2 class="text-3xl serif">系統介面優化：100% 需求對齊</h2>
+                <div class="space-y-4 text-gray-600 font-light leading-relaxed">
+                    <p><strong>核心目標：</strong> 作為業務與研發端的溝通橋樑，確保開發內容完全符合第一線實務作業流程。</p>
+                    <p><strong>解決痛點：</strong> 透過 UI 重塑實現「單一視角工作流」，減少跨系統切換，並從源頭串接公關優惠與自動流程，杜絕人為漏單。</p>
+                </div>
+                <div class="annotation">
+                    <strong>具體效益：</strong> 效率提升 30%，達成客訴預防率 100%，消除業務端與 RD 端之間的認知落差。
+                </div>
+            </div>
+        </div>
+
+        <!-- 07. 服務之星 V2 -->
+        <div class="space-y-12">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+                <div class="lg:col-span-4 space-y-6">
+                    <span class="tech-label">07. 管理自動化</span>
+                    <h2 class="text-3xl serif">服務之星：自動化行為洞察</h2>
+                    <p class="text-gray-600 font-light leading-relaxed">
+                        這不只是獎項制度，更是透過 App Script 與數據可視化，將枯燥的績效轉化為「年度趨勢圖」與「個人雷達圖」的管理中樞。
+                    </p>
+                    <div class="space-y-3">
+                        <div class="flex items-center text-xs text-stone-500">
+                            <span class="w-2 h-2 bg-stone-400 rounded-full mr-3"></span>
+                            行為矯正：自動偵測正確率低點進行即時提醒。
                         </div>
-                        
-                        <div class="grid grid-cols-1 gap-6">
-                            <div class="flex items-start">
-                                <i class="fas fa-microscope mt-1 text-accent-gold mr-4"></i>
-                                <div>
-                                    <h5 class="text-sm md:text-base font-black-plus text-stone-800 mb-1 text-accent-gold">司法級角色識別</h5>
-                                    <p class="text-xs md:text-sm font-bold-plus">自動判定聲線高低、語速與口條流利度，建立專業人設檔案。</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <i class="fas fa-wave-square mt-1 text-accent-gold mr-4"></i>
-                                <div>
-                                    <h5 class="text-sm md:text-base font-black-plus text-stone-800 mb-1 text-accent-gold">心理防衛偵測</h5>
-                                    <p class="text-xs md:text-sm font-bold-plus">分析客戶遲疑與防衛感，預判客訴升級風險。</p>
-                                </div>
-                            </div>
+                        <div class="flex items-center text-xs text-stone-500">
+                            <span class="w-2 h-2 bg-stone-400 rounded-full mr-3"></span>
+                            榮譽機制：名人堂數位牆激發團隊正面競爭。
+                        </div>
+                        <div class="flex items-center text-xs text-stone-500">
+                            <span class="w-2 h-2 bg-stone-400 rounded-full mr-3"></span>
+                            高效反饋：每日自動推播成效至 Line Notify。
                         </div>
                     </div>
                 </div>
-
-                <div class="lg:col-span-7">
-                    <div class="bg-white p-6 md:p-10 rounded-sm shadow-2xl border border-stone-200 transcript-container">
-                        <div class="flex justify-between items-start mb-8 border-b-2 border-stone-800 pb-6">
-                            <div class="space-y-1">
-                                <h4 class="text-lg md:text-xl font-black-plus text-stone-900">【司法聲學鑑識報告】</h4>
-                                <p class="text-[11px] md:text-sm font-bold-plus text-stone-500">音訊檔案：曉念-長時數音檔.wav</p>
-                            </div>
-                            <div class="flex items-end space-x-1">
-                                <div class="wave-bar"></div><div class="wave-bar" style="animation-delay: 0.2s"></div><div class="wave-bar" style="animation-delay: 0.4s"></div>
-                            </div>
+                <div class="lg:col-span-8 space-y-4">
+                    <div class="img-container mb-4">
+                        <img src="https://drive.google.com/thumbnail?id=1BUXfWSacOM0goIR7bwAppYAmrhWoxns2&sz=w1000" class="w-full">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="img-container">
+                            <img src="https://drive.google.com/thumbnail?id=11R4dp09T21DjCb1FPsA_CKgCmJoLqRvn&sz=w600" class="w-full">
                         </div>
-                        
-                        <div class="mb-10 p-5 bg-stone-50 border border-stone-100 rounded-sm">
-                            <h5 class="text-xs font-black-plus text-stone-400 mb-3 uppercase tracking-widest">角色識別：</h5>
-                            <div class="space-y-3">
-                                <div class="flex gap-2">
-                                    <span class="text-sm font-black-plus text-stone-800 shrink-0">[客服]：</span>
-                                    <p class="text-sm font-bold-plus text-stone-600">女性，聲線明亮，語速適中，口條流利，代表「智生活」。</p>
-                                </div>
-                                <div class="flex gap-2">
-                                    <span class="text-sm font-black-plus text-stone-800 shrink-0">[客戶]：</span>
-                                    <p class="text-sm font-bold-plus text-stone-600">男性，聲線較低沉，語速較慢，帶有遲疑與防衛感，居住於新戰國寶社區，姓鄭。</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <hr class="border-stone-100 mb-8">
-
-                        <div class="space-y-5 font-mono">
-                            <div class="text-[12px] md:text-sm font-bold-plus text-stone-400 italic">* (00:00) [電話撥號音，持續約14秒]</div>
-                            <div class="flex gap-3">
-                                <span class="text-accent-gold text-xs font-black-plus shrink-0 md:w-16">* (00:15)</span>
-                                <span class="text-sm font-black-plus text-stone-800">[客服]：</span>
-                                <p class="text-sm font-bold-plus text-stone-700">喂？</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <span class="text-accent-gold text-xs font-black-plus shrink-0 md:w-16">* (00:16)</span>
-                                <span class="text-sm font-black-plus text-stone-800">[客服]：</span>
-                                <p class="text-sm font-bold-plus text-stone-700">喂？</p>
-                            </div>
-                            <div class="flex gap-3">
-                                <span class="text-accent-gold text-xs font-black-plus shrink-0 md:w-16">* (00:17)</span>
-                                <span class="text-sm font-black-plus text-stone-800">[客戶]：</span>
-                                <p class="text-sm font-bold-plus text-stone-700">喂你好。</p>
-                            </div>
-                        </div>
-
-                        <div class="mt-12 pt-6 border-t border-stone-100 flex justify-between items-center">
-                            <div class="text-[10px] font-bold-plus text-stone-300">鑑識引擎：Google AI Studio (Gemini 1.5 Pro)</div>
-                            <div class="text-[10px] font-black-plus px-3 py-1 bg-stone-900 text-white uppercase tracking-tighter">Verified Result</div>
+                        <div class="img-container">
+                            <img src="https://drive.google.com/thumbnail?id=1RkXTCk_Kk16zjy5ts9Mr0U2ZZf8-ld4h&sz=w600" class="w-full">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- 實戰系統集 -->
-    <section id="systems" class="py-16 md:py-24 px-6 max-w-7xl mx-auto">
-        <div class="text-center mb-16">
-            <h2 class="text-[10px] md:text-xs font-bold-plus uppercase tracking-[0.4em] text-stone-400 mb-4">實務應用生態系</h2>
-            <h3 class="text-3xl md:text-4xl font-black-plus uppercase">Solutions Portfolio</h3>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- 服務之星 V2 - 排版優化 -->
-            <div class="card-elegant p-6 md:p-8 flex flex-col border-t-4 border-t-accent-gold">
-                <div class="text-[9px] font-bold-plus tracking-widest text-accent-gold mb-6 uppercase">視覺化管理儀表板</div>
-                <h4 class="text-xl font-black-plus mb-6">服務之星 V2 - 可視化儀表板</h4>
-                
-                <div class="space-y-2 mb-8">
-                    <p class="text-sm font-bold-plus text-stone-500 flex items-center">
-                        <i class="fas fa-chart-area mr-3 text-accent-gold w-4 text-center"></i>各組總分年度趨勢圖
-                    </p>
-                    <p class="text-sm font-bold-plus text-stone-500 flex items-center">
-                        <i class="fas fa-user-clock mr-3 text-accent-gold w-4 text-center"></i>個人總分年度趨勢追蹤
-                    </p>
-                    <p class="text-sm font-bold-plus text-stone-500 flex items-center">
-                        <i class="fas fa-clipboard-check mr-3 text-accent-gold w-4 text-center"></i>個人各考核項目趨勢分析
-                    </p>
-                    <p class="text-sm font-bold-plus text-stone-500 flex items-center">
-                        <i class="fas fa-trophy mr-3 text-accent-gold w-4 text-center"></i>內建「名人堂」激勵機制
-                    </p>
+        <!-- 08. 部門高效搜尋系統 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            <div class="lg:col-span-5 space-y-6">
+                <span class="tech-label">08. 知識管理系統</span>
+                <h2 class="text-3xl serif">部門高效搜尋系統</h2>
+                <div class="space-y-4 text-gray-600 font-light leading-relaxed">
+                    <p><strong>作用：</strong> 整合超過 145+ 組異質資料庫，將跨部門、跨資料夾的繁瑣搜尋行為，優化為秒級反應的極速檢索。</p>
+                    <p><strong>能力核心：</strong> 數據架構優化。自 2026/03 上線以來，使用覆蓋率達 100%，顯示系統設計完美貼合同仁每日作業需求。</p>
                 </div>
-
-                <div class="mt-auto flex flex-wrap gap-2">
-                    <span class="tag-pill">數據輔導</span>
-                    <span class="tag-pill">管理自動化</span>
+                <div class="annotation">
+                    <strong>具體效益：</strong> 顯著降低非生產性作業時間，讓管理者能即時掌握數位工具的滲透率與使用趨勢。
                 </div>
             </div>
-
-            <!-- 部門高效資料整合系統 -->
-            <div class="card-elegant p-6 md:p-8 flex flex-col">
-                <div class="text-[9px] font-bold-plus tracking-widest text-accent-gold mb-6 uppercase">知識管理與整合</div>
-                <h4 class="text-xl font-black-plus mb-6">部門高效資料整合系統</h4>
-                <p class="text-sm font-bold-plus text-stone-500 leading-relaxed mb-8">
-                    整合超過 145 個部門資料與常用工具。確保全體同仁擁有「統一且最新」的資訊，縮短 50% 搜尋時間，顯著降低新人培訓門檻。
-                </p>
-                <div class="mt-auto flex flex-wrap gap-2">
-                    <span class="tag-pill">145+ 資料源</span>
-                    <span class="tag-pill">SSOT 概念</span>
-                </div>
-            </div>
-
-            <!-- UI 優化系統 -->
-            <div class="card-elegant p-6 md:p-8 flex flex-col">
-                <div class="text-[9px] font-bold-plus tracking-widest text-accent-gold mb-6 uppercase">介面工程與效能</div>
-                <h4 class="text-xl font-black-plus mb-6">公司系統介面 UI 優化</h4>
-                <p class="text-sm font-bold-plus text-stone-500 leading-relaxed mb-8">
-                    重構系統主控台，建立單一客資視視角，減少 30% 頁面切換。優化帳務紀錄顯示，降低第一線人員的操作負擔。
-                </p>
-                <div class="mt-auto flex flex-wrap gap-2">
-                    <span class="tag-pill">效率提升 30%</span>
-                    <span class="tag-pill">UX 重構</span>
-                </div>
-            </div>
-
-            <!-- NotebookLM 質檢 -->
-            <div class="card-elegant p-6 md:p-8 flex flex-col">
-                <div class="text-[9px] font-bold-plus tracking-widest text-accent-gold mb-6 uppercase">智慧質檢與教材</div>
-                <h4 class="text-xl font-black-plus mb-6">培訓師音檔質檢系統</h4>
-                <p class="text-sm font-bold-plus text-stone-500 leading-relaxed mb-8">
-                    運用 NotebookLM 進行批次音檔質檢，產出評分表與建議。將優質錄音轉化為短影音教材，加速部門知識傳承。
-                </p>
-                <div class="mt-auto flex flex-wrap gap-2">
-                    <span class="tag-pill">NotebookLM</span>
-                    <span class="tag-pill">自動化教材</span>
-                </div>
-            </div>
-
-            <!-- 優惠試算機 -->
-            <div class="card-elegant p-6 md:p-8 flex flex-col">
-                <div class="text-[9px] font-bold-plus tracking-widest text-accent-gold mb-6 uppercase">銷售轉化工具</div>
-                <h4 class="text-xl font-black-plus mb-6">個人情境優惠試算機</h4>
-                <p class="text-sm font-bold-plus text-stone-500 leading-relaxed mb-8">
-                    透過分眾試算介面，即時產出個人化優惠方案，消弭資訊差，強化客戶成交信心並縮短考慮期。
-                </p>
-                <div class="mt-auto flex flex-wrap gap-2">
-                    <span class="tag-pill">情境試算</span>
-                    <span class="tag-pill">成交率優化</span>
-                </div>
-            </div>
-
-            <!-- 自動化流程 -->
-            <div class="card-elegant p-6 md:p-8 flex flex-col">
-                <div class="text-[9px] font-bold-plus tracking-widest text-accent-gold mb-6 uppercase">自動化流程</div>
-                <h4 class="text-xl font-black-plus mb-6">雙網客戶工項自動化</h4>
-                <p class="text-sm font-bold-plus text-stone-500 leading-relaxed mb-8">
-                    實現「選取即派單」流程。業務按情境拉選後，系統自動生成標準指令，杜絕手動輸入錯誤，提升作業精確度。
-                </p>
-                <div class="mt-auto flex flex-wrap gap-2">
-                    <span class="tag-pill">工項自動化</span>
-                    <span class="tag-pill">零誤差作業</span>
+            <div class="lg:col-span-7">
+                <div class="img-container">
+                    <span class="fig-tag">145+ 資料庫集成</span>
+                    <img src="https://drive.google.com/thumbnail?id=1aq5nYDpEmXOpC6P6p5n_EiLy-k0JSSwS&sz=w1000" alt="部門搜尋系統" class="w-full">
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer id="contact" class="bg-white border-t border-stone-200 py-16 px-6 text-center">
-        <h2 class="text-3xl font-black-plus mb-8">Ivy Yen | AI 數位轉型實戰</h2>
-        <div class="flex flex-wrap justify-center gap-10 font-bold-plus mb-16">
-            <a href="#" class="border-b-2 border-stone-100 pb-1 hover:border-wood-dark transition">LINKEDIN</a>
-            <a href="#" class="border-b-2 border-stone-100 pb-1 hover:border-wood-dark transition">RESUME</a>
-            <a href="#" class="border-b-2 border-stone-100 pb-1 hover:border-wood-dark transition">EMAIL</a>
+        <!-- 09. Webhook 即時監控中樞 -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center p-12 bg-white rounded-xl border border-stone-100">
+            <div class="lg:col-span-7">
+                <div class="img-container">
+                    <span class="fig-tag">Webhook 即時通報</span>
+                    <img src="https://drive.google.com/thumbnail?id=1voVSsvRTORGx4tJvk0st4PKB5wlY9y52&sz=w1000" alt="Webhook 監控" class="w-full">
+                </div>
+            </div>
+            <div class="lg:col-span-5 space-y-6">
+                <span class="tech-label">09. 即時應對中樞</span>
+                <h2 class="text-3xl serif">Webhook 即時監控中樞</h2>
+                <div class="space-y-4 text-gray-600 font-light leading-relaxed">
+                    <p><strong>作用：</strong> 串接 Google Forms、Webhook 與 Chat API，實現黃金時間的即時響應 (Speed-to-Lead)。</p>
+                    <p><strong>關鍵能力：</strong> 精準分流自動化。根據表單內容自動決定通知哪個 Chat 群組，確保資訊無時差傳達。</p>
+                </div>
+                <div class="annotation">
+                    <strong>具體效益：</strong> 打破被動檢查模式，實現「秒級介入」，極大化成交轉化率並有效降低人工檢查成本。
+                </div>
+            </div>
         </div>
-        <p class="text-[9px] font-bold-plus opacity-30 tracking-[0.4em] uppercase">© 2026 Ivy Yen Portfolio. All Rights Reserved.</p>
+
+    </main>
+
+    <footer class="py-20 px-8 text-center text-stone-400 text-[10px] tracking-[0.5em] uppercase border-t border-stone-200">
+        Ivy Yen AI Operations Portfolio / 2025 Edition
     </footer>
-
-    <script>
-        window.onscroll = function() {
-            var nav = document.getElementById('mainNav');
-            if (window.pageYOffset > 50) {
-                nav.classList.add('nav-scrolled');
-                nav.classList.remove('text-white');
-                nav.classList.add('text-[#2c241e]');
-            } else {
-                nav.classList.remove('nav-scrolled');
-                nav.classList.add('text-white');
-                nav.classList.remove('text-[#2c241e]');
-            }
-        };
-    </script>
 
 </body>
 </html>
