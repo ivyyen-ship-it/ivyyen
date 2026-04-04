@@ -3,493 +3,612 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Hardy & Ted 成長獎勵看板</title>
+<title>粉嫩繽紛獎勵看板</title>
 <style>
 :root {
-  --hardy-main: #3B82F6; 
-  --hardy-light: #EFF6FF;
-  --hardy-dark: #1E40AF;
-  --ted-main: #10B981;   
-  --ted-light: #ECFDF5;
-  --ted-dark: #065F46;
-  --bg-main: #F1F5F9;
-  --card-bg: rgba(255, 255, 255, 0.9);
-  --text-dark: #1E293B;
-  --text-muted: #64748B;
-  --accent-warm: #F59E0B;
-  --radius-xl: 28px;
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+  --bg-main: #FDF4F9;
+  --card-white: rgba(255, 255, 255, 0.9);
+  --text-main: #4A5568;
+  --theme-color: #FBB6CE;
+  --theme-bg: #FFF5F7;
+  --radius-card: 28px;
+  --shadow-soft: 0 12px 24px rgba(0, 0, 0, 0.05);
+  /* 鮮紅色定義 */
+  --vivid-red: #FF0000;
 }
 
-* { 
-    box-sizing: border-box; 
-    -webkit-tap-highlight-color: transparent; 
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-body { 
-    background: var(--bg-main); 
-    font-family: "PingFang TC", "Microsoft JhengHei", system-ui, -apple-system, sans-serif;
-    color: var(--text-dark);
-    line-height: 1.6;
+body {
+    background: linear-gradient(135deg, var(--theme-bg) 0%, #F0F5FF 100%);
+    font-family: "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    color: var(--text-main);
     margin: 0;
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-bottom: 40px;
+    min-height: 100vh;
 }
 
-.app { max-width: 850px; margin: 0 auto; min-height: 100vh; background: var(--bg-main); position: relative; }
+.app { max-width: 900px; margin: 0 auto; position: relative; }
 
 /* Header */
 .header {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 18px 20px;
+    padding: 15px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 1px solid rgba(0,0,0,0.03);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15px);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
 }
 
-.week-ctrl {
+.week-nav {
     display: flex;
     align-items: center;
-    background: #FFFFFF;
-    padding: 4px 6px;
+    background: white;
+    padding: 6px 12px;
     border-radius: 50px;
-    gap: 4px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: var(--shadow-soft);
 }
 
 .nav-btn {
-    width: 32px; height: 32px; border: none; background: #F8FAFC; 
-    border-radius: 50%; color: var(--text-dark); cursor: pointer; 
+    width: 30px; height: 30px; border: none; background: #f8f9fa;
+    border-radius: 50%; cursor: pointer; font-weight: bold;
     display: flex; align-items: center; justify-content: center;
-    font-size: 18px; font-weight: bold;
+    color: var(--theme-color);
 }
-.nav-btn:hover { background: var(--text-dark); color: white; }
 
-.week-label { font-size: 14px; font-weight: 800; padding: 0 10px; min-width: 100px; text-align: center; color: var(--text-dark); letter-spacing: -0.5px; }
+.week-label { font-size: 14px; font-weight: 800; margin: 0 10px; min-width: 90px; text-align: center; color: var(--theme-color); }
 
-.edit-trigger {
-    background: var(--text-dark); border: none; padding: 10px 16px; border-radius: 14px;
-    font-size: 13px; font-weight: 700; cursor: pointer; color: white;
-    display: flex; align-items: center; gap: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+.settings-btn {
+    background: white; border: none; width: 40px; height: 40px;
+    border-radius: 50%; box-shadow: var(--shadow-soft);
+    cursor: pointer; font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
 }
 
 /* Tabs */
-.tabs {
-    display: flex;
-    padding: 15px 20px;
-    gap: 12px;
-}
+.tabs { display: flex; padding: 15px 20px; gap: 10px; }
 .tab-btn {
-    flex: 1; padding: 12px; border-radius: var(--radius-md); border: none;
-    background: #E2E8F0; color: var(--text-muted); font-weight: 800; cursor: pointer;
-    font-size: 14px;
+    flex: 1; padding: 10px; border: none; border-radius: 18px;
+    background: white; color: #A0AEC0; font-weight: 800; cursor: pointer;
+    transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
 }
-.tab-btn.active { 
-    background: white; color: var(--text-dark); 
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
-}
+.tab-btn.active { background: var(--theme-color); color: white; box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); }
 
-/* 佈局核心優化：手機版並排 */
-.person-row {
+/* Layout Grid */
+.child-row {
     display: flex;
-    padding: 0 12px;
-    gap: 12px;
-    margin-bottom: 20px;
+    flex-direction: row;
+    gap: 15px;
+    padding: 0 20px;
+    margin-bottom: 25px;
+    align-items: stretch;
 }
 
-/* Overview Card 優化 */
-.ov-card {
-    flex: 1; /* 平分寬度 */
-    border-radius: var(--radius-lg); padding: 16px 10px; box-shadow: var(--shadow-md);
-    border: 1px solid rgba(255,255,255,0.4); position: relative; overflow: hidden;
-    cursor: pointer;
+@media (max-width: 640px) {
+    .child-row { flex-direction: column; }
+}
+
+.child-ov-card {
+    flex: 1;
+    min-width: 220px;
+    background: var(--card-white);
+    border-radius: var(--radius-card);
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+    border: 3px solid transparent;
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-width: 0; /* 防止溢出 */
+    cursor: pointer;
 }
-.ov-card.hardy { background: linear-gradient(135deg, var(--hardy-main), #60A5FA); color: white; }
-.ov-card.ted { background: linear-gradient(135deg, var(--ted-main), #34D399); color: white; }
+.child-ov-card.active { border-color: currentColor; background: white; }
 
-.ov-name { 
-    font-size: 20px; /* 手機並排縮小一點以防折行 */
-    font-weight: 900;
-    margin-bottom: 4px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    gap: 6px;
-    letter-spacing: 1px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    font-family: system-ui, "Arial Black", sans-serif;
-}
-.ov-total { font-size: 32px; font-weight: 900; line-height: 1; margin-bottom: 4px; }
-.ov-total span { font-size: 12px; opacity: 0.8; }
-.ov-formula { font-size: 10px; font-weight: 500; opacity: 0.85; background: rgba(0,0,0,0.1); padding: 2px 8px; border-radius: 12px; width: fit-content; margin: 0 auto; }
+.child-avatar { font-size: 32px; display: block; margin-bottom: 5px; }
+.child-name { font-weight: 900; font-size: 20px; margin-bottom: 8px; display: block; }
+.score-display { margin-bottom: 10px; }
+.score-val { font-size: 42px; font-weight: 900; line-height: 1; }
+.score-unit { font-size: 14px; margin-left: 4px; color: #718096; }
 
-.ov-rem-box { 
-    background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); 
-    padding: 8px 4px; border-radius: var(--radius-md); margin-top: 12px; 
-    border: 1px solid rgba(255,255,255,0.2); 
-}
-.ov-rem-label { font-size: 14px; font-weight: 900; display: block; }
-.ov-rem-sub { font-size: 9px; font-weight: 500; opacity: 0.8; display: block; }
-
-/* Dashboard Section 優化：緊湊化 */
-.dashboard-section {
-    flex: 1;
+.chart-section {
+    flex: 2;
+    min-width: 300px;
     background: white;
-    border-radius: var(--radius-lg);
-    padding: 12px 8px;
-    box-shadow: var(--shadow-md);
-    min-width: 0; /* 平分空間 */
-}
-.dash-header { display: none; } /* 節省手機空間，隱藏標題 */
-
-.dash-grid {
-    display: flex;
-    justify-content: space-between;
-    height: 90px; /* 降低高度 */
-    align-items: flex-end;
-    padding: 0 4px;
-}
-.dash-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
-
-.dash-bar-track {
-    width: 14px; height: 60px; background: #F1F5F9; border-radius: 8px;
-    position: relative; overflow: hidden; margin-bottom: 4px; 
-}
-.dash-bar-fill { position: absolute; bottom: 0; width: 100%; border-radius: 8px; }
-.dash-bar-fill.normal-a { background: var(--hardy-main); }
-.dash-bar-fill.normal-b { background: var(--ted-main); }
-.dash-bar-fill.excellent { background: linear-gradient(to top, #F59E0B, #FCD34D); }
-
-.dash-label { font-size: 9px; font-weight: 800; color: var(--text-muted); }
-.dash-pct { font-size: 8px; font-weight: 900; display: none; } /* 隱藏數字以利並排清爽 */
-.dash-star { font-size: 10px; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); }
-
-/* 獎勵紀錄調整 */
-.bonus-history-container { padding: 0 12px 20px; }
-.bonus-tag {
-    display: flex; align-items: center; padding: 10px 14px; border-radius: var(--radius-md); 
-    margin-bottom: 8px; font-size: 12px; font-weight: 700; background: white; box-shadow: var(--shadow-sm);
-}
-.bonus-tag .name-badge { padding: 2px 8px; border-radius: 8px; color: white; font-size: 10px; margin-right: 8px; font-weight: 900; }
-
-/* 其他架構保持不變 */
-.child-selector { display: flex; padding: 0 20px 20px; gap: 10px; }
-.child-btn { flex: 1; padding: 16px; border-radius: var(--radius-md); border: 1px solid #E2E8F0; background: white; font-weight: 900; font-size: 16px; }
-.child-btn.on-a { background: var(--hardy-light); color: var(--hardy-dark); border-color: var(--hardy-main); }
-.child-btn.on-b { background: var(--ted-light); color: var(--ted-dark); border-color: var(--ted-main); }
-
-.reward-banner { margin: 0 20px 24px; padding: 24px; border-radius: var(--radius-xl); background: linear-gradient(135deg, #0F172A, #334155); color: white; text-align: center; }
-.time-val { font-size: 52px; font-weight: 900; color: var(--accent-warm); line-height: 1; }
-
-.day-group { background: white; margin: 0 20px 20px; border-radius: var(--radius-xl); padding: 20px; box-shadow: var(--shadow-md); }
-.day-head { font-weight: 900; font-size: 16px; margin-bottom: 15px; border-bottom: 2px solid #F1F5F9; padding-bottom: 10px; }
-
-.task-item { display: flex; align-items: center; padding: 12px 16px; border-radius: var(--radius-md); background: #F8FAFC; margin-bottom: 8px; font-size: 14px; }
-.check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #CBD5E1; margin-right: 12px; display: flex; align-items: center; justify-content: center; }
-
-#modal-mask { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; }
-.modal-body { background: white; width: 92%; max-width: 450px; border-radius: var(--radius-xl); padding: 24px; }
-
-.action-card { background: white; border-radius: var(--radius-xl); padding: 20px; margin: 0 20px 20px; box-shadow: var(--shadow-md); }
-
-@media (min-width: 651px) {
-    .ov-card { padding: 24px; }
-    .ov-name { font-size: 26px; }
-    .ov-total { font-size: 38px; }
-    .dashboard-section { padding: 24px; }
-    .dash-header { display: flex; }
-    .dash-grid { height: 140px; }
-    .dash-bar-track { width: 28px; height: 90px; }
-    .dash-label { font-size: 11px; }
-    .dash-pct { display: block; }
+    border-radius: var(--radius-card);
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
 }
 
+.chart-title { font-size: 15px; font-weight: 900; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; color: #4A5568; }
+.chart-title::before { content: ''; display: block; width: 5px; height: 20px; background: var(--theme-color); border-radius: 3px; }
+
+.chart-grid { display: flex; justify-content: space-between; align-items: flex-end; height: 130px; }
+.chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+.bar-track {
+    width: 18px; height: 70px; background: #F7FAFC; border-radius: 10px;
+    position: relative; margin-bottom: 8px; border: 1px solid #EDF2F7;
+}
+.bar-fill {
+    position: absolute; bottom: 0; width: 100%; border-radius: 10px;
+    transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.col-label { font-size: 10px; font-weight: 800; color: #718096; }
+.col-pct { font-size: 9px; font-weight: 900; margin-top: 2px; color: #2D3748; }
+
+/* History Section */
+.history-section {
+    background: white;
+    margin: 0 20px 20px;
+    border-radius: 20px;
+    padding: 18px;
+    box-shadow: var(--shadow-soft);
+}
+.history-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.history-table th { text-align: left; color: #718096; padding: 8px; border-bottom: 1px solid #EDF2F7; }
+.history-table td { padding: 8px; border-bottom: 1px solid #F7FAFC; }
+
+/* 鮮紅色分數樣式 */
+.bonus-score-vivid {
+    font-weight: 950;
+    color: var(--vivid-red);
+    font-size: 14px;
+}
+
+/* Tasks View */
+.day-selector { display: flex; overflow-x: auto; padding: 0 20px 15px; gap: 8px; scrollbar-width: none; }
+.day-tab {
+    flex: 0 0 auto; padding: 8px 16px; border-radius: 50px; background: white;
+    border: 2px solid #F7FAFC; font-size: 13px; font-weight: 800; cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.03); color: #718096;
+}
+.day-tab.active { background: var(--theme-color); color: white; border-color: var(--theme-color); }
+
+.task-card { background: white; margin: 0 20px 15px; border-radius: var(--radius-card); padding: 20px; box-shadow: var(--shadow-soft); }
+.task-item {
+    display: flex; align-items: center; padding: 10px 15px; border-radius: 15px;
+    margin-bottom: 6px; cursor: pointer; border: 2px solid transparent; font-size: 14px;
+}
+.task-item.day-type { background: #FEFCBF; border-color: #FAF089; }
+.task-item.day-type.checked { background: #C6F6D5; border-color: #9AE6B4; }
+.task-item.night-type { background: #E9D8FD; border-color: #D6BCFA; }
+.task-item.night-type.checked { background: #B2F5EA; border-color: #81E6D9; }
+
+.check-circle { width: 22px; height: 22px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); margin-right: 10px; display: flex; align-items: center; justify-content: center; background: white; color: #48BB78; font-size: 12px; font-weight: bold; }
+
+/* Settings Modal */
+.modal-mask { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+.modal-content { background: white; width: 92%; max-width: 500px; border-radius: 30px; padding: 25px; max-height: 85vh; overflow-y: auto; }
+.form-group { margin-bottom: 18px; }
+.form-input { width: 100%; padding: 10px 15px; border: 2px solid #EDF2F7; border-radius: 12px; font-size: 14px; margin-top: 5px; outline: none; }
+.form-input:focus { border-color: var(--theme-color); }
+.setting-row { display: flex; align-items: center; gap: 10px; margin-top: 5px; }
+.member-edit-box { border: 2px solid #F7FAFC; padding: 15px; border-radius: 15px; margin-bottom: 15px; position: relative; }
 </style>
 </head>
 <body>
 
 <div class="app">
     <header class="header">
-        <div class="week-ctrl">
-            <button class="nav-btn" onclick="adjWk(-1)">‹</button>
-            <span class="week-label" id="wkLbl">載入中</span>
-            <button class="nav-btn" onclick="adjWk(1)">›</button>
+        <div class="week-nav">
+            <button class="nav-btn" onclick="changeWk(-1)">‹</button>
+            <span class="week-label" id="wkDisplay">...</span>
+            <button class="nav-btn" onclick="changeWk(1)">›</button>
         </div>
-        <button class="edit-trigger" onclick="openEditor()">⚙️ 設定</button>
+        <button class="settings-btn" onclick="showSettings()">🍩</button>
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" id="tab-ov" onclick="goView('ov')">數據看板</button>
-        <button class="tab-btn" id="tab-dt" onclick="goView('dt')">任務詳情</button>
+        <button class="tab-btn active" id="tab-dashboard" onclick="switchView('dashboard')">數據看板</button>
+        <button class="tab-btn" id="tab-tasks" onclick="switchView('tasks')">任務明細</button>
     </div>
 
-    <div id="ov-panel"></div>
-    <div id="dt-panel" style="display:none"></div>
+    <div id="view-dashboard">
+        <div id="main-content-area"></div>
+        <div class="history-section">
+            <div class="chart-title">📝 本週加分明細紀錄</div>
+            <table class="history-table">
+                <thead>
+                    <tr><th>名字</th><th>日期</th><th>備註</th><th>分數</th></tr>
+                </thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
+    </div>
 
-    <div id="modal-mask">
-        <div class="modal-body">
-            <div style="font-size:20px; font-weight:900; margin-bottom:20px; text-align:center">🔧 任務配置</div>
-            <div style="margin-bottom:15px">
-                <label style="display:block; font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:5px">☀️ 日間任務</label>
-                <textarea id="edit-dtasks" style="width:100%; border:2px solid #F1F5F9; border-radius:12px; padding:12px; min-height:100px; resize:none"></textarea>
+    <div id="view-tasks" style="display:none">
+        <div class="day-selector" id="day-tabs"></div>
+        <div id="tasks-content"></div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-mask" id="settings-modal" onclick="if(event.target==this)hideSettings()">
+        <div class="modal-content">
+            <h2 style="text-align:center; color:var(--theme-color); margin-top: 0;">🍭 系統與計分設定</h2>
+            
+            <div class="form-group">
+                <label style="font-weight:900; color:#718096">🎨 介面主題色</label>
+                <div class="theme-picker" style="display:flex; gap:10px; margin-top:5px" id="theme-options"></div>
             </div>
-            <div style="margin-bottom:20px">
-                <label style="display:block; font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:5px">🌙 夜間任務</label>
-                <textarea id="edit-ntasks" style="width:100%; border:2px solid #F1F5F9; border-radius:12px; padding:12px; min-height:100px; resize:none"></textarea>
+
+            <div class="form-group" style="background:#F7FAFC; padding:15px; border-radius:15px">
+                <label style="font-weight:900; color:#4A5568">⚖️ 計分邏輯設定</label>
+                <div class="setting-row">
+                    <span style="font-size:13px">日間：</span>
+                    <select class="form-input" style="width:auto; margin:0; flex: 1;" id="set-dmode">
+                        <option value="all">全達成才給分</option>
+                        <option value="each">按比例給分</option>
+                    </select>
+                    <input type="number" class="form-input" style="width:60px; margin:0" id="set-dscore"> 分
+                </div>
+                <div class="setting-row" style="margin-top:10px">
+                    <span style="font-size:13px">夜間：</span>
+                    <select class="form-input" style="width:auto; margin:0; flex: 1;" id="set-nmode">
+                        <option value="all">全達成才給分</option>
+                        <option value="each">按比例給分</option>
+                    </select>
+                    <input type="number" class="form-input" style="width:60px; margin:0" id="set-nscore"> 分
+                </div>
             </div>
-            <div style="display:flex; gap:10px">
-                <button style="flex:1; padding:12px; border:none; border-radius:12px; background:#F1F5F9; font-weight:800" onclick="closeEditor()">取消</button>
-                <button style="flex:1; padding:12px; border:none; border-radius:12px; background:var(--text-dark); color:white; font-weight:800" onclick="saveTasks()">儲存</button>
+
+            <div id="member-settings-list"></div>
+            <button onclick="addNewMember()" style="width:100%; padding:12px; border:2px dashed #CBD5E1; border-radius:15px; background:none; cursor:pointer; font-weight:800; color:#A0AEC0; margin-bottom:20px">+ 新增成員</button>
+
+            <div class="form-group">
+                <label style="font-weight:900; color:#718096">💎 獎勵單位</label>
+                <input type="text" id="set-unit" class="form-input">
             </div>
+
+            <div class="form-group">
+                <label style="font-weight:900; color:#718096">☀️ 日間任務 (每行一項)</label>
+                <textarea id="set-dtasks" class="form-input" style="height:70px"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label style="font-weight:900; color:#718096">🌙 夜間任務 (每行一項)</label>
+                <textarea id="set-ntasks" class="form-input" style="height:70px"></textarea>
+            </div>
+
+            <button onclick="commitSettings()" style="width:100%; padding:15px; border:none; border-radius:15px; background:var(--theme-color); color:white; font-weight:800; cursor:pointer">儲存並關閉</button>
         </div>
     </div>
 </div>
 
 <script>
-const CH = [{id:'a', name:'Hardy', icon:'👦🏻'}, {id:'b', name:'Ted', icon:'👦🏼'}];
-const DAYS = ['一', '二', '三', '四', '五', '六', '日'];
-
-const DEFAULT_DTASKS = [
-    {id:'wake', l:'準時起床 ⏰'}, {id:'dishes', l:'洗碗 🥣'}, {id:'water', l:'裝水 💧'},
-    {id:'lunchbox', l:'收餐盒 🍱'}, {id:'report', l:'到校回報 📱'}, {id:'med', l:'吃藥/保健品 💊'}
-];
-const DEFAULT_NTASKS = [
-    {id:'eat', l:'好好吃飯 🥗'}, {id:'litter', l:'清貓砂 🐈'},
-    {id:'bowl', l:'洗餐碗 🧼'}, {id:'brush', l:'20:30前刷牙 🪥'}, {id:'sleep', l:'21:00睡覺 🌙'}
+const EMOJIS = ['👦🏻','👧🏻','👦🏼','👧🏼','👶🏻','🐶','🐱','🐻','🦁','🦊','🐼','🐨','🦄','🌈','🎨','⚽️'];
+const WEEK_DAYS = ['一', '二', '三', '四', '五', '六', '日'];
+const THEMES = [
+    { main: '#FBB6CE', bg: '#FFF5F7' }, { main: '#BEE3F8', bg: '#EBF8FF' },
+    { main: '#C6F6D5', bg: '#F0FFF4' }, { main: '#FAF089', bg: '#FFFFF0' }, { main: '#E9D8FD', bg: '#FAF5FF' }
 ];
 
-let wkOff = 0, aCh = 'a', D = {}, config = { dtasks: DEFAULT_DTASKS, ntasks: DEFAULT_NTASKS };
+let state = {
+    wkOffset: 0, activeChild: '', activeDay: (new Date().getDay() || 7) - 1,
+    config: {
+        themeIndex: 0, unit: '分',
+        dMode: 'all', dScore: 1, nMode: 'all', nScore: 1,
+        members: [
+            {id: 'c1', name: 'Hardy', emoji: '👦🏻', color: '#FBB6CE'},
+            {id: 'c2', name: 'Ted', emoji: '👦🏼', color: '#BEE3F8'}
+        ],
+        dtasks: ['準時起床 ⏰', '洗碗 🥣', '裝水 💧', '收餐盒 🍱', '到校回報 📱'],
+        ntasks: ['好好吃飯 🥗', '清貓砂 🐈', '洗餐碗 🧼', '刷牙 🪥', '睡覺 🌙']
+    },
+    data: {}
+};
 
-function localSave(){ localStorage.setItem('kids_dashboard_rollback_v2', JSON.stringify({D, config})); }
-function localLoad(){ 
-    const saved = JSON.parse(localStorage.getItem('kids_dashboard_rollback_v2') || '{}');
-    if(saved.D) D = saved.D;
-    if(saved.config) config = saved.config;
+function applyTheme() {
+    const t = THEMES[state.config.themeIndex || 0];
+    document.documentElement.style.setProperty('--theme-color', t.main);
+    document.documentElement.style.setProperty('--theme-bg', t.bg);
 }
 
-function ensure(wk, cid){
-    if(!D[wk]) D[wk]={};
-    if(!D[wk][cid]) D[wk][cid]={days:{}, bonus:0, used:0, note:''};
+function load() {
+    const saved = localStorage.getItem('kids_bonus_v5');
+    if (saved) {
+        const p = JSON.parse(saved);
+        state.config = {...state.config, ...p.config};
+        state.data = p.data || {};
+    }
+    state.activeChild = state.config.members[0].id;
+    applyTheme(); render();
 }
 
-function getT(wk, cid, di, tid){ return D?.[wk]?.[cid]?.days?.[di]?.[tid] === true; }
-
-function togT(wk, cid, di, tid) {
-    const cur = getT(wk, cid, di, tid);
-    ensure(wk, cid); 
-    if(!D[wk][cid].days[di]) D[wk][cid].days[di]={}; 
-    D[wk][cid].days[di][tid]=!cur; 
-    localSave(); 
-    render(); 
+function save() { 
+    localStorage.setItem('kids_bonus_v5', JSON.stringify({ config: state.config, data: state.data })); 
 }
 
-function getCompletionStatus(wk, cid, di) {
-    ensure(wk, cid);
-    const dayData = D[wk][cid].days[di] || {};
-    const dayDone = config.dtasks.length > 0 && config.dtasks.every(t => dayData[t.id] === true);
-    const nightDone = config.ntasks.length > 0 && config.ntasks.every(t => dayData[t.id] === true);
-    let basePercent = 0;
-    if (dayDone) basePercent += 50;
-    if (nightDone) basePercent += 50;
-    return basePercent;
+function getWkKey(offset) {
+    const d = new Date();
+    d.setDate(d.getDate() - (d.getDay() || 7) + 1 + offset * 7);
+    return d.toISOString().split('T')[0];
 }
 
-function dayScore(wk, cid, di){
-    const d = config.dtasks.length > 0 && config.dtasks.every(t=>getT(wk,cid,di,t.id))?1:0;
-    const n = config.ntasks.length > 0 && config.ntasks.every(t=>getT(wk,cid,di,t.id))?1:0;
-    return d+n;
+function ensureData(wkKey, cid) {
+    const key = `${wkKey}_${cid}`;
+    if (!state.data[key]) state.data[key] = { days: {} };
+    for (let i = 0; i < 7; i++) {
+        if (!state.data[key].days[i]) {
+            state.data[key].days[i] = { tasks: {}, bonus: 0, used: 0, note: '' };
+        }
+    }
 }
 
-function weekCalc(wk, cid){
-    ensure(wk, cid);
-    const c = D[wk][cid];
-    let base = 0;
-    for(let i=0; i<7; i++) base += dayScore(wk, cid, i);
-    const extra = (c.bonus||0);
-    const bh = base >= 3 ? Math.floor((base-3)/3) : 0;
-    const total = bh + extra;
-    return { 
-        base, bonus: extra, used: c.used||0, totalHours: total, 
-        remHours: Math.max(0, total - (c.used||0)),
-        rawTotalPoints: base + extra 
-    };
+function calcDay(wkKey, cid, di) {
+    ensureData(wkKey, cid);
+    const day = state.data[`${wkKey}_${cid}`].days[di];
+    let doneD = 0, doneN = 0;
+    state.config.dtasks.forEach((_, i) => { if(day.tasks['d'+i]) doneD++; });
+    state.config.ntasks.forEach((_, i) => { if(day.tasks['n'+i]) doneN++; });
+
+    const totalD = state.config.dtasks.length;
+    const totalN = state.config.ntasks.length;
+
+    let scoreD = 0;
+    if (state.config.dMode === 'all') {
+        scoreD = (doneD === totalD && totalD > 0) ? state.config.dScore : 0;
+    } else {
+        scoreD = totalD > 0 ? (doneD / totalD) * state.config.dScore : 0;
+    }
+
+    let scoreN = 0;
+    if (state.config.nMode === 'all') {
+        scoreN = (doneN === totalN && totalN > 0) ? state.config.nScore : 0;
+    } else {
+        scoreN = totalN > 0 ? (doneN / totalN) * state.config.nScore : 0;
+    }
+
+    const totalScore = Number((scoreD + scoreN + (day.bonus || 0)).toFixed(1));
+    let pct = Math.round(((doneD + doneN) / (totalD + totalN || 1)) * 100);
+
+    return { pct, total: totalScore, bonus: day.bonus, used: day.used || 0, note: day.note || '' };
 }
 
-function goView(v){
-    document.getElementById('tab-ov').className = 'tab-btn' + (v==='ov'?' active':'');
-    document.getElementById('tab-dt').className = 'tab-btn' + (v==='dt'?' active':'');
-    document.getElementById('ov-panel').style.display = v==='ov'?'':'none';
-    document.getElementById('dt-panel').style.display = v==='dt'?'':'none';
-    if(v==='dt') window.scrollTo({top: 0, behavior: 'smooth'});
+function calcWeek(wkKey, cid) {
+    let total = 0, used = 0;
+    for(let i=0; i<7; i++) {
+        const r = calcDay(wkKey, cid, i);
+        total += r.total; used += r.used;
+    }
+    return { total: Number(total.toFixed(1)), used, rem: Math.max(0, total - used) };
 }
 
-function openEditor(){
-    document.getElementById('edit-dtasks').value = config.dtasks.map(t=>t.l).join('\n');
-    document.getElementById('edit-ntasks').value = config.ntasks.map(t=>t.l).join('\n');
-    document.getElementById('modal-mask').style.display = 'flex';
+function render() {
+    const wkKey = getWkKey(state.wkOffset);
+    const startD = new Date(wkKey);
+    const dates = Array.from({length:7}, (_, i) => {
+        const d = new Date(startD); d.setDate(startD.getDate() + i); return d;
+    });
+    
+    document.getElementById('wkDisplay').textContent = `${dates[0].getMonth()+1}/${dates[0].getDate()} - ${dates[6].getMonth()+1}/${dates[6].getDate()}`;
+
+    // Dashboard View
+    const container = document.getElementById('main-content-area');
+    container.innerHTML = state.config.members.map(m => {
+        const weekRes = calcWeek(wkKey, m.id);
+        return `
+        <div class="child-row">
+            <div class="child-ov-card ${state.activeChild === m.id ? 'active' : ''}" style="color: ${m.color}" onclick="selectChild('${m.id}')">
+                <span class="child-avatar">${m.emoji}</span>
+                <span class="child-name">${m.name}</span>
+                <div class="score-display">
+                    <div class="score-val">${weekRes.total}<span class="score-unit">${state.config.unit}</span></div>
+                </div>
+                <div style="font-size:11px; color:#A0AEC0">剩餘: ${weekRes.rem.toFixed(1)} / 已領: ${weekRes.used}</div>
+            </div>
+            <div class="chart-section">
+                <div class="chart-title">${m.name} 成長紀錄</div>
+                <div class="chart-grid">
+                    ${WEEK_DAYS.map((d, i) => {
+                        const r = calcDay(wkKey, m.id, i);
+                        return `
+                        <div class="chart-col" onclick="selectChild('${m.id}', ${i})">
+                            <div class="bar-track"><div class="bar-fill" style="height:${Math.min(100, r.pct)}%; background:${m.color}"></div></div>
+                            <div class="col-label">${d}</div>
+                            <div class="col-pct">${r.pct}%</div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    // History - 此處將分數欄位修改為鮮紅色
+    const histBody = document.getElementById('history-body');
+    let histHTML = '';
+    state.config.members.forEach(m => {
+        for(let i=0; i<7; i++) {
+            const r = calcDay(wkKey, m.id, i);
+            if(r.bonus > 0) {
+                histHTML += `<tr>
+                    <td>${m.emoji} ${m.name}</td>
+                    <td>${dates[i].getMonth()+1}/${dates[i].getDate()}</td>
+                    <td>${r.note || '額外加分'}</td>
+                    <td class="bonus-score-vivid">+${r.bonus}</td>
+                </tr>`;
+            }
+        }
+    });
+    histBody.innerHTML = histHTML || '<tr><td colspan="4" style="text-align:center; color:#A0AEC0; padding: 20px;">本週尚無加分紀錄</td></tr>';
+
+    // Tasks View
+    if(document.getElementById('view-tasks').style.display !== 'none') {
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById('day-tabs').innerHTML = WEEK_DAYS.map((d, i) => {
+            const isFuture = dates[i].toISOString().split('T')[0] > todayStr;
+            return `<button class="day-tab ${state.activeDay===i?'active':''}" ${isFuture?'disabled':''} onclick="state.activeDay=${i}; render();">週${d}</button>`;
+        }).join('');
+
+        const child = state.config.members.find(m => m.id === state.activeChild) || state.config.members[0];
+        ensureData(wkKey, child.id);
+        const dayData = state.data[`${wkKey}_${child.id}`].days[state.activeDay];
+
+        document.getElementById('tasks-content').innerHTML = `
+            <div class="task-card">
+                <div style="font-weight:900; font-size:18px; margin-bottom:12px">${child.emoji} ${child.name} - 任務</div>
+                ${state.config.dtasks.map((t, i) => `
+                    <div class="task-item day-type ${dayData.tasks['d'+i]?'checked':''}" onclick="toggleTask('d${i}')">
+                        <div class="check-circle">${dayData.tasks['d'+i]?'✓':''}</div><span>${t}</span>
+                    </div>`).join('')}
+                <div style="height:10px"></div>
+                ${state.config.ntasks.map((t, i) => `
+                    <div class="task-item night-type ${dayData.tasks['n'+i]?'checked':''}" onclick="toggleTask('n${i}')">
+                        <div class="check-circle">${dayData.tasks['n'+i]?'✓':''}</div><span>${t}</span>
+                    </div>`).join('')}
+            </div>
+            <div class="task-card" style="background:#FFF5F7; border:2px dashed var(--theme-color)">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px">
+                    <span style="font-weight:900">💖 額外加分</span>
+                    <div style="display:flex; align-items:center; gap:10px">
+                        <button class="nav-btn" onclick="adjBonus(-1)">-</button>
+                        <span id="bonus-val" style="font-weight:900; font-size:18px">${dayData.bonus}</span>
+                        <button class="nav-btn" onclick="adjBonus(1)">+</button>
+                    </div>
+                </div>
+                <textarea id="bonus-note-field" class="form-input" style="height:60px" placeholder="加分備註..." oninput="updateNote(this.value)">${dayData.note || ''}</textarea>
+            </div>
+            <div class="task-card" style="background:#EBF8FF; border:1px solid #BEE3F8">
+                <div style="display:flex; justify-content:space-between; align-items:center">
+                    <span style="font-weight:900; color:#2B6CB0">🎁 領取獎勵</span>
+                    <div style="display:flex; align-items:center; gap:10px">
+                        <button class="nav-btn" onclick="adjUsed(-1)">-</button>
+                        <span id="used-val" style="font-weight:900; font-size:20px">${dayData.used}</span>
+                        <button class="nav-btn" onclick="adjUsed(1)">+</button>
+                    </div>
+                </div>
+            </div>`;
+    }
 }
-function closeEditor(){ document.getElementById('modal-mask').style.display = 'none'; }
-function saveTasks(){
-    const dLines = document.getElementById('edit-dtasks').value.split('\n').filter(l=>l.trim()!=='');
-    const nLines = document.getElementById('edit-ntasks').value.split('\n').filter(l=>l.trim()!=='');
-    config.dtasks = dLines.map(l => ({id: 'task_'+l.trim(), l: l.trim()}));
-    config.ntasks = nLines.map(l => ({id: 'task_'+l.trim(), l: l.trim()}));
-    localSave();
-    closeEditor();
+
+function selectChild(id, day) {
+    state.activeChild = id; 
+    if(day !== undefined) state.activeDay = day;
+    switchView('tasks');
+}
+
+function switchView(v) {
+    document.getElementById('view-dashboard').style.display = v === 'dashboard' ? 'block' : 'none';
+    document.getElementById('view-tasks').style.display = v === 'tasks' ? 'block' : 'none';
+    document.getElementById('tab-dashboard').classList.toggle('active', v === 'dashboard');
+    document.getElementById('tab-tasks').classList.toggle('active', v === 'tasks');
     render();
 }
 
-function renderOv(){
-    const wk = getWkKey(wkOff);
-    let h = '<div class="person-row">'; // 第一列：兩個總覽卡片
-    CH.forEach(c => {
-        const res = weekCalc(wk, c.id);
-        h += `<div class="ov-card ${c.id==='a'?'hardy':'ted'}" onclick="pickChild('${c.id}')">
-            <div class="ov-name">${c.icon} ${c.name}</div>
-            <div class="ov-total">${res.rawTotalPoints}<span>分</span></div>
-            <div class="ov-formula">${res.base} + ${res.bonus}</div>
-            <div class="ov-rem-box">
-                <span class="ov-rem-label">${res.remHours} hr</span>
-                <span class="ov-rem-sub">累計 ${res.totalHours}</span>
+function toggleTask(tid) {
+    const wkKey = getWkKey(state.wkOffset);
+    const dayData = state.data[`${wkKey}_${state.activeChild}`].days[state.activeDay];
+    dayData.tasks[tid] = !dayData.tasks[tid];
+    save(); render();
+}
+
+function adjBonus(v) {
+    const wkKey = getWkKey(state.wkOffset);
+    const d = state.data[`${wkKey}_${state.activeChild}`].days[state.activeDay];
+    d.bonus = Math.max(0, (d.bonus || 0) + v);
+    document.getElementById('bonus-val').innerText = d.bonus;
+    save();
+}
+
+function adjUsed(v) {
+    const wkKey = getWkKey(state.wkOffset);
+    const d = state.data[`${wkKey}_${state.activeChild}`].days[state.activeDay];
+    d.used = Math.max(0, (d.used || 0) + v);
+    document.getElementById('used-val').innerText = d.used;
+    save();
+}
+
+function updateNote(v) {
+    const wkKey = getWkKey(state.wkOffset);
+    if (!state.data[`${wkKey}_${state.activeChild}`]) ensureData(wkKey, state.activeChild);
+    state.data[`${wkKey}_${state.activeChild}`].days[state.activeDay].note = v;
+    save();
+}
+
+function changeWk(v) { state.wkOffset += v; render(); }
+
+// 系統與計分設定
+function showSettings() {
+    const themeList = document.getElementById('theme-options');
+    themeList.innerHTML = THEMES.map((t, idx) => `
+        <div style="width:30px; height:30px; border-radius:8px; cursor:pointer; background:${t.main}; border:${state.config.themeIndex===idx?'3px solid #4A5568':'none'}" 
+             onclick="state.config.themeIndex=${idx}; applyTheme(); showSettings();"></div>`).join('');
+
+    document.getElementById('set-dmode').value = state.config.dMode;
+    document.getElementById('set-dscore').value = state.config.dScore;
+    document.getElementById('set-nmode').value = state.config.nMode;
+    document.getElementById('set-nscore').value = state.config.nScore;
+    document.getElementById('set-unit').value = state.config.unit;
+    document.getElementById('set-dtasks').value = state.config.dtasks.join('\n');
+    document.getElementById('set-ntasks').value = state.config.ntasks.join('\n');
+
+    renderMemberSettings();
+    document.getElementById('settings-modal').style.display = 'flex';
+}
+
+function renderMemberSettings() {
+    const list = document.getElementById('member-settings-list');
+    list.innerHTML = state.config.members.map((m, idx) => `
+        <div class="member-edit-box" data-idx="${idx}">
+            <button style="position:absolute; top:10px; right:10px; border:none; background:none; cursor:pointer" onclick="removeMember(${idx})">🗑️</button>
+            <div style="display:flex; gap:10px">
+                <input type="text" class="form-input member-name" value="${m.name}">
+                <input type="color" class="form-input member-color" style="width:50px; height:40px; padding:2px" value="${m.color}">
             </div>
-        </div>`;
+            <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px">
+                ${EMOJIS.map(e => `<span class="emoji-opt" style="cursor:pointer; font-size: 20px; opacity:${m.emoji===e?1:0.3}" onclick="selectMemberEmoji(${idx}, '${e}')">${e}</span>`).join('')}
+            </div>
+        </div>`).join('');
+}
+
+function selectMemberEmoji(idx, e) {
+    state.config.members[idx].emoji = e;
+    renderMemberSettings();
+}
+
+function addNewMember() { 
+    state.config.members.push({id:'c'+Date.now(), name:'小寶貝', emoji:'👶🏻', color:'#FBB6CE'}); 
+    renderMemberSettings();
+}
+
+function removeMember(idx) { 
+    if(state.config.members.length > 1) { 
+        state.config.members.splice(idx,1); 
+        renderMemberSettings(); 
+    } 
+}
+
+function commitSettings() {
+    // 讀取設定值並寫回 state
+    state.config.dMode = document.getElementById('set-dmode').value;
+    state.config.dScore = Number(document.getElementById('set-dscore').value);
+    state.config.nMode = document.getElementById('set-nmode').value;
+    state.config.nScore = Number(document.getElementById('set-nscore').value);
+    state.config.unit = document.getElementById('set-unit').value;
+    state.config.dtasks = document.getElementById('set-dtasks').value.split('\n').filter(l=>l.trim());
+    state.config.ntasks = document.getElementById('set-ntasks').value.split('\n').filter(l=>l.trim());
+    
+    // 成員名字與顏色更新
+    const boxes = document.querySelectorAll('.member-edit-box');
+    boxes.forEach(box => {
+        const idx = box.dataset.idx;
+        state.config.members[idx].name = box.querySelector('.member-name').value;
+        state.config.members[idx].color = box.querySelector('.member-color').value;
     });
-    h += '</div><div class="person-row">'; // 第二列：兩個趨勢圖
-    CH.forEach(c => {
-        h += `<div class="dashboard-section">
-            <div class="dash-grid">`;
-        for(let i=0; i<7; i++){
-            const pct = getCompletionStatus(wk, c.id, i);
-            const barHeight = Math.min(100, pct);
-            h += `<div class="dash-col">
-                <div class="dash-bar-track">
-                    <div class="dash-bar-fill normal-${c.id}" style="height:${barHeight}%"></div>
-                    ${pct >= 100 ? `<div class="dash-star">⭐</div>` : ''}
-                </div>
-                <div class="dash-label">${DAYS[i]}</div>
-            </div>`;
-        }
-        h += `</div></div>`;
-    });
-    h += '</div>';
 
-    let bonusHistoryHtml = '';
-    CH.forEach(c => {
-        ensure(wk, c.id);
-        const res = D[wk][c.id];
-        if (res.bonus > 0 || res.note) {
-            bonusHistoryHtml += `
-            <div class="bonus-tag">
-                <span class="name-badge" style="background:${c.id==='a'?'var(--hardy-main)':'var(--ted-main)'}">${c.name}</span>
-                <span style="flex:1; color:var(--text-dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">${res.note || '表現優異'}</span>
-                <span style="font-weight:900; color:${c.id==='a'?'var(--hardy-main)':'var(--ted-main)'}">+ ${res.bonus}</span>
-            </div>`;
-        }
-    });
-    if (bonusHistoryHtml) {
-        h += `<div class="bonus-history-container"><div style="font-weight:900; font-size:14px; margin-bottom:10px; padding-left:5px">⭐ 加分紀錄</div>${bonusHistoryHtml}</div>`;
-    }
-    document.getElementById('ov-panel').innerHTML = h;
+    save();
+    document.getElementById('settings-modal').style.display = 'none';
+    render();
 }
 
-function renderDt(){
-    const wk = getWkKey(wkOff);
-    const c = CH.find(x=>x.id===aCh);
-    const res = weekCalc(wk, c.id);
-    const dates = getWkDates(wkOff);
-    const todayStr = (new Date()).toISOString().split('T')[0];
-    let h = `<div class="child-selector">`;
-    CH.forEach(x => h += `<button class="child-btn ${aCh===x.id?'on-'+x.id:''}" onclick="pickChild('${x.id}')">${x.icon} ${x.name}</button>`);
-    h += `</div>`;
-    h += `<div class="reward-banner">
-        <div style="font-size:12px; opacity:0.8; margin-bottom:4px; font-weight:700">可兌換餘額</div>
-        <div class="time-val">${res.remHours}<span style="font-size:16px; margin-left:5px; color:white; opacity:0.7">HR</span></div>
-        <div style="font-size:10px; opacity:0.6; margin-top:8px">累計 ${res.totalHours} / 已兌 ${res.used}</div>
-    </div>`;
-    for(let i=0; i<7; i++){
-        const d = dates[i], ds = d.toISOString().split('T')[0];
-        if(ds > todayStr) continue; 
-        const comp = getCompletionStatus(wk, c.id, i);
-        h += `<div class="day-group">
-            <div class="day-head">
-                <span>週${DAYS[i]} <small style="opacity:0.4; margin-left:5px">${d.getMonth()+1}/${d.getDate()}</small></span>
-                <span style="color:${comp>=100?'var(--accent-warm)':'var(--text-muted)'}; font-size:12px">${comp}%</span>
-            </div>
-            <div style="font-size:11px; font-weight:800; color:var(--text-muted); margin:15px 0 8px">☀️ 日間任務</div>
-            ${config.dtasks.map(t=>`<div class="task-item ${getT(wk,c.id,i,t.id)?'done-'+aCh:''}" onclick="togT('${wk}','${c.id}',${i},'${t.id}')"><div class="check-box" style="${getT(wk,c.id,i,t.id)?'background:var(--'+(aCh==='a'?'hardy':'ted')+'-main); border-color:transparent; color:white':''}">${getT(wk,c.id,i,t.id)?'✓':''}</div><span>${t.l}</span></div>`).join('')}
-            <div style="font-size:11px; font-weight:800; color:var(--text-muted); margin:15px 0 8px">🌙 夜間任務</div>
-            ${config.ntasks.map(t=>`<div class="task-item ${getT(wk,c.id,i,t.id)?'done-'+aCh:''}" onclick="togT('${wk}','${c.id}',${i},'${t.id}')"><div class="check-box" style="${getT(wk,c.id,i,t.id)?'background:var(--'+(aCh==='a'?'hardy':'ted')+'-main); border-color:transparent; color:white':''}">${getT(wk,c.id,i,t.id)?'✓':''}</div><span>${t.l}</span></div>`).join('')}
-        </div>`;
-    }
-    h += `<div class="action-card">
-        <div style="font-weight:900; margin-bottom:15px">⭐ 獎勵與備註</div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
-            <span style="font-size:14px; font-weight:700">額外加分</span>
-            <div style="display:flex; align-items:center; gap:10px; background:#F1F5F9; padding:5px; border-radius:12px">
-                <button class="nav-btn" onclick="adjB('${wk}','${c.id}',-1)">-</button>
-                <span style="font-weight:900; width:20px; text-align:center">${D[wk]?.[c.id]?.bonus||0}</span>
-                <button class="nav-btn" onclick="adjB('${wk}','${c.id}',1)">+</button>
-            </div>
-        </div>
-        <textarea style="width:100%; border:2px solid #F1F5F9; border-radius:12px; padding:12px; font-size:14px; min-height:70px" placeholder="寫點什麼..." oninput="setNote('${wk}','${c.id}',this.value)">${D[wk]?.[c.id]?.note||''}</textarea>
-    </div>
-    <div class="action-card" style="background:#FFFBEB; border:1px solid #FDE68A">
-        <div style="display:flex; justify-content:space-between; align-items:center">
-            <span style="font-weight:900; color:#92400E">已兌換時數</span>
-            <div style="display:flex; align-items:center; gap:10px; background:white; padding:5px; border-radius:12px">
-                <button class="nav-btn" onclick="doUse('${wk}','${c.id}',-1)">-</button>
-                <span style="font-weight:900; width:20px; text-align:center; color:#92400E">${D[wk]?.[c.id]?.used||0}</span>
-                <button class="nav-btn" onclick="doUse('${wk}','${c.id}',1)" ${res.remHours<=0?'disabled':''}>+</button>
-            </div>
-        </div>
-    </div>`;
-    document.getElementById('dt-panel').innerHTML = h;
+function hideSettings() {
+    document.getElementById('settings-modal').style.display = 'none';
+    render();
 }
 
-function getWkKey(off){
-    const n = new Date(), dy = n.getDay(), m = new Date(n);
-    m.setDate(n.getDate() - (dy === 0 ? 6 : dy - 1) + off * 7);
-    return m.toISOString().split('T')[0];
-}
-function getWkDates(off){
-    const n = new Date(), dy = n.getDay(), m = new Date(n);
-    m.setDate(n.getDate() - (dy === 0 ? 6 : dy - 1) + off * 7);
-    return Array.from({length:7}, (_,i)=>{ const d=new Date(m); d.setDate(m.getDate()+i); return d; });
-}
-function adjWk(n){ wkOff += n; render(); }
-function pickChild(cid){ aCh = cid; goView('dt'); render(); }
-function adjB(wk,cid,v){ ensure(wk,cid); D[wk][cid].bonus = Math.max(0, (D[wk][cid].bonus||0)+v); localSave(); render(); }
-function doUse(wk,cid,v){ ensure(wk,cid); D[wk][cid].used = Math.max(0, (D[wk][cid].used||0)+v); localSave(); render(); }
-function setNote(wk,cid,v){ ensure(wk,cid); D[wk][cid].note = v; localSave(); }
-
-function render(){
-    const dates = getWkDates(wkOff);
-    document.getElementById('wkLbl').textContent = `${dates[0].getMonth()+1}/${dates[0].getDate()} - ${dates[6].getMonth()+1}/${dates[6].getDate()}`;
-    renderOv();
-    renderDt();
-}
-
-localLoad();
-render();
+load();
 </script>
 </body>
 </html>
