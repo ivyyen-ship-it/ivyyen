@@ -1,814 +1,189 @@
-<!-- Chosen Palette: Indigo/Green Minimalist -->
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今網大雙網客戶工項自動化介面 V2.2</title>
+    <title>雙網方案策略分析與轉型建議 - 2026/04版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Base styling for Inter font and chart container control */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+TC:wght@100..900&display=swap');
-        body {
-        font-family: 'Inter', 'Noto Sans TC', sans-serif;
-            background-color: #f3ff6;
-        }
-        /* Custom styling for inputs */
-        .form-select {
-            transition: all 0.15s ease-in-out;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3e%3cpath d='M7 7l3-3 3 3m0 6l-3 3-3-3' stroke='%234B5563' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3e%3csvg%3e");
-            background-repeat: no-repeat;
-            background-position: right 0.5rem center;
-            background-size: 1.5em 1.5em;
-            padding-right: 2.5rem;
-        }
-        .form-select:focus {
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.4);
-        }
-        /* Adjusted font size for primary output text */
-        .primary-output-text {
-            font-size: 1.125rem; /* Slightly smaller for multiple lines */
-            font-weight: 700;
-            color: #4338CA; /* Indigo 700 */
-            /* Ensure each line starts on a new line */
-            white-space: pre-wrap;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .critical-section { border-left: 8px solid #ef4444; }
+        .progress-section { border-left: 8px solid #10b981; }
+        .strategy-section { border-left: 8px solid #3b82f6; }
+        .data-badge { @apply px-2 py-1 rounded text-xs font-bold uppercase; }
+        .bg-red-soft { background-color: #fef2f2; }
+        .bg-green-soft { background-color: #f0fdf4; }
+        .bg-blue-soft { background-color: #eff6ff; }
     </style>
 </head>
-<body class="p-4 sm:p-8">
-    <!-- Main Content Container -->
-    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl overflow-hidden">
+<body class="py-10 px-4 md:px-12 bg-slate-100">
+    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden">
         
-        <!-- Header Section -->
-        <header class="p-6 bg-indigo-700 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center rounded-t-xl">
-            <h1 class="text-2xl font-bold tracking-tight mb-2 sm:mb-0">今網大雙網客戶工項自動化介面 V2.2</h1>
-            <span class="text-sm opacity-80 font-medium bg-indigo-800 px-3 py-1 rounded-full">工項邏輯驗證與輸出</span>
+        <!-- Top Banner: Diagnostic Summary -->
+        <header class="bg-slate-900 text-white p-10">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end">
+                <div class="flex-1">
+                    <h1 class="text-4xl font-black mb-4 tracking-tighter">診斷：優秀業務正被「流程」與「瑣事」鈍化</h1>
+                    <p class="text-slate-400 text-lg">優化已達盡頭，最後一項系統卡控已於今日上線。建議果斷轉型，釋放黃金產能。</p>
+                </div>
+                <div class="mt-6 md:mt-0 md:ml-8 text-right">
+                    <div class="inline-block bg-red-600 px-4 py-2 rounded-lg font-bold text-xl mb-1">
+                        轉型評估報告
+                    </div>
+                    <p class="text-slate-500 text-sm italic">Confidential Management Report | 2026-04-28 Updated</p>
+                </div>
+            </div>
         </header>
 
-        <div class="p-6 sm:p-8 lg:flex lg:space-x-8 lg:items-stretch">
-            
-            <!-- 1. Form Section 填寫區 (Input Area) -->
-            <div class="lg:w-3/5 space-y-6">
-                <h2 class="text-xl font-semibold mb-6 pb-2 border-b border-gray-200 text-indigo-800 flex items-center">
-                    <span class="mr-2">📝</span>
-                    客戶情境設定區 (即時運算工項)
-                </h2>
-
-                <form id="workOrderForm" class="space-y-6">
-                    
-                    <!-- 區塊一：方案資訊 (用於標題或備註) -->
-                    <div class="p-4 bg-indigo-50/50 rounded-xl border border-indigo-300 shadow-sm">
-                        <h3 class="text-lg font-bold mb-4 text-indigo-700 flex items-center">
-                            <span class="mr-2 text-xl">❶</span>
-                            區塊一：方案速記 (即時計算)
-                        </h3>
-                        
-                        <!-- 多門號控制項 -->
-                        <div class="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-6 mb-4 pb-4 border-b border-indigo-200">
-                            <div class="flex items-center space-x-2">
-                                <input type="checkbox" id="multipleLinesCheckbox" class="rounded text-indigo-600 focus:ring-indigo-500 border-gray-300">
-                                <label for="multipleLinesCheckbox" class="font-bold text-indigo-700">多個門號</label>
-                            </div>
-                            
-                            <div class="space-y-1" id="lineCountWrapper">
-                                <label for="lineCountSelect" class="block text-sm font-medium text-gray-700">總門號數</label>
-                                <select id="lineCountSelect" class="form-select rounded-lg border border-gray-300 shadow-sm p-2 w-20" disabled>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Dynamic Line Containers -->
-                        <div id="dynamicPhoneLinesContainer" class="space-y-6">
-                            <!-- Lines will be rendered here by JS -->
-                        </div>
-                    </div>
-
-                    <!-- 區塊二：細節與工項依據 (剩下欄位) -->
-                    <div class="p-4 bg-gray-50 rounded-xl border border-gray-300 shadow-sm">
-                        <h3 class="text-lg font-bold mb-4 text-gray-700 flex items-center">
-                            <span class="mr-2 text-xl">❷</span>
-                            區塊二：工項計算細節 (僅參考第一個門號情境)
-                        </h3>
-                        <!-- Input Grid for Block 2 (now only 4 fields) -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                            <!-- 今網網路 (Select) -->
-                            <div class="space-y-1">
-                                <label for="jingnetStatus" class="block text-sm font-medium text-gray-700">今網網路 <span class="text-red-500">*</span></label>
-                                <select id="jingnetStatus" class="form-select w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
-                                    <option value="" selected>請選擇</option>
-                                    <option value="新裝機已付款">新裝機已付款</option>
-                                    <option value="新裝機未付款">新裝機未付款</option>
-                                    <option value="期中客">期中客</option>
-                                    <option value="續約客已付款">續約客已付款</option>
-                                    <option value="續約客未付款">續約客未付款</option>
-                                </select>
-                            </div>
-
-                            <!-- 原電信合約 (Select) -->
-                            <div class="space-y-1">
-                                <label for="originalContract" class="block text-sm font-medium text-gray-700">原電信合約 <span class="text-red-500">*</span></label>
-                                <select id="originalContract" class="form-select w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
-                                    <option value="" selected>請選擇</option>
-                                    <option value="須解約">須解約</option>
-                                    <option value="無合約">無合約</option>
-                                    <option value="28天內">28天內</option>
-                                    <option value="無">無</option> <!-- 新增選項 -->
-                                </select>
-                            </div>
-                            
-                            <!-- 款項 (Select) -->
-                            <div class="space-y-1">
-                                <label for="paymentType" class="block text-sm font-medium text-gray-700">款項 <span class="text-red-500">*</span></label>
-                                <select id="paymentType" class="form-select w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
-                                    <option value="" selected>請選擇</option> 
-                                    <option value="預繳金">預繳金</option>
-                                    <option value="無">無</option>
-                                </select>
-                            </div>
-                            
-                            <!-- SIM卡 (Select) -->
-                            <div class="space-y-1">
-                                <label for="simDelivery" class="block text-sm font-medium text-gray-700">SIM卡派送方式 <span class="text-red-500">*</span></label>
-                                <select id="simDelivery" class="form-select w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
-                                    <option value="" selected>請選擇</option>
-                                    <!-- Options populated by JS dynamically based on telecom provider -->
-                                </select>
-                            </div>
-                            
-                        </div>
-
-                        <!-- 其他工項(請說明) -->
-                        <div class="space-y-1 pt-6">
-                            <label for="otherTaskDescription" class="block text-sm font-medium text-gray-700">其他工項說明 (若有則會自動加入清單)</label>
-                            <textarea id="otherTaskDescription" rows="2" placeholder="請輸入需要手動追蹤或特殊處理的任務說明" class="mt-1 block w-full rounded-lg border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2"></textarea>
-                        </div>
-                    </div>
-
-                </form>
+        <!-- Section 1: The Core Problem - Product Friction -->
+        <section class="p-8 md:p-12 critical-section bg-red-soft border-b border-red-100">
+            <div class="flex items-center mb-8">
+                <div class="bg-red-600 text-white p-2 rounded-lg mr-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <h2 class="text-3xl font-extrabold text-slate-800">核心痛點：業務淪為 LINE 客服，產能遭嚴重稀釋</h2>
             </div>
 
-            <!-- 2. Output Section 工項區 (Result Area) -->
-            <div class="lg:w-2/5 mt-8 lg:mt-0 space-y-8">
-                
-                <!-- === Primary Output (區塊一結果) === -->
-                <div class="p-0">
-                    <h2 class="text-xl font-semibold mb-4 pb-2 border-b border-indigo-200 text-indigo-700 flex items-center">
-                        <span class="mr-2">💡</span>
-                        區塊一：方案速記 (快速複製用)
-                    </h2>
-                    
-                    <div id="primaryOutput" class="p-4 border-2 border-indigo-500 rounded-xl bg-indigo-50 min-h-16 shadow-inner transition duration-300 flex items-center justify-center">
-                        <p class="text-gray-500 italic">請在左側填寫區塊一資訊</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- Sales Drain -->
+                <div>
+                    <h3 class="text-xl font-bold text-red-700 mb-4 border-b-2 border-red-200 pb-2 italic">業務端：專業錯置，陷入無效溝通循環</h3>
+                    <div class="space-y-4">
+                        <div class="bg-white p-4 rounded-xl shadow-sm">
+                            <p class="font-bold text-slate-800">● 專注力斷層：時刻守候 LINE 回覆</p>
+                            <p class="text-sm text-slate-600 mt-1 leading-relaxed">電銷本質應專注於電話開發與締結。雙網的高度複雜性迫使業務必須時刻關注 LINE，回覆「解約教學」與「流程說明」，頻繁中斷開發心流。</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm">
+                            <p class="font-bold text-slate-800">● 長戰線心理消磨：追蹤週期 30~74 天</p>
+                            <p class="text-sm text-slate-600 mt-1 italic italic underline">個案：林O承(35天)、黃O賓(74天)</p>
+                            <p class="text-sm text-slate-600 mt-1">業務被迫成為「網路客服」與「解約諮詢師」，處理跨月未結案件的焦慮，嚴重稀釋開發新案的衝勁。</p>
+                        </div>
                     </div>
-                    
-                    <button id="copyPrimaryButton" class="mt-4 w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-lg transition duration-150 ease-in-out transform hover:scale-[1.005] flex items-center justify-center">
-                        <span class="mr-2">📋</span>
-                        複製方案速記
-                    </button>
                 </div>
 
-
-                <!-- === Secondary Output (區塊二結果/工項清單) -->
-                <div class="p-0">
-                    <h2 class="text-xl font-semibold mb-4 pb-2 border-b border-gray-200 text-green-700 flex items-center">
-                        <span class="mr-2">✅</span>
-                        區塊二：自動產出工項清單
-                    </h2>
-                    
-                    <!-- Work Items Output -->
-                    <div id="workItemsOutput" class="space-y-4 p-4 border-2 border-green-300 rounded-xl bg-green-50 min-h-64 shadow-inner transition duration-300">
-                        <p class="text-gray-500 italic text-center pt-8">請在左側完整填寫所有客戶資訊，工項會即時自動生成。</p>
+                <!-- Admin Drain -->
+                <div>
+                    <h3 class="text-xl font-bold text-red-700 mb-4 border-b-2 border-red-200 pb-2 italic">行政端：1300+ 工項鎖死後勤彈性</h3>
+                    <div class="space-y-4">
+                        <div class="bg-white p-4 rounded-xl shadow-sm">
+                            <p class="font-bold text-slate-800">● 作業碎片化：7 系統 / 9 群組高頻切換</p>
+                            <p class="text-sm text-slate-600 mt-1">在遠傳/中華、智生活後台、行政派工群組間頻繁切換。這種碎片化作業極度消耗心理能量，增加人為失誤風險。</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm">
+                            <p class="font-bold text-slate-800">● 個案引發的產能歸零</p>
+                            <p class="text-sm text-slate-600 mt-1">如「張O馪」等特殊案例，業務需花費 3 倍時間與會計、RD對焦流程延宕與退款。這類案件一旦出現，當日開發產能直接歸零。</p>
+                        </div>
                     </div>
-                    
-                    <!-- Red Warning for Chunghwa Mid-Term -->
-                    <div id="chunghwaMidTermWarning" class="hidden mt-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 font-semibold rounded-lg text-sm shadow-md">
-                        <!-- 提醒語將由 JavaScript 載入 -->
-                    </div>
-
-                    <!-- Action Button & Confirmation -->
-                    <button id="copyWorkItemsButton" class="mt-6 w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-lg transition duration-150 ease-in-out transform hover:scale-[1.005] flex items-center justify-center">
-                        <span class="mr-2">📝</span>
-                        複製工項清單
-                    </button>
                 </div>
-                
-                <div id="confirmationMessage" class="hidden mt-4 p-3 text-center rounded-lg font-medium shadow-md">
-                    <!-- Confirmation message will appear here -->
+            </div>
+        </section>
+
+        <!-- Section 2: Optimization Timeline (Finalizing the Effort) -->
+        <section class="p-8 md:p-12 progress-section bg-green-soft">
+            <h2 class="text-3xl font-extrabold text-slate-800 mb-8 flex items-center">
+                <span class="bg-green-600 text-white p-2 rounded-lg mr-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                </span>
+                優化歷程：行政端已完成 15 項收攏 (今日最後一項上線)
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-xl border border-green-200">
+                    <div class="data-badge bg-green-100 text-green-700 mb-2">落地 1 年</div>
+                    <h4 class="font-bold mb-1">AI 質檢系統</h4>
+                    <p class="text-xs text-slate-500">完成教材製作、教學流程SOP，透過AI自動化監控通話品質。</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-green-200">
+                    <div class="data-badge bg-green-100 text-green-700 mb-2">落地半年</div>
+                    <h4 class="font-bold mb-1">自動通知工具</h4>
+                    <p class="text-xs text-slate-500">門號問題件、ISP到期自動通知，降低人為錯誤與遺漏。</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-green-200">
+                    <div class="data-badge bg-green-100 text-green-700 mb-2">落地半年</div>
+                    <h4 class="font-bold mb-1">行政工具開發</h4>
+                    <p class="text-xs text-slate-500">業助派工頁、自動產工項工具、優惠試算工具，收攏碎片化流程。</p>
+                </div>
+                <div class="bg-blue-600 p-4 rounded-xl shadow-lg transform scale-105">
+                    <div class="data-badge bg-white text-blue-700 mb-2 font-black">Today (4/28) 上線</div>
+                    <h4 class="font-bold mb-1 text-white">系統規則卡控</h4>
+                    <p class="text-xs text-blue-100">雙網方案申辦流程與規則正式寫入系統，完成防禦性優化的最後一環。</p>
                 </div>
             </div>
 
-        </div>
+            <div class="mt-10 bg-white p-8 rounded-2xl border-4 border-green-500">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="flex-1">
+                        <h4 class="font-black text-slate-800 text-2xl mb-2 underline decoration-green-400">最終診斷：優化已到盡頭</h4>
+                        <p class="text-slate-600 leading-relaxed">
+                            雖然行政端透過自動化「止損」，並將人均產能提升了 **28% (38件)**，但這無法解決「高摩擦力產品」帶來的結構性損害。21 道流程的繁瑣是系統性的，單靠優化無法讓戰力回歸。
+                        </p>
+                    </div>
+                    <div class="mt-6 md:mt-0 md:ml-10 text-center">
+                        <div class="text-5xl font-black text-red-600 mb-1 tracking-tighter">1300+</div>
+                        <div class="text-sm font-bold text-slate-400 uppercase">每月極限工項數</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Strategic Turnaround -->
+        <section class="p-8 md:p-12 strategy-section bg-blue-soft">
+            <h2 class="text-3xl font-extrabold text-slate-800 mb-8 flex items-center">
+                <span class="bg-blue-600 text-white p-2 rounded-lg mr-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                </span>
+                決策建議：收攏資源，追求 10 倍周轉率
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- Suggestion 1 -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h4 class="font-black text-blue-700 text-lg mb-4 flex items-center">
+                        <span class="mr-2">🚀</span> 釋放核心戰力
+                    </h4>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        將具備高度締結能力的優秀業務，從長達 30-70 天的「電信諮詢」循環中抽離。投入到能**當天成交、當週結案**的高產值商品。不應再讓頂尖戰力被瑣碎流程「鈍化」。
+                    </p>
+                </div>
+                <!-- Suggestion 2 -->
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h4 class="font-black text-blue-700 text-lg mb-4 flex items-center">
+                        <span class="mr-2">🛡️</span> 降低行政內耗
+                    </h4>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        取消每月 1300 件的瑣碎工項（如中華二階送件、違約單上傳、預繳核對）。讓行政與業助轉向支援更有利於規模化的業務開發，提升部門整體的彈性與反應速度。
+                    </p>
+                </div>
+            </div>
+
+            <!-- ROI Comparison -->
+            <div class="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"></path></svg>
+                </div>
+                <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center text-center">
+                    <div>
+                        <p class="text-red-400 font-bold mb-2">現有雙網模式</p>
+                        <p class="text-4xl font-black mb-2">30 - 74 天</p>
+                        <p class="text-slate-400 text-sm italic underline">成交週期過長 / 戰力被鎖死</p>
+                    </div>
+                    <div class="border-l border-slate-700">
+                        <p class="text-green-400 font-bold mb-2">理想高效模式</p>
+                        <p class="text-4xl font-black mb-2">3 - 7 天</p>
+                        <p class="text-slate-400 text-sm italic font-bold">10 倍資源周轉率</p>
+                    </div>
+                </div>
+                <div class="mt-8 pt-6 border-t border-slate-800 text-center">
+                    <p class="text-xl font-bold">最終結論：優化已到極限，應果斷收掉雙網方案，回歸高效作戰模式。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Signature Footer -->
+        <footer class="p-8 bg-white border-t border-slate-200 text-center">
+            <p class="text-slate-400 text-sm">© 2026 智生活部門效能分析報告 | 專案主管：電銷部經理 | 2026-04-28 今日更新</p>
+        </footer>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('workOrderForm');
-            
-            // Output elements for Primary Section (Block 1)
-            const primaryOutputDiv = document.getElementById('primaryOutput');
-            const copyPrimaryButton = document.getElementById('copyPrimaryButton');
-
-            // Output elements for Secondary Section (Block 2)
-            const workItemsOutputDiv = document.getElementById('workItemsOutput');
-            const copyWorkItemsButton = document.getElementById('copyWorkItemsButton');
-            
-            const confirmationMessage = document.getElementById('confirmationMessage');
-            const chunghwaMidTermWarning = document.getElementById('chunghwaMidTermWarning');
-            
-            // New Multi-line elements
-            const multipleLinesCheckbox = document.getElementById('multipleLinesCheckbox');
-            const lineCountSelect = document.getElementById('lineCountSelect');
-            const dynamicPhoneLinesContainer = document.getElementById('dynamicPhoneLinesContainer');
-            
-            // Block 2 Select elements (still global/single)
-            const originalContractSelect = document.getElementById('originalContract'); // 原電信合約
-            const simDeliverySelect = document.getElementById('simDelivery'); 
-            const paymentTypeSelect = document.getElementById('paymentType'); // 款項
-
-            // 定義所有資費選項 (標準選項集)
-            const allFees = ["399", "599", "699", "799", "999", "1399"];
-
-            // 定義電信業者 (標準選項集)
-            const defaultProviders = ["中華", "遠傳"];
-
-            // 定義所有 SIM 卡派送選項
-            const allSimDeliveryOptions = [
-                { value: "親送", label: "親送" },
-                { value: "寄卡", label: "寄卡" },
-                { value: "送卡", label: "送卡" },
-                { value: "至公司取卡", label: "至公司取卡" },
-                { value: "eSIM", label: "eSIM" },
-                { value: "台中取卡", label: "台中取卡" },
-                { value: "無須派送", label: "無須派送" },
-            ];
-            
-            // 定義所有網路月份選項 (一般情境) - **微調順序**
-            const defaultInternetMonths = [
-                "12+2", // 微調: 放在 24+1 前
-                "14+2", // 微調: 放在 24+1 前
-                "24+1", 
-                "24+2", 
-                "24+3", 
-                "24+4", 
-                "3", "4", "8", "9", "13", "16", "19", 
-                "24", "30",
-            ];
-
-            // 續約中華專屬選項
-            const renewalChunghwaMonths = [
-                "3", "5", "8", "9", "14", "21", 
-                "24", "24+2", "24+4"
-            ];
-            
-            // 主業權贈送所需月份
-            const requiredGiftMonths = ["24+1", "24+2", "24+3", "24+4", "12+2", "14+2"];
-
-
-            /**
-             * 取得單一門號欄位的 HTML 模板。
-             */
-            function getPhoneLineTemplate(index) {
-                const title = index === 0 ? '門號情境設定' : `門號 ${index + 1} 情境設定`;
-                return `
-                    <div class="phone-line-form p-4 bg-white rounded-lg border border-gray-200 shadow-sm" data-line-index="${index}">
-                        <h4 class="text-md font-semibold mb-3 text-indigo-600 border-b border-indigo-100 pb-2">${title}</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            
-                            <!-- 方案狀態 (Select) -->
-                            <div class="space-y-1">
-                                <label class="block text-sm font-medium text-gray-700">方案狀態 <span class="text-red-500">*</span></label>
-                                <select class="line-input plan-status-select form-select w-full rounded-lg border border-gray-300 shadow-sm p-2">
-                                    <option value="" selected>請選擇</option>
-                                    <option value="新辦">新辦</option>
-                                    <option value="攜碼">攜碼</option>
-                                    <option value="續約">續約</option>
-                                </select>
-                            </div>
-
-                            <!-- 申辦電信 (Select) -->
-                            <div class="space-y-1">
-                                <label class="block text-sm font-medium text-gray-700">申辦電信 <span class="text-red-500">*</span></label>
-                                <select class="line-input telecom-provider-select form-select w-full rounded-lg border border-gray-300 shadow-sm p-2">
-                                    <option value="" selected>請選擇</option>
-                                </select>
-                            </div>
-                            
-                            <!-- 月資費 (Select) -->
-                            <div class="space-y-1">
-                                <label class="block text-sm font-medium text-gray-700">月資費 <span class="text-red-500">*</span></label>
-                                <select class="line-input monthly-fee-select form-select w-full rounded-lg border border-gray-300 shadow-sm p-2">
-                                    <option value="" selected>請選擇</option>
-                                </select>
-                            </div>
-
-                            <!-- 網路月份 (Select) -->
-                            <div class="space-y-1">
-                                <label class="block text-sm font-medium text-gray-700">網路月份 <span class="text-red-500">*</span></label>
-                                <select class="line-input internet-months-select form-select w-full rounded-lg border border-gray-300 shadow-sm p-2">
-                                    <option value="" selected>請選擇</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            /**
-             * 更新特定門號的申辦電信選項。
-             */
-            function updateTelecomProviderOptions(selectElement) {
-                const currentProvider = selectElement.value;
-                selectElement.innerHTML = '<option value="">請選擇</option>';
-
-                defaultProviders.forEach(provider => {
-                    const option = document.createElement('option');
-                    option.value = provider;
-                    option.textContent = provider;
-                    selectElement.appendChild(option);
-                });
-
-                if (defaultProviders.includes(currentProvider)) {
-                    selectElement.value = currentProvider;
-                } else {
-                    selectElement.value = "";
-                }
-            }
-            
-            /**
-             * 根據申辦電信，更新特定門號的月資費選項。
-             */
-            function updateMonthlyFeeOptions(selectElement, selectedProvider) {
-                const currentFee = selectElement.value;
-                selectElement.innerHTML = '<option value="">請選擇</option>';
-
-                if (!selectedProvider) return;
-
-                let feesToShow = [...allFees];
-                
-                // 根據電信篩選 
-                if (selectedProvider === '中華') {
-                    // 中華標準方案不提供 399
-                    feesToShow = feesToShow.filter(fee => fee !== "399");
-                } else if (selectedProvider === '遠傳') {
-                    // 遠傳標準方案不提供 699
-                    feesToShow = feesToShow.filter(fee => fee !== "699");
-                }
-
-                feesToShow.forEach(fee => {
-                    const option = document.createElement('option');
-                    option.value = fee;
-                    option.textContent = fee;
-                    selectElement.appendChild(option);
-                });
-
-                if (feesToShow.includes(currentFee)) {
-                    selectElement.value = currentFee;
-                } else {
-                    selectElement.value = ""; 
-                }
-            }
-            
-            /**
-             * 根據方案狀態和申辦電信，更新特定門號的網路月份選項。
-             */
-            function updateInternetMonthsOptions(selectElement, planStatus, telecomProvider) {
-                const currentMonths = selectElement.value;
-                selectElement.innerHTML = '<option value="">請選擇</option>';
-
-                if (!planStatus || !telecomProvider) return;
-
-                let monthsToShow;
-
-                if (planStatus === '續約' && telecomProvider === '中華') {
-                    // 續約中華專屬月份
-                    monthsToShow = [...renewalChunghwaMonths];
-                } else {
-                    // 一般情境月份
-                    monthsToShow = [...defaultInternetMonths];
-                }
-                
-                // 根據要求，如果狀態是續約，則排除 12+2 和 14+2
-                if (planStatus === '續約') {
-                    monthsToShow = monthsToShow.filter(month => month !== "12+2" && month !== "14+2");
-                }
-
-
-                monthsToShow.forEach(month => {
-                    const option = document.createElement('option');
-                    option.value = month;
-                    option.textContent = month;
-                    selectElement.appendChild(option);
-                });
-
-                if (monthsToShow.includes(currentMonths)) {
-                    selectElement.value = currentMonths;
-                } else {
-                    selectElement.value = ""; 
-                }
-            }
-
-            /**
-             * 處理單一門號欄位的事件監聽和動態選項更新。
-             * @param {HTMLElement} lineContainer - 該門號的父容器 element.
-             */
-            function setupLineEventListeners(lineContainer) {
-                const statusSelect = lineContainer.querySelector('.plan-status-select');
-                const providerSelect = lineContainer.querySelector('.telecom-provider-select');
-                const feeSelect = lineContainer.querySelector('.monthly-fee-select');
-                const monthsSelect = lineContainer.querySelector('.internet-months-select');
-
-                // 初始載入時，先更新選項清單 (因為模板中選項是空的)
-                updateTelecomProviderOptions(providerSelect); 
-                updateMonthlyFeeOptions(feeSelect, providerSelect.value);
-                updateInternetMonthsOptions(monthsSelect, statusSelect.value, providerSelect.value);
-
-                // 監聽所有 Select 變動，重新計算工項
-                lineContainer.querySelectorAll('.line-input').forEach(input => {
-                    input.addEventListener('change', calculateWorkItems);
-                });
-
-                // 監聽狀態或電信變動，更新資費/月份的選項
-                [statusSelect, providerSelect].forEach(input => {
-                    input.addEventListener('change', () => {
-                        const currentStatus = statusSelect.value;
-                        const currentProvider = providerSelect.value;
-                        
-                        // 動態更新資費和月份的選項
-                        updateMonthlyFeeOptions(feeSelect, currentProvider);
-                        updateInternetMonthsOptions(monthsSelect, currentStatus, currentProvider);
-
-                        // 重新計算工項
-                        calculateWorkItems();
-                    });
-                });
-            }
-
-            /**
-             * 根據選擇的門號數量，動態生成並渲染輸入欄位。
-             */
-            function renderPhoneLines(count) {
-                dynamicPhoneLinesContainer.innerHTML = '';
-                for (let i = 0; i < count; i++) {
-                    const templateHtml = getPhoneLineTemplate(i);
-                    const lineDiv = document.createElement('div');
-                    lineDiv.innerHTML = templateHtml.trim();
-                    dynamicPhoneLinesContainer.appendChild(lineDiv.firstChild);
-
-                    // 針對新生成的門號欄位設定事件監聽
-                    setupLineEventListeners(dynamicPhoneLinesContainer.children[i]);
-                }
-            }
-            
-            /**
-             * 從所有動態生成的門號欄位中收集數據。
-             * @returns {Array<{planStatus: string, telecomProvider: string, monthlyFee: string, internetMonths: string}>}
-             */
-            function collectLineData() {
-                const linesData = [];
-                const lineContainers = dynamicPhoneLinesContainer.querySelectorAll('.phone-line-form');
-                
-                lineContainers.forEach(container => {
-                    const data = {
-                        planStatus: container.querySelector('.plan-status-select').value,
-                        telecomProvider: container.querySelector('.telecom-provider-select').value,
-                        monthlyFee: container.querySelector('.monthly-fee-select').value,
-                        internetMonths: container.querySelector('.internet-months-select').value,
-                    };
-                    linesData.push(data);
-                });
-
-                return linesData;
-            }
-            
-            /**
-             * 處理「續約中華」情境下的 Block 2 預設值設定。
-             * 僅當第一個門號選擇「續約中華」時觸發。
-             */
-            function handleRenewalChunghwaDefaults(firstLineData) {
-                if (!firstLineData) return;
-
-                const { planStatus, telecomProvider } = firstLineData;
-                
-                // 檢查是否為 續約中華
-                if (planStatus === '續約' && telecomProvider === '中華') {
-                    // 帶入續約中華的預設值 (Block 2)
-                    originalContractSelect.value = '無';
-                    simDeliverySelect.value = '無須派送'; 
-                }
-                // 否則不做任何操作，讓用戶手動選擇 Block 2
-            }
-
-
-            /**
-             * 根據申辦電信，動態更新 SIM 卡派送方式選項 (Block 2, 單一)。
-             */
-            function updateSimDeliveryOptions(selectedProvider) {
-                const currentSimDelivery = simDeliverySelect.value;
-                simDeliverySelect.innerHTML = '<option value="">請選擇</option>';
-
-                if (!selectedProvider) {
-                    allSimDeliveryOptions.forEach(optionDef => {
-                        const option = document.createElement('option');
-                        option.value = optionDef.value;
-                        option.textContent = optionDef.label;
-                        simDeliverySelect.appendChild(option);
-                    });
-                    return;
-                }
-
-                let allowedOptions = allSimDeliveryOptions;
-
-                // 標準限制
-                if (selectedProvider === '中華') {
-                    // 中華不允許親送 (標準限制)
-                    allowedOptions = allowedOptions.filter(opt => opt.value !== "親送");
-                } else if (selectedProvider === '遠傳') {
-                    // 遠傳不允許至公司取卡, eSIM (標準限制)
-                    allowedOptions = allowedOptions.filter(opt => opt.value !== "至公司取卡" && opt.value !== "eSIM");
-                }
-                
-                allowedOptions.forEach(optionDef => {
-                    const option = document.createElement('option');
-                    option.value = optionDef.value;
-                    option.textContent = optionDef.label;
-                    simDeliverySelect.appendChild(option);
-                });
-
-                if (allowedOptions.some(opt => opt.value === currentSimDelivery)) {
-                    simDeliverySelect.value = currentSimDelivery;
-                } else {
-                    simDeliverySelect.value = "";
-                }
-            }
-
-
-            // 工項邏輯定義 (Work Item Rules)
-            const workItemRules = [
-                // 基礎工項 
-                { name: "改新裝機工單", condition: (v) => v.jingnetStatus === "新裝機未付款", category: "General" },
-                { name: "預繳金/匯款資料核對", condition: (v) => v.telecomProvider === "中華" && v.paymentType !== "無", category: "Finance" },
-                { name: "中華上二階", condition: (v) => v.telecomProvider === "中華", category: "General" },
-                { name: "違約單據上傳、送會辦", condition: (v) => v.originalContract === "須解約", category: "Contract" }, 
-                
-                // === 主業權贈送 - 條件維持不變 ===
-                { 
-                    name: "主業權贈送", 
-                    condition: (v) => (v.jingnetStatus.includes("新裝機") || v.jingnetStatus.includes("續約客")) && 
-                                       requiredGiftMonths.includes(v.internetMonths), // 維持特定月份判斷
-                    category: "General" 
-                },
-                
-                // 退費與結單
-                { name: "退費(請確認客戶已繳費、已裝機，金額請貼記事本)", condition: (v) => v.jingnetStatus === "新裝機已付款" || v.jingnetStatus === "續約客已付款", category: "Refund" },
-                { name: "Chat─結單(會計)(請先確認客戶已繳費、已裝機)", condition: (v) => v.jingnetStatus.includes("續約客") || v.jingnetStatus.includes("期中客"), category: "Settlement" },
-                
-                // === 派送與 Chat 邏輯 - 維持不變 ===
-                
-                // 1. Chat─寄送群: (維持舊有條件) OR (新增: 續約中華，即使是無須派送也要觸發)
-                { 
-                    name: "Chat─寄送群", 
-                    condition: (v) => (v.planStatus === '續約' && v.telecomProvider === '中華') || // 續約中華，強制觸發
-                                     ["寄卡", "親送", "eSIM"].includes(v.simDelivery) || 
-                                     (v.telecomProvider === "遠傳" && v.simDelivery === "台中取卡"),
-                    category: "Chat" 
-                },
-                
-                // 2. Chat--中華拍照群: 排除續約中華 (planStatus !== '續約')
-                { 
-                    name: "Chat--中華拍照群", 
-                    condition: (v) => v.telecomProvider === "中華" && v.planStatus !== '續約', 
-                    category: "Chat" 
-                },
-                
-                // 3. Chat─全區助理:
-                { 
-                    name: "Chat─全區助理", 
-                    condition: (v) => v.simDelivery === "送卡",
-                    category: "Chat" 
-                },
-                
-                // 4. 派卡網維單(無工單):
-                { 
-                    name: "派卡網維單(無工單)", 
-                    condition: (v) => v.simDelivery === "送卡" && 
-                                     v.jingnetStatus !== "新裝機未付款" && 
-                                     !(v.telecomProvider === "中華" && v.jingnetStatus === "期中客"), 
-                    category: "Dispatch" 
-                },
-
-                // 5. 電商派案: 根據您的要求，改為所有情境只要表單填完就會出現
-                { name: "電商派案", condition: (v) => true, category: "Dispatch" }, 
-            ];
-
-            function calculateWorkItems() {
-                // 1. 取得所有門號的輸入值 (Block 1)
-                const lineDataArray = collectLineData();
-                const firstLineData = lineDataArray.length > 0 ? lineDataArray[0] : null;
-
-                // 檢查 Block 1 是否全部選完 (所有門號)
-                const isBlock1Complete = lineDataArray.length > 0 && lineDataArray.every(line => 
-                    line.planStatus !== "" && line.telecomProvider !== "" && line.monthlyFee !== "" && line.internetMonths !== ""
-                );
-                
-                // === Block 2 Dependencies & Defaults (Based on First Line) ===
-                if (firstLineData) {
-                    // A. 根據第一個門號的電信更新 SIM 卡選項 (Block 2)
-                    updateSimDeliveryOptions(firstLineData.telecomProvider); 
-
-                    // B. 處理「續約中華」預設值
-                    // 續約中華會強制設定 originalContractSelect.value 和 simDeliverySelect.value 為「無」/「無須派送」。
-                    handleRenewalChunghwaDefaults(firstLineData);
-                    
-                    // C. 處理「遠傳」款項預設值
-                    const isFarEasTone = firstLineData.telecomProvider === '遠傳';
-                    if (isFarEasTone && paymentTypeSelect.value === '') {
-                        paymentTypeSelect.value = '無';
-                    }
-                    // 否則，若切換回中華，清空預設值讓用戶選擇 (僅在今網狀態未選時才清空，避免覆蓋用戶選擇)
-                    else if (firstLineData.telecomProvider === '中華' && paymentTypeSelect.value === '無' && 
-                             document.getElementById('jingnetStatus').value === '') { 
-                        paymentTypeSelect.value = '';
-                    }
-                } else {
-                    // 若無門號資料，重置 SIM 派送選項
-                    updateSimDeliveryOptions("");
-                }
-
-                // === 區塊一輸出邏輯 (Primary Output) ===
-                if (isBlock1Complete) {
-                    const primaryOutputText = lineDataArray.map(line => {
-                        // 輸出格式: 方案狀態 + 電信 + 資費 / 月份
-                        return `${line.planStatus}${line.telecomProvider}${line.monthlyFee}/${line.internetMonths}`;
-                    }).join('\n'); // 使用換行符號分隔
-                    
-                    primaryOutputDiv.innerHTML = `<span class="primary-output-text">${primaryOutputText}</span>`;
-                    primaryOutputDiv.dataset.plainText = primaryOutputText;
-                } else {
-                    primaryOutputDiv.innerHTML = '<p class="text-gray-500 italic">請在左側完整填寫區塊一資訊</p>';
-                    primaryOutputDiv.dataset.plainText = '';
-                }
-
-                
-                // === 區塊二工項清單邏輯 (Secondary Output) ===
-                
-                // 取得 Block 2 的單一輸入值 (以第一個門號為基準來推算 Block 2 變動)
-                const block2Values = {
-                    jingnetStatus: document.getElementById('jingnetStatus').value,
-                    originalContract: originalContractSelect.value,
-                    paymentType: paymentTypeSelect.value, 
-                    simDelivery: simDeliverySelect.value,
-                    otherTaskDescription: document.getElementById('otherTaskDescription').value.trim(),
-                    // 帶入第一個門號的關鍵資訊給工項規則使用
-                    planStatus: firstLineData ? firstLineData.planStatus : '',
-                    telecomProvider: firstLineData ? firstLineData.telecomProvider : '',
-                    internetMonths: firstLineData ? firstLineData.internetMonths : '', // 傳遞網路月份給主業權判斷
-                };
-
-
-                // 檢查是否所有**必要**欄位都有值 (包含所有 Block 1 Line + Block 2)
-                const requiredBlock2Fields = [
-                    'jingnetStatus', 'originalContract', 'paymentType', 'simDelivery'
-                ];
-
-                const isBlock2Complete = requiredBlock2Fields.every(key => block2Values[key] !== "");
-
-                const allSelectedForWorkItems = isBlock1Complete && isBlock2Complete;
-
-                if (!allSelectedForWorkItems) {
-                    workItemsOutputDiv.innerHTML = '<p class="text-gray-500 italic text-center pt-8">請在左側**完整**填寫所有客戶資訊，工項會即時自動生成。</p>';
-                    chunghwaMidTermWarning.classList.add('hidden');
-                    workItemsOutputDiv.dataset.plainText = '';
-                    return;
-                }
-
-                // 2. 判斷符合的工項 (使用第一個門號的資訊結合 Block 2 的資訊)
-                let requiredWorkItems = workItemRules
-                    .filter(rule => rule.condition(block2Values))
-                    .map(rule => ({ name: rule.name, category: rule.category }));
-
-                // 3. 處理互斥邏輯: 結單 vs 退費
-                const hasRefund = requiredWorkItems.some(item => item.category === "Refund");
-                if (hasRefund) {
-                    requiredWorkItems = requiredWorkItems.filter(item => item.category !== "Settlement");
-                }
-
-                // 4. 處理「其他工項(請說明)」
-                if (block2Values.otherTaskDescription) {
-                    requiredWorkItems.push({ name: `其他(請寫任務說明): ${block2Values.otherTaskDescription}`, category: "Other" });
-                }
-
-                // 5. 處理中華紅字提醒
-                const isChunghwa = block2Values.telecomProvider === "中華";
-                // 警告針對非續約的中華情境
-                const warningMessage = '⚠️ 若客戶無法配合時間至公司派照取卡，請另派卡網維單';
-                
-                // 檢查是否為非續約的中華，如果是，則顯示警告。
-                if (isChunghwa && block2Values.planStatus !== '續約') {
-                    chunghwaMidTermWarning.innerHTML = warningMessage;
-                    chunghwaMidTermWarning.classList.remove('hidden');
-                } else {
-                    chunghwaMidTermWarning.classList.add('hidden');
-                }
-
-                // 6. 產生輸出 HTML/Text
-                const finalWorkItemNames = requiredWorkItems.map(item => item.name);
-
-                if (finalWorkItemNames.length === 0) {
-                     workItemsOutputDiv.innerHTML = '<p class="text-gray-500 italic text-center pt-8">目前情境下無特殊工項需要處理，請檢查資訊。</p>';
-                     workItemsOutputDiv.dataset.plainText = '';
-                } else {
-                    const listHtml = finalWorkItemNames.map(item => 
-                        `<li class="flex items-start text-gray-800">
-                            <span class="text-green-500 mr-2 mt-0.5 text-lg flex-shrink-0">✓</span>
-                            <span class="font-medium">${item}</span>
-                        </li>`
-                    ).join('');
-                    
-                    workItemsOutputDiv.innerHTML = `<ul class="list-none space-y-2">${listHtml}</ul>`;
-                    workItemsOutputDiv.dataset.plainText = finalWorkItemNames.join('\n');
-                }
-            }
-
-
-            // --- Helper Functions for Copying ---
-            function copyToClipboard(text, buttonElement, messageDiv) {
-                if (!text) {
-                    messageDiv.textContent = '❌ 無內容可供複製！';
-                    messageDiv.className = 'mt-4 p-3 text-center rounded-lg font-medium shadow-md bg-red-100 text-red-700 block transition-all duration-300';
-                    setTimeout(() => messageDiv.classList.add('hidden'), 3000);
-                    return;
-                }
-                
-                // Using document.execCommand('copy') for better compatibility in iFrames
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                textarea.style.position = 'fixed'; // Avoid scrolling to bottom
-                document.body.appendChild(textarea);
-                textarea.select();
-                try {
-                    document.execCommand('copy');
-                    messageDiv.textContent = `📋 成功複製「${buttonElement.textContent.trim()}」！`;
-                    messageDiv.className = 'mt-4 p-3 text-center rounded-lg font-medium shadow-md bg-green-100 text-green-700 block transition-all duration-300';
-                } catch (err) {
-                    messageDiv.textContent = '❌ 複製失敗，請手動複製！';
-                    messageDiv.className = 'mt-4 p-3 text-center rounded-lg font-medium shadow-md bg-red-100 text-red-700 block transition-all duration-300';
-                }
-                document.body.removeChild(textarea);
-                
-                messageDiv.classList.remove('hidden');
-                setTimeout(() => messageDiv.classList.add('hidden'), 3000);
-            }
-
-            // --- Event Listeners ---
-            
-            // 監聽 Block 2 欄位變動
-            document.getElementById('jingnetStatus').addEventListener('change', calculateWorkItems);
-            originalContractSelect.addEventListener('change', calculateWorkItems);
-            paymentTypeSelect.addEventListener('change', calculateWorkItems);
-            simDeliverySelect.addEventListener('change', calculateWorkItems);
-            document.getElementById('otherTaskDescription').addEventListener('input', calculateWorkItems);
-
-
-            // 複製按鈕監聽
-            copyPrimaryButton.addEventListener('click', () => {
-                const text = primaryOutputDiv.dataset.plainText;
-                copyToClipboard(text, copyPrimaryButton, confirmationMessage);
-            });
-
-            copyWorkItemsButton.addEventListener('click', () => {
-                const text = workItemsOutputDiv.dataset.plainText;
-                copyToClipboard(text, copyWorkItemsButton, confirmationMessage);
-            });
-
-            // === Multi-line control listeners ===
-            multipleLinesCheckbox.addEventListener('change', () => {
-                const isChecked = multipleLinesCheckbox.checked;
-                if (isChecked) {
-                    lineCountSelect.disabled = false;
-                } else {
-                    lineCountSelect.disabled = true;
-                    lineCountSelect.value = '1';
-                }
-                renderPhoneLines(parseInt(lineCountSelect.value));
-                calculateWorkItems();
-            });
-
-            lineCountSelect.addEventListener('change', () => {
-                renderPhoneLines(parseInt(lineCountSelect.value));
-                calculateWorkItems();
-            });
-
-            // --- Initial Setup ---
-            renderPhoneLines(1); // 初始渲染 1 個門號
-            calculateWorkItems(); // 首次計算以確保預設值正確
-        });
-    </script>
 </body>
 </html>
