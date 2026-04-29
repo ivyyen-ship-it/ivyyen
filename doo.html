@@ -20,172 +20,193 @@
 <body class="py-10 px-4 md:px-12 bg-slate-100">
     <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden">
         
-        <!-- Top Banner: Diagnostic Summary -->
+        <!-- Top Banner: Executive Summary (High-Level View) -->
         <header class="bg-slate-900 text-white p-10">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-end">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
                 <div class="flex-1">
-                    <h1 class="text-4xl font-black mb-4 tracking-tighter text-white">雙網方案流程評估報告</h1>
-                    <p class="text-slate-400 text-lg">建議果斷轉型，釋放黃金產能。</p>
+                    <h1 class="text-4xl font-black mb-4 tracking-tighter text-white">雙網方案：營運瓶頸診斷與轉型建議</h1>
+                    <p class="text-slate-400 text-lg border-l-4 border-blue-500 pl-4">
+                        <span class="text-white font-bold">核心決策建議：</span>行政優化已達邊際效益極限，應果斷轉型，釋放高產能業務戰力。
+                    </p>
                 </div>
-                <div class="mt-6 md:mt-0 md:ml-8 text-right text-white">
-                    <div class="inline-block bg-red-600 px-4 py-2 rounded-lg font-bold text-xl mb-1">
-                        轉型評估報告
+                <div class="mt-6 md:mt-0 md:ml-8 text-right shrink-0">
+                    <div class="inline-block bg-blue-600 px-6 py-2 rounded-full font-bold text-lg mb-2">
+                        決策引導報告
                     </div>
                     <p class="text-slate-500 text-sm italic">Confidential Management Report | 2026-04-29 Updated</p>
                 </div>
             </div>
         </header>
 
-        <!-- Section 1: The Core Problem - Product Friction -->
+        <!-- Section 1: The Bottleneck - Specific Pain Points -->
         <section class="p-8 md:p-12 critical-section bg-red-soft border-b border-red-100">
-            <div class="flex items-center mb-8">
-                <div class="bg-red-600 text-white p-2 rounded-lg mr-4">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <div class="mb-10">
+                <div class="flex items-center mb-4">
+                    <div class="bg-red-600 text-white p-2 rounded-lg mr-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h2 class="text-3xl font-extrabold text-slate-800">現狀評估：結構性損耗與「零產能」風險</h2>
                 </div>
-                <div>
-                    <p class="text-red-600 font-bold text-lg mb-1">21道流程、7個系統、9個chat群組、3個line@、5個跨部門</p>
-                    <h2 class="text-3xl font-extrabold text-slate-800">核心痛點：繁瑣流程重挫人均產能，無效溝通導致多部門內耗</h2>
-                </div>
+                <p class="text-red-700 font-bold text-lg bg-red-100 p-3 rounded-lg inline-block">
+                    單一案件流程長達 21 道、橫跨 5 部門與 7 系統，導致專業業務淪為後勤客服。
+                </p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <!-- Sales Drain -->
-                <div>
-                    <h3 class="text-xl font-bold text-red-700 mb-4 border-b-2 border-red-200 pb-2 italic text-slate-800">業務端：專業錯置，陷入無效溝通循環</h3>
-                    <div class="space-y-4">
-                        <div class="bg-white p-4 rounded-xl shadow-sm text-slate-800">
-                            <p class="font-bold">● 專注力斷層：時刻守候 LINE 回覆</p>
-                            <p class="text-sm text-slate-600 mt-1 leading-relaxed">電銷本質應專注於電話開發與締結。雙網的高度複雜性迫使業務必須時刻關注 LINE，回覆「解約教學」與「流程說明」，頻繁中斷開發心流。</p>
-                        </div>
-                        <div class="bg-white p-4 rounded-xl shadow-sm text-slate-800">
-                            <p class="font-bold">● 長戰線心理消磨：追蹤週期 30~74 天</p>
-                            <p class="text-sm text-slate-600 mt-1 italic italic underline">個案：林O承(35天)、黃O賓(74天)</p>
-                            <p class="text-sm text-slate-600 mt-1">業務被迫成為「網路客服」與「解約諮詢師」，處理跨月未結案件的焦慮，嚴重稀釋開發新案的衝勁。因步驟多流程複雜常有客戶中途取消，不僅前功盡棄外，還需要協同各部門處理客戶取消、退費、網路設定等各種事宜。</p>
-                        </div>
+                <!-- Data-Driven Pain Point 1 -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-red-500">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="bg-red-100 text-red-600 w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm font-black">1</span>
+                        隱形人力成本與產能歸零
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        結案週期長達 <span class="text-red-600 font-bold">30~74 天</span>。流程中任何一個環節（如客戶中途取消、網路設定錯誤）皆會引發多部門連鎖反應。
+                    </p>
+                    <div class="bg-slate-50 p-4 rounded-xl">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2">具體損害：</p>
+                        <ul class="text-sm text-slate-700 space-y-2">
+                            <li class="flex items-start"><span class="text-red-500 mr-2">●</span> 前功盡棄：一旦客戶取消，業務與業助先前數十天的跟進產能瞬間歸零。</li>
+                            <li class="flex items-start"><span class="text-red-500 mr-2">●</span> 行政負擔：需跨部門處理帳務退費、標籤修正，一個取消案件需耗費 3 倍處理資源。</li>
+                        </ul>
                     </div>
                 </div>
 
-                <!-- Admin Drain -->
-                <div>
-                    <h3 class="text-xl font-bold text-red-700 mb-4 border-b-2 border-red-200 pb-2 italic text-slate-800">行政端：1300+ 工項鎖死後勤彈性</h3>
-                    <div class="space-y-4">
-                        <div class="bg-white p-4 rounded-xl shadow-sm text-slate-800">
-                            <p class="font-bold">● 作業碎片化：7 系統 / 9 群組高頻切換</p>
-                            <p class="text-sm text-slate-600 mt-1">在遠傳/中華、智生活後台、行政派工群組間頻繁切換。這種碎片化作業極度消耗心理能量，增加人為失誤風險。</p>
-                        </div>
-                        <div class="bg-white p-4 rounded-xl shadow-sm text-slate-800">
-                            <p class="font-bold">● 個案引發的產能歸零</p>
-                            <p class="text-sm text-slate-600 mt-1">如「張O馪」等特殊案例，業務需花費 3 倍時間與會計、RD對焦流程延宕與退款。這類案件一旦出現，當日開發產能直接歸零。</p>
+                <!-- Data-Driven Pain Point 2 -->
+                <div class="bg-white p-6 rounded-2xl shadow-md border-t-4 border-red-500">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        <span class="bg-red-100 text-red-600 w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm font-black">2</span>
+                        黃金戰力「鈍化」效應
+                    </h3>
+                    <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                        頂尖業務被迫處理「網路客服」與「流程說服」。每日耗費大量時間於 LINE@ 處理雜事，嚴重影響開發新案的衝勁。
+                    </p>
+                    <div class="bg-slate-50 p-4 rounded-xl">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2">典型案例分析：</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="text-center p-2 bg-white rounded border border-red-100">
+                                <span class="block text-xs text-slate-400">追蹤週期</span>
+                                <span class="font-bold text-red-600">74 天</span>
+                            </div>
+                            <div class="text-center p-2 bg-white rounded border border-red-100">
+                                <span class="block text-xs text-slate-400">系統/群組切換</span>
+                                <span class="font-bold text-red-600">16+ 次/日</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Section 2: Optimization Timeline (Finalizing the Effort) -->
+        <!-- Section 2: Optimization Timeline (The Effort We've Made) -->
         <section class="p-8 md:p-12 progress-section bg-green-soft">
-            <h2 class="text-3xl font-extrabold text-slate-800 mb-8 flex items-center">
-                <span class="bg-green-600 text-white p-2 rounded-lg mr-4 text-white">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-                </span>
-                優化歷程：各項自動化設定與工具優化、行政流程15項工項收攏
-            </h2>
+            <div class="mb-10">
+                <h2 class="text-3xl font-extrabold text-slate-800 mb-4 flex items-center">
+                    <span class="bg-green-600 text-white p-2 rounded-lg mr-4 text-white">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                    </span>
+                    管理與優化歷程：將人為效率推向極限
+                </h2>
+                <p class="text-slate-600">過去一年，我們透過自動化與流程收攏，已將行政損耗降至最低。</p>
+            </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-slate-800">
-                <div class="bg-white p-4 rounded-xl border border-green-200">
-                    <div class="data-badge bg-green-100 text-green-700 mb-2">落地 1 年</div>
-                    <h4 class="font-bold mb-1">AI 質檢系統</h4>
-                    <p class="text-xs text-slate-500">完成教材製作、教學流程SOP，透過AI自動化監控通話品質。</p>
+                <div class="bg-white p-5 rounded-xl border border-green-200">
+                    <div class="data-badge bg-green-100 text-green-700 mb-2 font-black">AI 監控</div>
+                    <h4 class="font-bold mb-1">AI 質檢落地 1 年</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">自動化監控通話品質，建立標竿教材，確保銷售前端合規與精準度。</p>
                 </div>
-                <div class="bg-white p-4 rounded-xl border border-green-200">
-                    <div class="data-badge bg-green-100 text-green-700 mb-2">落地半年</div>
-                    <h4 class="font-bold mb-1">自動通知工具</h4>
-                    <p class="text-xs text-slate-500">-跨多部門且多群組問題，透過五項自動化通知(已落地半年)讓資訊即時同步</p>
+                <div class="bg-white p-5 rounded-xl border border-green-200">
+                    <div class="data-badge bg-green-100 text-green-700 mb-2 font-black">資訊同步</div>
+                    <h4 class="font-bold mb-1">五項自動化通知</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">跨部門資訊即時同步，大幅減少「來回詢問」的人力空轉時間。也大幅降低遺漏或錯誤問題。</p>
                 </div>
-                <div class="bg-white p-4 rounded-xl border border-green-200">
-                    <div class="data-badge bg-green-100 text-green-700 mb-2">落地半年</div>
-                    <h4 class="font-bold mb-1">自動化工具開發</h4>
-                    <p class="text-xs text-slate-500">-雙網工項自動化工具，針對 142,800 種合約組合進行程式化運算，自動產出工項清單。取代傳統人為判斷誤差，讓門號業務只需「拉選情境」即可完成正確工項輸出。</p>
+                <div class="bg-white p-5 rounded-xl border border-green-200">
+                    <div class="data-badge bg-green-100 text-green-700 mb-2 font-black">精準運算</div>
+                    <h4 class="font-bold mb-1">14萬組合自動化</h4>
+                    <p class="text-xs text-slate-500 leading-relaxed">自動產出工項清單，將傳統人為判斷誤差降至 0%，釋放業助運算壓力。</p>
                 </div>
-                <div class="bg-blue-600 p-4 rounded-xl shadow-lg transform scale-105 text-white">
-                    <div class="data-badge bg-white text-blue-700 mb-2 font-black">(4/28) 上線</div>
+                <div class="bg-blue-600 p-5 rounded-xl shadow-lg transform scale-105 text-white">
+                    <div class="data-badge bg-white text-blue-700 mb-2 font-black">防禦完備</div>
                     <h4 class="font-bold mb-1">系統規則卡控</h4>
-                    <p class="text-xs text-blue-100 text-white">雙網方案申辦流程與規則正式寫入系統，完成防禦性優化的最後一環。</p>
+                    <p class="text-xs text-white opacity-90 leading-relaxed">雙網申辦流程與須知經法務審視修改後，已全面寫入系統卡控，強制要求確認客戶閱讀並勾選同意後方可執行，完成「防禦性優化」最後一環。</p>
                 </div>
             </div>
 
-            <div class="mt-10 bg-white p-8 rounded-2xl border-4 border-green-500 text-slate-800">
+            <div class="mt-12 bg-slate-800 p-8 rounded-2xl text-white">
                 <div class="flex flex-col md:flex-row items-center justify-between">
                     <div class="flex-1">
-                        <h4 class="font-black text-slate-800 text-2xl mb-2 underline decoration-green-400">最終診斷：優化已到盡頭</h4>
-                        <p class="text-slate-600 leading-relaxed">
-                            雖然行政端透過自動化「止損」，並將人均產能提升了 **28% (38件)**，但這無法解決「高摩擦力產品」帶來的結構性損害。21 道流程的繁瑣是系統性的，單靠優化無法讓戰力回歸。
+                        <h4 class="font-black text-2xl mb-2 flex items-center">
+                            <span class="text-orange-400 mr-2">⚠️</span> 
+                            診斷結論：行政端優化已達「邊際極限」
+                        </h4>
+                        <p class="text-slate-400 leading-relaxed">
+                            儘管人均產能透過工具提升了 <span class="text-white font-bold">28%</span>，但產品先天「高摩擦力」導致流程無法再簡化。目前每月處理超過 <span class="text-white font-bold text-lg">1,300 個工項</span>，已達人力飽和點，無法支撐更大規模的業務擴張。
                         </p>
-                    </div>
-                    <div class="mt-6 md:mt-0 md:ml-10 text-center">
-                        <div class="text-5xl font-black text-red-600 mb-1 tracking-tighter">1300+</div>
-                        <div class="text-sm font-bold text-slate-400 uppercase">每月極限工項數</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Section 3: Strategic Turnaround -->
+        <!-- Section 3: High-Level Strategy & ROI -->
         <section class="p-8 md:p-12 strategy-section bg-blue-soft">
-            <h2 class="text-3xl font-extrabold text-slate-800 mb-8 flex items-center text-slate-800">
+            <h2 class="text-3xl font-extrabold text-slate-800 mb-8 flex items-center">
                 <span class="bg-blue-600 text-white p-2 rounded-lg mr-4">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                 </span>
-                決策建議：收攏資源，追求 10 倍周轉率
+                誠摯建議：資源重分配，追求 10 倍速增長
             </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 text-slate-800">
-                <!-- Suggestion 1 -->
-                <div class="bg-white p-6 rounded-2xl shadow-lg">
-                    <h4 class="font-black text-blue-700 text-lg mb-4 flex items-center">
-                        <span class="mr-2">🚀</span> 釋放核心戰力
-                    </h4>
-                    <p class="text-slate-600 text-sm leading-relaxed">
-                        將具備高度締結能力的優秀業務，從長達 30-74 天的「電信諮詢」循環中抽離。投入到能**當天成交、當週結案**的高產值商品。不應再讓頂尖戰力被瑣碎流程「鈍化」。
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 text-slate-800">
+                <div class="bg-white p-8 rounded-2xl shadow-xl border-l-8 border-blue-600">
+                    <h4 class="font-black text-blue-700 text-xl mb-4">核心決策：轉型高周轉商品</h4>
+                    <p class="text-slate-600 leading-relaxed mb-4">
+                        建議將具備高度締結能力的頂尖業務，轉向投入「當天成交、當週結案」之高周轉商品。
                     </p>
+                    <ul class="text-sm space-y-2 font-bold text-slate-500">
+                        <li class="flex items-center"><span class="w-2 h-2 bg-blue-400 rounded-full mr-2"></span> 釋放業務心流，回歸開發本質</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-blue-400 rounded-full mr-2"></span> 排除 30~74 天的不確定性風險</li>
+                    </ul>
                 </div>
-                <!-- Suggestion 2 -->
-                <div class="bg-white p-6 rounded-2xl shadow-lg">
-                    <h4 class="font-black text-blue-700 text-lg mb-4 flex items-center">
-                        <span class="mr-2">🛡️</span> 降低行政內耗
-                    </h4>
-                    <p class="text-slate-600 text-sm leading-relaxed">
-                        取消每月 1300 件的瑣碎工項（如中華二階送件、違約單上傳、預繳核對）。讓行政與業助轉向支援更有利於規模化的業務開發，提升部門整體的彈性與反應速度。
+                <div class="bg-white p-8 rounded-2xl shadow-xl border-l-8 border-slate-400">
+                    <h4 class="font-black text-slate-700 text-xl mb-4">資源重整：消除行政內耗</h4>
+                    <p class="text-slate-600 leading-relaxed mb-4">
+                        停止執行每月 1,300 件的低價值瑣事。將行政與業助資源轉向支援「具備規模化潛力」的專案。
                     </p>
+                    <ul class="text-sm space-y-2 font-bold text-slate-500">
+                        <li class="flex items-center"><span class="w-2 h-2 bg-slate-400 rounded-full mr-2"></span> 消除跨部門帳務與系統溝通成本</li>
+                        <li class="flex items-center"><span class="w-2 h-2 bg-slate-400 rounded-full mr-2"></span> 提升團隊反應速度與營運彈性</li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- ROI Comparison -->
-            <div class="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-10">
-                    <svg class="w-32 h-32" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"></path></svg>
-                </div>
-                <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center text-center">
-                    <div>
-                        <p class="text-red-400 font-bold mb-2">現有雙網模式</p>
-                        <p class="text-4xl font-black mb-2">30 - 74 天</p>
-                        <p class="text-slate-400 text-sm italic underline text-white opacity-80">成交週期過長 / 戰力被鎖死</p>
+            <!-- Strategic ROI Analysis -->
+            <div class="bg-slate-900 rounded-3xl p-10 text-white relative overflow-hidden">
+                <div class="relative z-10 flex flex-col md:flex-row justify-around items-center text-center gap-8">
+                    <div class="flex-1">
+                        <p class="text-red-400 font-bold mb-4 uppercase tracking-widest text-sm">現行：低效高內耗</p>
+                        <p class="text-5xl font-black mb-2">30 - 74 天</p>
+                        <p class="text-slate-400 text-xs">單案成交週期 (嚴重鎖死產能)</p>
                     </div>
-                    <div class="border-l border-slate-700">
-                        <p class="text-green-400 font-bold mb-2">理想高效模式</p>
-                        <p class="text-4xl font-black mb-2">3 - 7 天</p>
-                        <p class="text-slate-400 text-sm italic font-bold text-white opacity-80">10 倍資源周轉率</p>
+                    <div class="h-20 w-px bg-slate-700 hidden md:block"></div>
+                    <div class="flex-1">
+                        <p class="text-green-400 font-bold mb-4 uppercase tracking-widest text-sm">未來：高效高產能</p>
+                        <p class="text-5xl font-black mb-2 text-green-400">3 - 7 天</p>
+                        <p class="text-slate-400 text-xs text-white">理想周轉週期 (<span class="text-white font-bold">10 倍資源效率</span>)</p>
                     </div>
                 </div>
-                <div class="mt-8 pt-6 border-t border-slate-800 text-center">
-                    <p class="text-xl font-bold">最終結論：優化已到極限，應果斷收掉雙網方案，回歸高效作戰模式。</p>
+                <div class="mt-10 pt-8 border-t border-slate-800 text-center">
+                    <p class="text-2xl font-black tracking-tight underline decoration-blue-500">
+                        最終總評：停止「止損式優化」，全面啟動「爆發式轉型」。
+                    </p>
                 </div>
             </div>
         </section>
 
         <!-- Signature Footer -->
         <footer class="p-8 bg-white border-t border-slate-200 text-center">
-            <p class="text-slate-400 text-sm">© 2026 智生活部門效能分析報告 | 培訓師：嚴婕瑜 | 2026-04-29 更新</p>
+            <p class="text-slate-400 text-sm font-bold">
+                © 2026 智生活部門效能分析報告 | 培訓師：嚴婕瑜 | 2026-04-29 更新 (決策建議版)
+            </p>
         </footer>
     </div>
 </body>
