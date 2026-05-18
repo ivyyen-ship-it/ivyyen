@@ -322,6 +322,7 @@
             },
             {
                 status: "續約",
+                payment: "Accent on no prepay",
                 payment: "已付8900已付雙網費用 (未退費)",
                 refundType: "退門號留ISP",
                 mobile: "收回 ＳＩＭ 卡後，電商雙網訂單依退費辦法退費 (姵妤)",
@@ -352,6 +353,7 @@
         const copyBtn = document.getElementById('copyBtn');
         const toast = document.getElementById('toast');
 
+        // 初始化：擷取不重複的「客戶網路狀態」並填入第一個 Select
         // 初始化：擷取不重複的「客戶網路狀態」並填入第一個 Select
         function initDropdown() {
             const statuses = [...new Set(scenarioData.map(item => item.status))];
@@ -501,8 +503,8 @@
             // 若為 新辦-遠傳 (此處順序已調換)
             if (portalType === 'new-fet') {
                 salesItems.push(
-                    "<span class='text-blue-700 font-bold'>[新辦-遠傳專屬流程]</span> 與客戶溝通門號退費所需資料(紙本需簽名 + 雙證件影本 + 取消原因)。",
-                    "<span class='text-blue-700 font-bold'>[新辦-遠傳專屬流程]</span> 與客戶、荷仕 Line 群組雙向追蹤案件進度並提供荷仕 sim 卡號碼與電話，確認取消申辦流程完成後，請荷仕刪除荷鉅系統資料。",
+                    "<span class='text-blue-700 font-bold'>[新辦-遠傳]</span> 與客戶溝通門號退費所需資料(紙本需簽名 + 雙證件影本 + 取消原因)。",
+                    "<span class='text-blue-700 font-bold'>[新辦-遠傳]</span> 與客戶、荷仕 Line 群組雙向追蹤案件進度並提供荷仕 sim 卡號碼與電話，確認取消申辦流程完成後，請荷仕刪除荷鉅系統資料。",
                     `<div class="mt-2.5 flex flex-wrap gap-2">
                         <a href="https://drive.google.com/file/d/16DjH-6ML9Ix5Pm_f4AFKGowexhyAJ5yI/view?usp=drive_link" target="_blank" class="inline-flex items-center space-x-1 px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-semibold transition-all">
                             <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
@@ -523,7 +525,7 @@
             }
 
             if (has8900) {
-                salesItems.push("<strong class='text-blue-700'>[付8900觸發]</strong> 請客服處理退費，並立客訴單提交給客服團隊");
+                salesItems.push("<strong class='text-blue-700'>[已付8900]</strong> 請客服處理退費，並立客訴單提交給客服團隊");
             }
 
             tasksList.push({
@@ -553,9 +555,9 @@
             ];
             if (isDualNet) {
                 yitingItems.push(
-                    "<strong class='text-indigo-700'>[雙網費用觸發]</strong> 發信請秋燕提供 ISP 刷卡連結，後續請客服修改金額讓客戶重新繳網路全額",
-                    "<strong class='text-indigo-700'>[雙網費用觸發]</strong> 於 Line 部門群組追蹤客戶是否已補繳 ISP 費用",
-                    "<strong class='text-indigo-700'>[雙網費用觸發]</strong> 補繳收到款項後，發信請 RD 修正 ISP 客資系統數據"
+                    "<strong class='text-indigo-700'>[雙網已付款]</strong> 發信請秋燕提供 ISP 刷卡連結，後續請客服修改金額讓客戶重新繳網路全額",
+                    "<strong class='text-indigo-700'>[雙網已付款]</strong> 於 Line 部門群組追蹤客戶是否已補繳 ISP 費用",
+                    "<strong class='text-indigo-700'>[雙網已付款]</strong> 補繳收到款項後，發信請 RD 修正 ISP 客資系統數據"
                 );
             }
             tasksList.push({
@@ -572,7 +574,7 @@
             const peiyuTrigger = [];
 
             if (portalType === 'new-fet') {
-                peiyuItems.push("<span class='text-purple-700 font-bold'>[新辦-遠傳專屬流程]</span> 收到客戶資料後寄到 <strong>台中荷仕據點</strong>");
+                peiyuItems.push("<span class='text-purple-700 font-bold'>[新辦-遠傳]</span> 收到客戶資料後寄到 <strong>台中荷仕據點</strong>");
                 peiyuTheme.push("寄件相關");
                 peiyuTrigger.push("門號類型為 [新辦 - 遠傳] 觸發");
             }
