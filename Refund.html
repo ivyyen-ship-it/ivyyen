@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雙網退費與門號處理決策查詢工具</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800">
+
+    <!-- 頂部導覽列 -->
+    <header class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-5 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/10 p-2 rounded-lg">
+                    <i data-lucide="network" class="w-8 h-8 text-blue-200"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold tracking-tight">雙網退費與門號後續處理決策系統</h1>
+                    <p class="text-xs sm:text-sm text-blue-200 mt-1">專業網路架構師設計 · 減少跨部門確認與溝通成本</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 text-xs bg-white/10 px-3 py-1.5 rounded-full border border-white/20">
+                <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                <span>即時決策資料庫已啟用 (共 17 種完整情境)</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <!-- 兩欄布局 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- 左側與中間：查詢與結果區 (佔 2 欄) -->
+            <div class="lg:col-span-2 space-y-6">
+                
+                <!-- 篩選條件卡片 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 transition-all duration-200 hover:shadow-md">
+                    <div class="flex items-center space-x-2 mb-6 pb-4 border-b border-slate-100">
+                        <i data-lucide="sliders" class="w-5 h-5 text-blue-600"></i>
+                        <h2 class="text-lg font-bold text-slate-900">第一步：請選擇客戶目前狀態</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- 步驟一：客戶網路狀態 -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1">
+                                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs font-bold">1</span>
+                                客戶網路狀態
+                            </label>
+                            <select id="statusSelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer">
+                                <option value="">-- 請選擇 --</option>
+                            </select>
+                        </div>
+
+                        <!-- 步驟二：付款各項情境 -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1">
+                                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs font-bold">2</span>
+                                雙網付款各項情境
+                            </label>
+                            <select id="paymentSelect" disabled class="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-400 focus:outline-none transition-all cursor-not-allowed">
+                                <option value="">-- 請先選擇上方項目 --</option>
+                            </select>
+                        </div>
+
+                        <!-- 步驟三：退費變更類型 -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1">
+                                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs font-bold">3</span>
+                                欲變更/退費類型
+                            </label>
+                            <select id="refundTypeSelect" disabled class="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2.5 text-slate-400 focus:outline-none transition-all cursor-not-allowed">
+                                <option value="">-- 請先選擇上方項目 --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-end">
+                        <button id="resetBtn" class="flex items-center space-x-1 px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 border border-slate-300 rounded-lg hover:bg-slate-50 transition-all">
+                            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                            <span>重設選項</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 查詢結果展示區 -->
+                <div id="resultCard" class="hidden transform transition-all duration-300 translate-y-2 opacity-0">
+                    <div class="bg-white rounded-2xl shadow-md border-t-4 border-blue-600 border-x border-b border-slate-200 overflow-hidden">
+                        
+                        <!-- 結果標頭 -->
+                        <div class="bg-slate-50/80 px-6 py-4 border-b border-slate-100 flex justify-between items-center flex-wrap gap-2">
+                            <div>
+                                <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full uppercase tracking-wider">配對成功</span>
+                                <h3 class="text-base font-bold text-slate-800 mt-1" id="resultScenarioTitle">-</h3>
+                            </div>
+                            <button id="copyBtn" class="flex items-center space-x-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-sm font-semibold transition-all">
+                                <i data-lucide="copy" class="w-4 h-4"></i>
+                                <span>複製此處置方案</span>
+                            </button>
+                        </div>
+
+                        <!-- 雙欄/細節卡片 -->
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            <!-- 門號處理做法 -->
+                            <div class="bg-emerald-50/50 rounded-xl p-5 border border-emerald-100">
+                                <div class="flex items-center space-x-2 text-emerald-800 font-bold mb-3">
+                                    <span class="p-1 bg-emerald-100 text-emerald-700 rounded-lg">
+                                        <i data-lucide="smartphone" class="w-5 h-5"></i>
+                                    </span>
+                                    <span>門號處理做法</span>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 border border-emerald-100 text-slate-700 space-y-2 text-sm sm:text-base shadow-sm" id="mobileRefundText">
+                                    -
+                                </div>
+                            </div>
+
+                            <!-- ISP 退費做法 -->
+                            <div class="bg-purple-50/50 rounded-xl p-5 border border-purple-100">
+                                <div class="flex items-center space-x-2 text-purple-800 font-bold mb-3">
+                                    <span class="p-1 bg-purple-100 text-purple-700 rounded-lg">
+                                        <i data-lucide="wifi" class="w-5 h-5"></i>
+                                    </span>
+                                    <span>ISP 退費做法</span>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 border border-purple-100 text-slate-700 space-y-2 text-sm sm:text-base shadow-sm" id="ispRefundText">
+                                    -
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- 一鍵複製成功提示 -->
+                        <div id="toast" class="hidden bg-emerald-500 text-white text-center py-2 text-sm font-semibold transition-all duration-300">
+                            已成功複製處置方案至剪貼簿！
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 預設提示：未選擇時顯示 -->
+                <div id="welcomePlaceholder" class="bg-slate-100 border-2 border-dashed border-slate-200 rounded-2xl p-12 text-center">
+                    <div class="mx-auto w-16 h-16 bg-slate-200/60 rounded-full flex items-center justify-center text-slate-400 mb-4">
+                        <i data-lucide="search" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-700">尚未選擇條件</h3>
+                    <p class="text-slate-500 text-sm mt-1 max-w-md mx-auto">請使用上方下拉選單依序篩選「客戶狀態」、「付款情境」與「退費類型」，系統將即時分析並呈現對應 SOP 處置方式。</p>
+                </div>
+
+            </div>
+
+            <!-- 右側：門號後續處理指南與切結書 (佔 1 欄) -->
+            <div class="space-y-6">
+                
+                <!-- 快速工具指南 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-900 text-white p-5">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="clipboard-check" class="w-5 h-5 text-yellow-400"></i>
+                            <h2 class="text-base font-bold">門號後續處理基本原則</h2>
+                        </div>
+                        <p class="text-xs text-slate-300 mt-1">按雙網申辦進度處理：只要還沒審核通過就可以直接取消。</p>
+                    </div>
+
+                    <div class="p-5 space-y-6">
+                        
+                        <!-- 新辦門號 -->
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-1.5 text-blue-700 font-bold text-sm border-b border-slate-100 pb-1.5">
+                                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                                <span>新辦門號流程</span>
+                            </div>
+                            <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-200/60 space-y-2">
+                                <p class="font-medium text-slate-800">1. 進度與刪除作業：</p>
+                                <p class="pl-2">收到客戶資料後寄到 <strong class="text-blue-700">台中荷仕據點</strong>，於 Line 群組追蹤進度並提供 <strong class="text-slate-800">sim 卡號碼與電話</strong>，請荷仕刪除荷鉅系統資料。</p>
+                                
+                                <p class="font-medium text-slate-800 mt-2">2. 遠傳電信做法：</p>
+                                <p class="pl-2">門號退費依門市作法執行 <span class="text-rose-600 font-semibold">(紙本需簽名 + 雙證件影本 + 取消原因)</span>。</p>
+                            </div>
+                            <!-- 遠傳下載按鈕 -->
+                            <div class="grid grid-cols-2 gap-2 mt-2">
+                                <a href="https://drive.google.com/file/d/16DjH-6ML9Ix5Pm_f4AFKGowexhyAJ5yI/view?usp=drive_link" target="_blank" class="flex items-center justify-center space-x-1 px-2 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-semibold transition-all">
+                                    <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                                    <span>遠傳切結書 [連結]</span>
+                                </a>
+                                <a href="https://drive.google.com/file/d/1IJvnHpBnLNmpa_AOaL5xOK8SOVjeoHBK/view?usp=drive_link" target="_blank" class="flex items-center justify-center space-x-1 px-2 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold transition-all">
+                                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                                    <span>切結書範本 [連結]</span>
+                                </a>
+                            </div>
+
+                            <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-200/60 mt-2">
+                                <p class="font-medium text-slate-800">3. 中華電信做法：</p>
+                                <p class="pl-2 text-slate-500 italic">目前無處理經驗，尚無資料。</p>
+                            </div>
+                        </div>
+
+                        <!-- 攜碼門號 -->
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-1.5 text-amber-700 font-bold text-sm border-b border-slate-100 pb-1.5">
+                                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                                <span>攜碼門號流程</span>
+                            </div>
+                            <div class="text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-200/60">
+                                <p class="font-medium text-slate-800">遠傳 / 中華：</p>
+                                <p class="pl-2 text-slate-500 italic mt-1">目前無處理經驗，尚無資料。</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 溫馨提醒 -->
+                <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-5">
+                    <div class="flex items-start space-x-2.5">
+                        <i data-lucide="info" class="w-5 h-5 text-indigo-600 shrink-0 mt-0.5"></i>
+                        <div class="text-xs text-indigo-950 space-y-1">
+                            <p class="font-bold">溫馨提醒</p>
+                            <p>若遇到非 17 種既有狀態之特殊特規件，請勿擅自承諾客戶，應直接向部門主管回報確認。</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 text-center py-6 border-t border-slate-800 text-xs mt-12">
+        <p>© 2026 雙網服務系統. All rights reserved. 專為加速一線與後勤協作設計之決策工具。</p>
+    </footer>
+
+    <!-- 業務邏輯 JS 資料結構與事件處理 -->
+    <script>
+        // 17 種客戶網路狀態-雙網付款各項情境-退費做法 的結構化資料
+        const scenarioData = [
+            // === 新裝機 ===
+            {
+                status: "新裝機",
+                payment: "已付8900已付雙網費用",
+                refundType: "退ISP+門號",
+                mobile: "收回 ＳＩＭ 卡後，電商雙網訂單依退費辦法退費 (姵妤)",
+                isp: "依退費辦法退費 (立單客服)"
+            },
+            {
+                status: "新裝機",
+                payment: "未付8900未付雙網費用",
+                refundType: "退ISP+門號",
+                mobile: "收回 ＳＩＭ 卡",
+                isp: "無可退金額"
+            },
+            {
+                status: "新裝機",
+                payment: "已付8900未付雙網費用",
+                refundType: "退ISP+門號",
+                mobile: "收回 ＳＩＭ 卡 (依照一般無雙網退費流程)",
+                isp: "依退費辦法退費 (立單客服)"
+            },
+            {
+                status: "新裝機",
+                payment: "未付8900已付雙網費用",
+                refundType: "退ISP+門號",
+                mobile: "收回 ＳＩＭ 卡後，電商雙網訂單依退費辦法退費 (姵妤)",
+                isp: "無可退金額"
+            },
+            {
+                status: "新裝機",
+                payment: "已付8900已付雙網費用",
+                refundType: "退門號留ISP",
+                mobile: "收回 ＳＩＭ 卡後，電商雙網訂單依退費辦法走退費 (姵妤)",
+                isp: "留 ＩＳＰ 故不退"
+            },
+            {
+                status: "新裝機",
+                payment: "已付8900未付雙網費用",
+                refundType: "退門號留ISP",
+                mobile: "收回 ＳＩＭ 卡",
+                isp: "留 ＩＳＰ 故不退"
+            },
+            {
+                status: "新裝機",
+                payment: "未付8900已付雙網費用",
+                refundType: "退門號留ISP",
+                mobile: "收回 ＳＩＭ 卡後，電商雙網訂單依退費辦法退費 (姵妤)",
+                isp: "收回 ＳＩＭ 卡後，發信請秋燕提供刷卡連結，後續請客服修改金額讓客戶重新繳網路全額。收到款項後發信請 RD 修正 ISP 客資 (宜庭)"
+            },
+
+            // === 展延 ===
+            {
+                status: "展延 (已搭配雙網方案)",
+                payment: "已展延月份",
+                refundType: "退ISP+門號",
+                mobile: "收回 ＳＩＭ 卡後，電商雙網訂單依退費辦法退費 (姵妤)",
+                isp: "依退費辦法退費 (立單客服)"
+            },
+            {
+                status: "展延 (已搭配雙網方案)",
+                payment: "未展延月份",
+                refundType: "退ISP+門號",
+                mobile: "收回 ＳＩＭ 卡後，電商雙網訂單依退費辦法退費 (姵妤)",
+                isp: "依退費辦法退費 (立單客服)"
+            },
+            {
+                status: "展延 (已搭配雙網方案)",
+                payment: "已展延月份",
+                refundType: "退門號留ISP",
+                mobile: "收回 ＳＩＭ 卡",
+                isp: "收回 ＳＩＭ 卡後，發信請 RD 修正 ISP 客資 (宜庭)。<br><span class='text-amber-600 font-medium'>* 備註：如果是期中客可等快到期再續繳，如快到期本來就會有續繳帳號。</span>"
+            },
+            {
+                status: "展延 (已搭配雙網方案)",
+                payment: "未展延月份",
+                refundType: "退門號留ISP",
+                mobile: "收回 ＳＩＭ 卡",
+                isp: "續繳單直接重新繳費"
+            },
+
+            // === 續約 ===
+            {
+                status: "續約",
+                payment: "已付8900已付雙網費用 (已退費)",
+                refundType: "退ISP+門號",
+                mobile: "收回 ＳＩＭ 卡後，電商雙網訂單依退費辦法退費 (姵妤)",
+                isp: "無款項須退 (已退)"
+            },
+            {
+                status: "續約",
+                payment: "已付8900已付雙網費用 (未退費)",
+                refundType: "退ISP+門號",
+                mobile: "收回 ＳＩＭ 卡後，電商雙網訂單依退費辦法退費 (姵妤)",
+                isp: "依退費辦法退費 (立單客服)"
+            },
+            {
+                status: "續約",
+                payment: "已付8900未付雙網費用 (未退費)",
+                refundType: "退ISP+門號",
+                mobile: "收回 ＳＩＭ 卡",
+                isp: "依退費辦法退費 (立單客服)"
+            },
+            {
+                status: "續約",
+                payment: "已付8900已付雙網費用 (已退費)",
+                refundType: "退門號留ISP",
+                mobile: "收回 ＳＩＭ 卡後，電商雙網訂單依退費辦法退費 (姵妤)",
+                isp: "收回 ＳＩＭ 卡後，發信請秋燕提供刷卡連結，後續請客服修改金額讓客戶重新繳網路全額。收到款項後發信請 RD 修正 ISP 客資 (宜庭)"
+            },
+            {
+                status: "續約",
+                payment: "已付8900已付雙網費用 (未退費)",
+                refundType: "退門號留ISP",
+                mobile: "收回 ＳＩＭ 卡後，電商雙網訂單依退費辦法退費 (姵妤)",
+                isp: "留 ＩＳＰ 故不退"
+            },
+            {
+                status: "續約",
+                payment: "已付8900未付雙網費用 (未退費)",
+                refundType: "退門號留ISP",
+                mobile: "收回 ＳＩＭ 卡",
+                isp: "留 ＩＳＰ 故不退"
+            }
+        ];
+
+        // 綁定 DOM 元素
+        const statusSelect = document.getElementById('statusSelect');
+        const paymentSelect = document.getElementById('paymentSelect');
+        const refundTypeSelect = document.getElementById('refundTypeSelect');
+        const resetBtn = document.getElementById('resetBtn');
+        const resultCard = document.getElementById('resultCard');
+        const welcomePlaceholder = document.getElementById('welcomePlaceholder');
+        
+        const resultScenarioTitle = document.getElementById('resultScenarioTitle');
+        const mobileRefundText = document.getElementById('mobileRefundText');
+        const ispRefundText = document.getElementById('ispRefundText');
+        const copyBtn = document.getElementById('copyBtn');
+        const toast = document.getElementById('toast');
+
+        // 初始化：擷取不重複的「客戶網路狀態」並填入第一個 Select
+        function initDropdown() {
+            const statuses = [...new Set(scenarioData.map(item => item.status))];
+            
+            // 保持原本選項清空
+            statusSelect.innerHTML = '<option value="">-- 請選擇 --</option>';
+            statuses.forEach(status => {
+                const opt = document.createElement('option');
+                opt.value = status;
+                opt.textContent = status;
+                statusSelect.appendChild(opt);
+            });
+            
+            resetSubDropdowns();
+            hideResult();
+        }
+
+        // 當狀態一改變
+        statusSelect.addEventListener('change', function() {
+            const selectedStatus = this.value;
+            if (!selectedStatus) {
+                resetSubDropdowns();
+                hideResult();
+                return;
+            }
+
+            // 啟用並篩選第二個 Select (付款情境)
+            paymentSelect.disabled = false;
+            paymentSelect.classList.remove('bg-slate-100', 'text-slate-400', 'cursor-not-allowed');
+            paymentSelect.classList.add('bg-slate-50', 'text-slate-800', 'cursor-pointer');
+            
+            const filteredPayments = [...new Set(
+                scenarioData
+                    .filter(item => item.status === selectedStatus)
+                    .map(item => item.payment)
+            )];
+
+            paymentSelect.innerHTML = '<option value="">-- 請選擇付款情境 --</option>';
+            filteredPayments.forEach(pay => {
+                const opt = document.createElement('option');
+                opt.value = pay;
+                opt.textContent = pay;
+                paymentSelect.appendChild(opt);
+            });
+
+            // 第三個重設
+            refundTypeSelect.innerHTML = '<option value="">-- 請先選擇上方項目 --</option>';
+            refundTypeSelect.disabled = true;
+            refundTypeSelect.classList.add('bg-slate-100', 'text-slate-400', 'cursor-not-allowed');
+            refundTypeSelect.classList.remove('bg-slate-50', 'text-slate-800', 'cursor-pointer');
+            
+            hideResult();
+        });
+
+        // 當狀態二改變
+        paymentSelect.addEventListener('change', function() {
+            const selectedStatus = statusSelect.value;
+            const selectedPayment = this.value;
+
+            if (!selectedPayment) {
+                refundTypeSelect.innerHTML = '<option value="">-- 請先選擇上方項目 --</option>';
+                refundTypeSelect.disabled = true;
+                refundTypeSelect.classList.add('bg-slate-100', 'text-slate-400', 'cursor-not-allowed');
+                refundTypeSelect.classList.remove('bg-slate-50', 'text-slate-800', 'cursor-pointer');
+                hideResult();
+                return;
+            }
+
+            // 啟用並篩選第三個 Select (退費變更類型)
+            refundTypeSelect.disabled = false;
+            refundTypeSelect.classList.remove('bg-slate-100', 'text-slate-400', 'cursor-not-allowed');
+            refundTypeSelect.classList.add('bg-slate-50', 'text-slate-800', 'cursor-pointer');
+
+            const filteredTypes = [...new Set(
+                scenarioData
+                    .filter(item => item.status === selectedStatus && item.payment === selectedPayment)
+                    .map(item => item.refundType)
+            )];
+
+            refundTypeSelect.innerHTML = '<option value="">-- 請選擇退費變更類型 --</option>';
+            filteredTypes.forEach(type => {
+                const opt = document.createElement('option');
+                opt.value = type;
+                opt.textContent = type;
+                refundTypeSelect.appendChild(opt);
+            });
+
+            hideResult();
+        });
+
+        // 當狀態三改變：直接觸發結果配對
+        refundTypeSelect.addEventListener('change', function() {
+            const selectedStatus = statusSelect.value;
+            const selectedPayment = paymentSelect.value;
+            const selectedType = this.value;
+
+            if (!selectedType) {
+                hideResult();
+                return;
+            }
+
+            // 配對符合的單筆資料
+            const matched = scenarioData.find(item => 
+                item.status === selectedStatus && 
+                item.payment === selectedPayment && 
+                item.refundType === selectedType
+            );
+
+            if (matched) {
+                showResult(matched);
+            } else {
+                hideResult();
+            }
+        });
+
+        // 顯示結果
+        function showResult(data) {
+            welcomePlaceholder.classList.add('hidden');
+            resultCard.classList.remove('hidden');
+            
+            // 動畫過渡
+            setTimeout(() => {
+                resultCard.classList.remove('translate-y-2', 'opacity-0');
+            }, 50);
+
+            resultScenarioTitle.textContent = `${data.status} ➔ ${data.payment} ➔ ${data.refundType}`;
+            mobileRefundText.innerHTML = data.mobile;
+            ispRefundText.innerHTML = data.isp;
+        }
+
+        // 隱藏結果
+        function hideResult() {
+            resultCard.classList.add('translate-y-2', 'opacity-0');
+            setTimeout(() => {
+                resultCard.classList.add('hidden');
+                welcomePlaceholder.classList.remove('hidden');
+            }, 150);
+        }
+
+        // 重設次下拉選單
+        function resetSubDropdowns() {
+            paymentSelect.innerHTML = '<option value="">-- 請先選擇上方項目 --</option>';
+            paymentSelect.disabled = true;
+            paymentSelect.classList.add('bg-slate-100', 'text-slate-400', 'cursor-not-allowed');
+            paymentSelect.classList.remove('bg-slate-50', 'text-slate-800', 'cursor-pointer');
+
+            refundTypeSelect.innerHTML = '<option value="">-- 請先選擇上方項目 --</option>';
+            refundTypeSelect.disabled = true;
+            refundTypeSelect.classList.add('bg-slate-100', 'text-slate-400', 'cursor-not-allowed');
+            refundTypeSelect.classList.remove('bg-slate-50', 'text-slate-800', 'cursor-pointer');
+        }
+
+        // 重設按鈕事件
+        resetBtn.addEventListener('click', function() {
+            statusSelect.value = "";
+            resetSubDropdowns();
+            hideResult();
+        });
+
+        // 一鍵複製功能 (相容 iframe 與舊瀏覽器)
+        copyBtn.addEventListener('click', function() {
+            const title = resultScenarioTitle.textContent;
+            const mobile = mobileRefundText.textContent.trim();
+            const isp = ispRefundText.textContent.trim();
+
+            const textToCopy = `【雙網退費處置方案】\n情境：${title}\n=======================\n- 門號處理做法：\n  ${mobile}\n- ISP 退費做法：\n  ${isp}`;
+
+            // 建立暫時的 textarea 做複製
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            // 避免在畫面上閃爍
+            textArea.style.position = "fixed";
+            textArea.style.left = "-999999px";
+            textArea.style.top = "-999999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast();
+                } else {
+                    alert('複製失敗，請手動複製結果區塊內容。');
+                }
+            } catch (err) {
+                alert('您的瀏覽器不支援一鍵複製，請手動複製結果。');
+            }
+
+            document.body.removeChild(textArea);
+        });
+
+        function showToast() {
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // 初始化頁面與圖標
+        window.onload = function() {
+            initDropdown();
+            // 啟用 Lucide 圖標
+            lucide.createIcons();
+        };
+    </script>
+</body>
+</html>
