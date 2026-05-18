@@ -248,7 +248,6 @@
             },
             {
                 status: "新裝機",
-                payment: "Refunding completed",
                 payment: "已付8900未付雙網費用",
                 refundType: "退門號留ISP",
                 mobile: "收回 ＳＩＭ 卡",
@@ -330,6 +329,7 @@
             },
             {
                 status: "續約",
+                payment: "Accent on no prepay",
                 payment: "已付8900未付雙網費用 (未退費)",
                 refundType: "退門號留ISP",
                 mobile: "收回 ＳＩＭ 卡",
@@ -497,17 +497,13 @@
             }
 
             // 2. 業務 判斷邏輯
-            const salesItems = [
-                "與客戶溝通「須準備的資料」",
-                "追蹤門號取消申辦（收寄件與取消進度）",
-                "確認取消申辦流程完成後，通知荷仕將荷鉅系統中的卡號資料刪除（將依情境有不同的處理方式）"
-            ];
+            const salesItems = [];
 
-            // 新增要求：若為新辦-遠傳，業務工項內直接顯示特定 SOP 流程及切結書連結
+            // 若為 新辦-遠傳
             if (portalType === 'new-fet') {
                 salesItems.push(
-                    "<span class='text-blue-700 font-bold'>[新辦-遠傳專屬流程]</span> 收到客戶資料後寄到 <strong>台中荷仕據點</strong>，於 Line 群組追蹤進度並提供 sim 卡號碼與電話，請荷仕刪除荷鉅系統資料。",
-                    "<span class='text-blue-700 font-bold'>[新辦-遠傳專屬流程]</span> 門號退費依門市作法執行 <span class='text-rose-600 font-bold'>(紙本需簽名 + 雙證件影本 + 取消原因)</span>。",
+                    "<span class='text-blue-700 font-bold'>[新辦-遠傳專屬流程]</span> 於客戶與荷仕 Line 群組追蹤案件進度並提供 sim 卡號碼與電話，確認取消申辦流程完成後，請荷仕刪除荷鉅系統資料。",
+                    "<span class='text-blue-700 font-bold'>[新辦-遠傳專屬流程]</span> 與客戶溝通門號退費所需資料(紙本需簽名 + 雙證件影本 + 取消原因)。",
                     `<div class="mt-2.5 flex flex-wrap gap-2">
                         <a href="https://drive.google.com/file/d/16DjH-6ML9Ix5Pm_f4AFKGowexhyAJ5yI/view?usp=drive_link" target="_blank" class="inline-flex items-center space-x-1 px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-semibold transition-all">
                             <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
@@ -518,6 +514,12 @@
                             <span>切結書範本 [連結]</span>
                         </a>
                     </div>`
+                );
+            } else {
+                salesItems.push(
+                    "與客戶溝通「須準備的資料」",
+                    "追蹤門號取消申辦（收寄件與取消進度）",
+                    "確認取消申辦流程完成後，通知荷仕將荷鉅系統中的卡號資料刪除（將依情境有不同的處理方式）"
                 );
             }
 
@@ -565,17 +567,33 @@
                 items: yitingItems
             });
 
-            // 5. 管理師-姵妤 判斷邏輯 (已付雙網費用或搭配雙網)
+            // 5. 管理師-姵妤 判斷邏輯
+            const peiyuItems = [];
+            const peiyuTheme = [];
+            const peiyuTrigger = [];
+
+            if (portalType === 'new-fet') {
+                peiyuItems.push("<span class='text-purple-700 font-bold'>[新辦-遠傳專屬流程]</span> 收到客戶資料後寄到 <strong>台中荷仕據點</strong>");
+                peiyuTheme.push("寄件相關");
+                peiyuTrigger.push("門號類型為 [新辦 - 遠傳] 觸發");
+            }
+
             if (isDualNet) {
+                peiyuItems.push(
+                    "負責退費行政流程審查",
+                    "（電商平台訂單退費）發信請秋燕處理電商平台端的退費作業"
+                );
+                peiyuTheme.push("退費行政流程、平台訂單退費跨部門溝通");
+                peiyuTrigger.push("已付雙網費用或搭配雙網方案觸發");
+            }
+
+            if (peiyuItems.length > 0) {
                 tasksList.push({
                     role: "管理師 - 姵妤",
-                    theme: "退費行政流程、平台訂單退費跨部門溝通",
-                    trigger: "已付雙網費用或搭配雙網方案觸發",
+                    theme: peiyuTheme.join(" & "),
+                    trigger: peiyuTrigger.join(" + "),
                     colorClass: "bg-purple-50 text-purple-800 border-purple-200",
-                    items: [
-                        "負責退費行政流程審查",
-                        "（電商平台訂單退費）發信請秋燕處理電商平台端的退費作業"
-                    ]
+                    items: peiyuItems
                 });
             }
 
