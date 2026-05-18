@@ -31,7 +31,7 @@
             </div>
             <div class="flex items-center space-x-2 text-xs bg-white/10 px-3 py-1.5 rounded-full border border-white/20">
                 <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                <span>即時決策資料庫已啟用 (共 17 種完整情境)</span>
+                <span>角色權責防呆機制已啟用</span>
             </div>
         </div>
     </header>
@@ -47,10 +47,10 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 transition-all duration-200 hover:shadow-md">
                     <div class="flex items-center space-x-2 mb-6 pb-4 border-b border-slate-100">
                         <i data-lucide="sliders" class="w-5 h-5 text-blue-600"></i>
-                        <h2 class="text-lg font-bold text-slate-900">第一步：請選擇客戶目前狀態</h2>
+                        <h2 class="text-lg font-bold text-slate-900">條件篩選 (請依序選擇)</h2>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- 步驟一：客戶網路狀態 -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1">
@@ -83,6 +83,21 @@
                                 <option value="">-- 請先選擇上方項目 --</option>
                             </select>
                         </div>
+
+                        <!-- 步驟四：門號類型（新需求：用於判斷主管任務） -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2 flex items-center gap-1">
+                                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-blue-100 text-blue-600 text-xs font-bold">4</span>
+                                門號類型 (選填 · 用於自動匹配主管工項)
+                            </label>
+                            <select id="portalTypeSelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2.5 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer">
+                                <option value="">-- 不指定（或無資料） --</option>
+                                <option value="new-cht">新辦門號 - 中華</option>
+                                <option value="port-cht">攜碼門號 - 中華</option>
+                                <option value="port-fet">攜碼門號 - 遠傳</option>
+                                <option value="new-fet">新辦門號 - 遠傳 (流程明確)</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="mt-6 flex justify-end">
@@ -94,7 +109,9 @@
                 </div>
 
                 <!-- 查詢結果展示區 -->
-                <div id="resultCard" class="hidden transform transition-all duration-300 translate-y-2 opacity-0">
+                <div id="resultCard" class="hidden transform transition-all duration-300 translate-y-2 opacity-0 space-y-6">
+                    
+                    <!-- 處置方式大綱 -->
                     <div class="bg-white rounded-2xl shadow-md border-t-4 border-blue-600 border-x border-b border-slate-200 overflow-hidden">
                         
                         <!-- 結果標頭 -->
@@ -105,7 +122,7 @@
                             </div>
                             <button id="copyBtn" class="flex items-center space-x-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-sm font-semibold transition-all">
                                 <i data-lucide="copy" class="w-4 h-4"></i>
-                                <span>複製此處置方案</span>
+                                <span>複製完整處置方案與任務</span>
                             </button>
                         </div>
 
@@ -139,13 +156,28 @@
                             </div>
 
                         </div>
-
-                        <!-- 一鍵複製成功提示 -->
-                        <div id="toast" class="hidden bg-emerald-500 text-white text-center py-2 text-sm font-semibold transition-all duration-300">
-                            已成功複製處置方案至剪貼簿！
-                        </div>
-
                     </div>
+
+                    <!-- 新增：各角色任務明細表卡片 -->
+                    <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-850 bg-slate-800 text-white px-6 py-4 flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="users" class="w-5 h-5 text-teal-400"></i>
+                                <h3 class="font-bold text-base">此情境下各角色任務明細表（責任分工）</h3>
+                            </div>
+                            <span class="text-xs bg-teal-500/20 text-teal-300 border border-teal-500/30 px-2 py-1 rounded">系統精準匹配</span>
+                        </div>
+                        
+                        <div class="p-6 space-y-4" id="roleTasksContainer">
+                            <!-- JS 動態渲染角色任務卡片 -->
+                        </div>
+                    </div>
+
+                    <!-- 一鍵複製成功提示 -->
+                    <div id="toast" class="hidden bg-emerald-500 text-white text-center py-2 text-sm font-semibold transition-all duration-300 rounded-lg">
+                        已成功複製處置方案與任務分工至剪貼簿！
+                    </div>
+
                 </div>
 
                 <!-- 預設提示：未選擇時顯示 -->
@@ -154,7 +186,7 @@
                         <i data-lucide="search" class="w-8 h-8"></i>
                     </div>
                     <h3 class="text-lg font-bold text-slate-700">尚未選擇條件</h3>
-                    <p class="text-slate-500 text-sm mt-1 max-w-md mx-auto">請使用上方下拉選單依序篩選「客戶狀態」、「付款情境」與「退費類型」，系統將即時 analysis 並呈現對應 SOP 處置方式。</p>
+                    <p class="text-slate-500 text-sm mt-1 max-w-md mx-auto">請使用上方下拉選單依序篩選「客戶狀態」、「付款情境」與「退費類型」，系統將即時分析並呈現對應 SOP 處置方式與各窗口責任工項。</p>
                 </div>
 
             </div>
@@ -349,7 +381,6 @@
             },
             {
                 status: "續約",
-                payment: "Academic version already refunded",
                 payment: "已付8900已付雙網費用 (已退費)",
                 refundType: "退門號留ISP",
                 mobile: "收回 ＳＩＭ 卡後，電商雙網訂單依退費辦法退費 (姵妤)",
@@ -375,6 +406,7 @@
         const statusSelect = document.getElementById('statusSelect');
         const paymentSelect = document.getElementById('paymentSelect');
         const refundTypeSelect = document.getElementById('refundTypeSelect');
+        const portalTypeSelect = document.getElementById('portalTypeSelect');
         const resetBtn = document.getElementById('resetBtn');
         const resultCard = document.getElementById('resultCard');
         const welcomePlaceholder = document.getElementById('welcomePlaceholder');
@@ -382,6 +414,7 @@
         const resultScenarioTitle = document.getElementById('resultScenarioTitle');
         const mobileRefundText = document.getElementById('mobileRefundText');
         const ispRefundText = document.getElementById('ispRefundText');
+        const roleTasksContainer = document.getElementById('roleTasksContainer');
         const copyBtn = document.getElementById('copyBtn');
         const toast = document.getElementById('toast');
 
@@ -476,12 +509,16 @@
         });
 
         // 當狀態三改變：直接觸發結果配對
-        refundTypeSelect.addEventListener('change', function() {
+        refundTypeSelect.addEventListener('change', runMatching);
+        // 當步驟四門號類型改變：也要即時重新渲染職責
+        portalTypeSelect.addEventListener('change', runMatching);
+
+        function runMatching() {
             const selectedStatus = statusSelect.value;
             const selectedPayment = paymentSelect.value;
-            const selectedType = this.value;
+            const selectedType = refundTypeSelect.value;
 
-            if (!selectedType) {
+            if (!selectedType || !selectedStatus || !selectedPayment) {
                 hideResult();
                 return;
             }
@@ -498,9 +535,99 @@
             } else {
                 hideResult();
             }
-        });
+        }
 
-        // 顯示結果
+        // 核心邏輯：根據情境及門號類型計算各角色分工
+        function generateRoleTasks(data, portalType) {
+            const tasksList = [];
+            const has8900 = data.payment.includes("已付8900");
+            const isDualNet = data.payment.includes("已付雙網費用") || data.status.includes("已搭配雙網方案");
+
+            // 1. 主管-建嘉 判斷邏輯
+            if (portalType === 'new-cht' || portalType === 'port-cht' || portalType === 'port-fet') {
+                let pName = "";
+                if (portalType === 'new-cht') pName = "新辦門號 - 中華";
+                if (portalType === 'port-cht') pName = "攜碼門號 - 中華";
+                if (portalType === 'port-fet') pName = "攜碼門號 - 遠傳";
+
+                tasksList.push({
+                    role: "主管 - 建嘉",
+                    theme: "需釐清之電信流程",
+                    trigger: `匹配門號種類 [${pName}] (中華新辦/攜碼、或遠傳攜碼)`,
+                    colorClass: "bg-slate-100 text-slate-800 border-slate-300",
+                    items: [
+                        "詢問荷仕門號取消申辦處理方式，並於部門群組告知最新處理辦法。"
+                    ]
+                });
+            }
+
+            // 2. 業務 判斷邏輯
+            const salesItems = [
+                "與客戶溝通「須準備的資料」",
+                "追蹤門號取消申辦（收寄件與取消進度）",
+                "確認取消申辦流程完成後，通知荷仕將荷鉅系統中的卡號資料刪除（將依情境有不同的處理方式）"
+            ];
+            if (has8900) {
+                salesItems.push("<strong class='text-blue-700'>[付8900觸發]</strong> 請客服處理退費，並立客訴單提交給客服團隊");
+            }
+            tasksList.push({
+                role: "業務",
+                theme: "與客戶溝通、案件進度追蹤",
+                trigger: has8900 ? "所有案件必備工項 + 客戶已付 8900 觸發退費工項" : "所有案件必備工項",
+                colorClass: "bg-blue-50 text-blue-800 border-blue-200",
+                items: salesItems
+            });
+
+            // 3. 客服 判斷邏輯 (客戶已付 8900)
+            if (has8900) {
+                tasksList.push({
+                    role: "客服",
+                    theme: "客訴與退費處理",
+                    trigger: "客戶已付 8900 元觸發",
+                    colorClass: "bg-rose-50 text-rose-800 border-rose-200",
+                    items: [
+                        "依退費辦法處理並結案「業務所立之退費客訴單」"
+                    ]
+                });
+            }
+
+            // 4. 業助-宜庭 判斷邏輯
+            const yitingItems = [
+                "傳送退費申請資料、協助客戶填寫、退費時程說明"
+            ];
+            if (isDualNet) {
+                yitingItems.push(
+                    "<strong class='text-indigo-700'>[雙網費用觸發]</strong> 發信請秋燕提供 ISP 刷卡連結，後續請客服修改金額讓客戶重新繳網路全額",
+                    "<strong class='text-indigo-700'>[雙網費用觸發]</strong> 於 Line 部門群組追蹤客戶是否已補繳 ISP 費用",
+                    "<strong class='text-indigo-700'>[雙網費用觸發]</strong> 補繳收到款項後，發信請 RD 修正 ISP 客資系統數據"
+                );
+            }
+            tasksList.push({
+                role: "業助 - 宜庭",
+                theme: "退費資料填寫排解" + (isDualNet ? " & ISP跨部門退費溝通與追蹤、系統客資確認" : ""),
+                trigger: isDualNet ? "所有案件必備工項 + 已付雙網費用/搭配雙網方案觸發" : "所有案件必備工項",
+                colorClass: "bg-indigo-50 text-indigo-800 border-indigo-200",
+                items: yitingItems
+            });
+
+            // 5. 管理師-姵妤 判斷邏輯 (已付雙網費用或搭配雙網)
+            if (isDualNet) {
+                tasksList.push({
+                    role: "管理師 - 姵妤",
+                    theme: "退費行政流程、平台訂單退費跨部門溝通",
+                    trigger: "已付雙網費用或搭配雙網方案觸發",
+                    colorClass: "bg-purple-50 text-purple-800 border-purple-200",
+                    items: [
+                        "負責退費行政流程審查",
+                        "（電商平台訂單退費）發信請秋燕處理電商平台端的退費作業"
+                    ]
+                });
+            }
+
+            return tasksList;
+        }
+
+        // 顯示結果與渲染分工表
         function showResult(data) {
             welcomePlaceholder.classList.add('hidden');
             resultCard.classList.remove('hidden');
@@ -513,6 +640,32 @@
             resultScenarioTitle.textContent = `${data.status} ➔ ${data.payment} ➔ ${data.refundType}`;
             mobileRefundText.innerHTML = data.mobile;
             ispRefundText.innerHTML = data.isp;
+
+            // 渲染責任分工表
+            const portalType = portalTypeSelect.value;
+            const rolesTasks = generateRoleTasks(data, portalType);
+            
+            roleTasksContainer.innerHTML = "";
+            rolesTasks.forEach(r => {
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-xl border ${r.colorClass} space-y-2.5 shadow-sm transition-all hover:shadow`;
+                
+                let listItems = r.items.map(item => `<li class="ml-4 list-disc">${item}</li>`).join('');
+                
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b pb-2 border-slate-200/60">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-bold text-base tracking-wide">${r.role}</span>
+                            <span class="text-xs font-semibold px-2 py-0.5 bg-white/80 rounded-md border border-slate-250">${r.theme}</span>
+                        </div>
+                        <span class="text-[10px] font-mono opacity-80 bg-white/60 px-2 py-0.5 rounded">邏輯：${r.trigger}</span>
+                    </div>
+                    <ul class="text-xs sm:text-sm space-y-1.5 text-slate-700 pl-1 font-medium">
+                        ${listItems}
+                    </ul>
+                `;
+                roleTasksContainer.appendChild(card);
+            });
         }
 
         // 隱藏結果
@@ -540,22 +693,47 @@
         // 重設按鈕事件
         resetBtn.addEventListener('click', function() {
             statusSelect.value = "";
+            portalTypeSelect.value = "";
             resetSubDropdowns();
             hideResult();
         });
 
-        // 一鍵複製功能 (相容 iframe 與舊瀏覽器)
+        // 一鍵複製功能 (相容 iframe 且加入新角色分工內容)
         copyBtn.addEventListener('click', function() {
             const title = resultScenarioTitle.textContent;
             const mobile = mobileRefundText.textContent.trim();
             const isp = ispRefundText.textContent.trim();
 
-            const textToCopy = `【雙網退費處置方案】\n情境：${title}\n=======================\n- 門號處理做法：\n  ${mobile}\n- ISP 退費做法：\n  ${isp}`;
+            const selectedStatus = statusSelect.value;
+            const selectedPayment = paymentSelect.value;
+            const selectedType = refundTypeSelect.value;
+
+            const matched = scenarioData.find(item => 
+                item.status === selectedStatus && 
+                item.payment === selectedPayment && 
+                item.refundType === selectedType
+            );
+
+            let rolesText = "";
+            if (matched) {
+                const portalType = portalTypeSelect.value;
+                const rolesTasks = generateRoleTasks(matched, portalType);
+                rolesText = "\n\n【各窗口責任工項明細表】\n";
+                rolesTasks.forEach(r => {
+                    rolesText += `\n👤 ${r.role} (${r.theme})\n`;
+                    r.items.forEach((item, idx) => {
+                        // 移除 HTML 標記
+                        const cleanItem = item.replace(/<[^>]*>/g, "");
+                        rolesText += `   ${idx + 1}. ${cleanItem}\n`;
+                    });
+                });
+            }
+
+            const textToCopy = `【雙網退費處置方案】\n情境：${title}\n=======================\n- 門號處理做法：\n  ${mobile}\n- ISP 退費做法：\n  ${isp}${rolesText}`;
 
             // 建立暫時的 textarea 做複製
             const textArea = document.createElement("textarea");
             textArea.value = textToCopy;
-            // 避免在畫面上閃爍
             textArea.style.position = "fixed";
             textArea.style.left = "-999999px";
             textArea.style.top = "-999999px";
