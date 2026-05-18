@@ -498,11 +498,11 @@
             // 2. 業務 判斷邏輯
             const salesItems = [];
 
-            // 若為 新辦-遠傳
+            // 若為 新辦-遠傳 (此處順序已調換)
             if (portalType === 'new-fet') {
                 salesItems.push(
-                    "<span class='text-blue-700 font-bold'>[新辦-遠傳專屬流程]</span> 於客戶與荷仕 Line 群組追蹤案件進度並提供 sim 卡號碼與電話，確認取消申辦流程完成後，請荷仕刪除荷鉅系統資料。",
                     "<span class='text-blue-700 font-bold'>[新辦-遠傳專屬流程]</span> 與客戶溝通門號退費所需資料(紙本需簽名 + 雙證件影本 + 取消原因)。",
+                    "<span class='text-blue-700 font-bold'>[新辦-遠傳專屬流程]</span> 與客戶、荷仕 Line 群組雙向追蹤案件進度並提供荷仕 sim 卡號碼與電話，確認取消申辦流程完成後，請荷仕刪除荷鉅系統資料。",
                     `<div class="mt-2.5 flex flex-wrap gap-2">
                         <a href="https://drive.google.com/file/d/16DjH-6ML9Ix5Pm_f4AFKGowexhyAJ5yI/view?usp=drive_link" target="_blank" class="inline-flex items-center space-x-1 px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-semibold transition-all">
                             <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
